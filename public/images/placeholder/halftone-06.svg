@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#ece8db" />
+  <g font-family="ui-monospace, monospace" fill="#131313" font-size="9">
+    <text x="40" y="60">01001110 01101001 01100011 01101000 01101111 01101100 01100001 01110011</text>
+    <text x="40" y="80">10101010 11001100 00110011 01010101 11111111 00000000 01010111 11000011</text>
+    <text x="40" y="100">SIGNAL FOUND // FRAME 0001 // T 00:00:00.022 // MIDI 003 // BPM 132.0</text>
+  </g>
+  <g stroke="#1c39ff" stroke-width="1.5" fill="none">
+    <path d="M40,400 L760,400" />
+    <path d="M40,400 Q400,200 760,400" />
+    <path d="M40,400 Q400,600 760,400" />
+  </g>
+  <g font-family="ui-monospace, monospace" fill="#131313">
+    <text x="40" y="780" font-size="12">PLATE 06 — SIGNAL</text>
+  </g>
+</svg>
