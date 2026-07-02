@@ -1,77 +1,109 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { site } from "@/content/site";
-import { Hyperlink } from "@/components/ui/hyperlink";
+import { NavButton } from "@/components/ui/nav-button";
+import { NoiseRule, BinaryLine } from "@/components/ui/noise";
 
 export const metadata: Metadata = { title: "Info" };
 
 export default function InfoPage() {
   return (
-    <div className="mx-auto w-full max-w-[1400px] px-6 py-16 md:px-10">
-      <header className="mb-10 border-b border-rule pb-6">
-        <p className="caption">Colophon</p>
-        <h1 className="mt-2 font-serif text-[clamp(2rem,5vw,3.5rem)] leading-[1] tracking-tight">
-          Info
-        </h1>
-      </header>
+    <>
+      <p>
+        <NavButton href="/">← index</NavButton>
+        <NavButton href="/work">work</NavButton>
+        <NavButton href="/sketches">sketches</NavButton>
+        <NavButton href="/cv">CV</NavButton>
+        <NavButton href={`mailto:${site.email}`}>{site.email}</NavButton>
+        {site.social.map((s) => (
+          <NavButton key={s.href} href={s.href}>
+            {s.label.toLowerCase()}
+          </NavButton>
+        ))}
+      </p>
 
-      <div className="grid gap-12 md:grid-cols-12">
-        <section className="md:col-span-7">
-          <p className="caption mb-3">Bio</p>
-          <div className="prose">
-            <p className="text-xl leading-snug">
-              {site.name} is a designer, programmer, and image-maker
-              working between code and physical media. Practice spans interactive
-              installation, generative graphics, motion identity, and printed
-              objects.
-            </p>
-            <p>
-              Recent work includes audio-reactive visuals for live shows,
-              real-time installations using TouchDesigner and custom hardware,
-              and a continuing investigation into how typography behaves in
-              motion. Past collaborators include musicians, fashion houses,
-              architects, and arts organisations.
-            </p>
-            <p>
-              Available for commissions, art direction, and collaboration. For
-              talks, teaching, and press inquiries, write to{" "}
-              <Hyperlink href={`mailto:${site.email}`}>{site.email}</Hyperlink>.
-            </p>
-          </div>
-        </section>
+      <p>
+        <span className="extra">about</span>
+        <br />
+        <i>written as pseudoprose. fragments are load-bearing.</i>
+      </p>
 
-        <aside className="md:col-span-5">
-          <div className="border border-rule p-5">
-            <p className="caption mb-2">Contact</p>
-            <ul className="space-y-1">
-              <li>
-                <Hyperlink href={`mailto:${site.email}`}>{site.email}</Hyperlink>
-              </li>
-              {site.social.map((s) => (
-                <li key={s.href}>
-                  <Hyperlink href={s.href}>{s.label}</Hyperlink>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <ul>
+        <li>b. 1999, aotearoa new zealand. naarm/melbourne now.</li>
+        <li>designer; technologist. the slash does real work.</li>
+        <li>
+          make: visuals that listen. rooms that watch back. type that moves.
+          light that behaves like weather.
+        </li>
+        <li>
+          tools: touchdesigner. glsl. python. arduino. gaussian splats. depth
+          cameras. whatever the room needs.
+        </li>
+        <li>
+          method: patch fast; delete faster. real-time or nothing. the render
+          queue is a waiting room.
+        </li>
+        <li>
+          believe: attribution is a form of activism. show the wires. sites
+          should read like source.
+        </li>
+        <li>
+          co-founded <em>touch collective</em> — workshops, artist talks, live
+          visual events. teaching is practice, not a side quest.
+        </li>
+        <li>
+          worked with: the xx. nine inch nails. dom dolla. nike. odetari.
+          ravyn lenae. its murph. smokedope2016. lyrical lemonade. mtla
+          studio. 1080p studios. phase 3 concepts.
+        </li>
+        <li>grammy on the shelf; still patching at 2am.</li>
+      </ul>
 
-          <div className="mt-6 border border-rule p-5">
-            <p className="caption mb-2">Currently</p>
-            <p className="font-serif">
-              Open to commissions for early {new Date().getFullYear() + 1}.
-            </p>
-          </div>
+      <NoiseRule char="/" />
 
-          <div className="mt-6 border border-rule p-5">
-            <p className="caption mb-2">Colophon</p>
-            <p className="font-serif text-sm leading-snug">
-              Site built with Next.js, React Three Fiber, and Tailwind. Type
-              set in EB Garamond and JetBrains Mono. Hero shader is a
-              domain-warped fbm rendered as topographic isobands. Source on
-              GitHub.
-            </p>
-          </div>
-        </aside>
-      </div>
-    </div>
+      <p>
+        <span className="extra">contact</span>
+        <br />
+        commissions, talks, teaching, press:{" "}
+        <a href={`mailto:${site.email}`}>{site.email}</a> · +61 480 748 953 ·{" "}
+        <span className="data" style={{ fontSize: 13 }}>
+          @nicholaspjm
+        </span>{" "}
+        everywhere.
+      </p>
+
+      <p>
+        <span className="extra">colophon</span>
+        <br />
+        built with next.js; reads like 1996 on purpose. arial, courier for
+        the data, hyperlink blue <span className="highlight">#0000ff</span>,
+        and <span style={{ background: "#00ff00" }}>#00ff00</span>. the bars
+        down the right edge are the page&rsquo;s own structure; the
+        background of the <Link href="/">index</Link> is a point-cloud scan
+        of a real room — it flinches from your cursor. structure over
+        decoration. this page is{" "}
+        <a href="https://taylor.town/pseudoprose" target="_blank" rel="noreferrer">
+          pseudoprose
+        </a>
+        . the noise is{" "}
+        <i>
+          corecore
+        </i>{" "}
+        — &ldquo;if there is a politics to it, it can be found in the effects
+        of negativity.&rdquo;
+      </p>
+
+      <BinaryLine text="on my computer becoming" />
+      <p className="foot">
+        last updated{" "}
+        {new Date().toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
+        . © nicholas marriott, naarm / melbourne.{" "}
+        <span className="pagemark">∞*</span>
+      </p>
+    </>
   );
 }

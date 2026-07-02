@@ -77,10 +77,19 @@ export interface DividerBlock {
   label?: string;
 }
 
+/** Which index group a project belongs to. */
+export type ProjectSection =
+  | "commissioned"
+  | "installation"
+  | "sketch"
+  | "teaching";
+
 /** A portfolio project. */
 export interface Project {
   slug: string;
   title: string;
+  /** Index group. Defaults to "commissioned" when omitted. */
+  section?: ProjectSection;
   /** Year string. e.g. "2024" or "2023–24". */
   year: string;
   /** One-liner shown in the index list. */
@@ -93,29 +102,16 @@ export interface Project {
   tags?: Tag[];
   /** External link, if the project lives elsewhere (Vimeo, etc.). */
   link?: { href: string; label: string };
+  /** Cluster of related external links — rendered as pill buttons on the index. */
+  links?: { href: string; label: string }[];
+  /** Images shown as an image-row under the project entry on the index. */
+  images?: { src: string; caption?: string; alt?: string }[];
   /** Hero image, used as preview thumb on the index. */
   cover?: { src: string; alt: string; ratio?: string };
   /** Ordered content blocks. */
   blocks: Block[];
   /** Hidden from the index but reachable by URL. */
   unlisted?: boolean;
-}
-
-/** A code experiment — like a project, but shorter, with a live render. */
-export interface Experiment {
-  slug: string;
-  title: string;
-  year: string;
-  summary: string;
-  tags?: Tag[];
-  /** Component key — resolved in components/lab/registry.tsx */
-  component:
-    | "particles"
-    | "ascii-flow"
-    | "grid-pulse"
-    | "blob-mini";
-  /** Optional content blocks shown below the live render. */
-  blocks?: Block[];
 }
 
 export interface SiteInfo {

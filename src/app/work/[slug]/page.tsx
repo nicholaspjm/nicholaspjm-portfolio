@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import {
   getAllProjectSlugs,
   getProjectBySlug,
   getProjectNeighbors,
 } from "@/lib/projects";
 import { Blocks } from "@/components/content/block-renderer";
-import { Tag } from "@/components/ui/tag";
-import { Hyperlink } from "@/components/ui/hyperlink";
+import { NavButton } from "@/components/ui/nav-button";
 
 export function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
@@ -30,81 +28,71 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   const { prev, next } = getProjectNeighbors(slug);
 
   return (
-    <article>
-      <header className="mx-auto w-full max-w-[1400px] px-6 pb-8 pt-16 md:px-10">
-        <p className="caption">
-          <Link href="/work" className="link">
-            ← Index
-          </Link>
-        </p>
-        <h1 className="mt-4 font-serif text-[clamp(2rem,5vw,3.75rem)] leading-[1.02] tracking-tight">
-          {project.title}
-        </h1>
-        <p className="mt-4 max-w-[64ch] font-serif text-xl leading-snug text-ink-soft">
-          {project.summary}
-        </p>
+    <div className="bluepage">
+      <p>
+        <NavButton href="/">← index</NavButton>
+        <NavButton href="/work">all work</NavButton>
+      </p>
 
-        <dl className="mono mt-8 grid grid-cols-2 gap-y-2 border-y border-rule py-4 text-sm md:grid-cols-4">
-          <div>
-            <dt className="caption">Year</dt>
-            <dd>{project.year}</dd>
-          </div>
-          {project.role && (
-            <div>
-              <dt className="caption">Role</dt>
-              <dd>{project.role}</dd>
-            </div>
-          )}
-          <div>
-            <dt className="caption">Categories</dt>
-            <dd>{project.categories.join(", ")}</dd>
-          </div>
-          {project.link && (
-            <div>
-              <dt className="caption">Link</dt>
-              <dd>
-                <Hyperlink href={project.link.href}>
-                  {project.link.label}
-                </Hyperlink>
-              </dd>
-            </div>
-          )}
-        </dl>
-
-        {project.tags && project.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1">
-            {project.tags.map((t) => (
-              <Tag key={t} label={t} />
+      {/* Giant bordoclima-scale masthead */}
+      <header>
+        <span className="bigyear">
+          {project.year} · {project.section ?? "commissioned"} ·{" "}
+          {project.categories.join(" / ").toLowerCase()}
+        </span>
+        <h1 className="bigtitle">{project.title}</h1>
+        {(project.link || (project.links && project.links.length > 0)) && (
+          <p>
+            {project.link && (
+              <NavButton href={project.link.href} external>
+                {project.link.label}
+              </NavButton>
+            )}
+            {project.links?.map((l) => (
+              <NavButton key={l.href} href={l.href} external>
+                {l.label.toLowerCase()}
+              </NavButton>
             ))}
-          </div>
+          </p>
         )}
       </header>
 
-      <Blocks blocks={project.blocks} />
+      <div style={{ maxWidth: "72ch" }}>
+        <p>
+          {project.summary}
+          {project.role && <> &mdash; {project.role}.</>}
+        </p>
+        <Blocks blocks={project.blocks} />
+      </div>
 
-      {/* Prev / Next */}
-      <nav className="mx-auto mt-16 flex w-full max-w-[1400px] items-stretch justify-between gap-3 border-t border-rule px-6 py-6 md:px-10">
-        {prev ? (
-          <Link href={`/work/${prev.slug}`} className="block flex-1">
-            <p className="caption">← Previous</p>
-            <p className="font-serif text-lg leading-snug hover:text-link">
-              {prev.title}
-            </p>
-          </Link>
-        ) : (
-          <span />
+      {project.images && project.images.length > 0 && (
+        <div className="image-row">
+          {project.images.map((img) => (
+            <figure key={img.src} className="image-module">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img.src} alt={img.alt ?? img.caption ?? project.title} />
+              <figcaption>{img.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+
+      <p>
+        <br />
+      </p>
+
+      <p>
+        {prev && (
+          <NavButton href={`/work/${prev.slug}`}>
+            ← {prev.title.toLowerCase()}
+          </NavButton>
         )}
-        {next ? (
-          <Link href={`/work/${next.slug}`} className="block flex-1 text-right">
-            <p className="caption">Next →</p>
-            <p className="font-serif text-lg leading-snug hover:text-link">
-              {next.title}
-            </p>
-          </Link>
-        ) : (
-          <span />
+        {next && (
+          <NavButton href={`/work/${next.slug}`}>
+            {next.title.toLowerCase()} →
+          </NavButton>
         )}
-      </nav>
-    </article>
+      </p>
+    </div>
   );
 }
