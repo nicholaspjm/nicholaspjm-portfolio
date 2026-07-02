@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { asset } from "@/lib/asset";
 
 /**
  * Ambient point-cloud background — a real room scan (decimated to ~35k pts,
@@ -89,7 +90,7 @@ export function PointCloud() {
       attributeFilter: ["data-theme"],
     });
 
-    fetch("/data/scan.bin")
+    fetch(asset("/data/scan.bin"))
       .then((r) => r.arrayBuffer())
       .then((buf) => {
         if (disposed) return;

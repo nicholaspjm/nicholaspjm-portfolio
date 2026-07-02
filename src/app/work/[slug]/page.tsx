@@ -7,6 +7,7 @@ import {
 } from "@/lib/projects";
 import { Blocks } from "@/components/content/block-renderer";
 import { NavButton } from "@/components/ui/nav-button";
+import { asset } from "@/lib/asset";
 
 export function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
@@ -70,7 +71,7 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
           {project.images.map((img) => (
             <figure key={img.src} className="image-module">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img.src} alt={img.alt ?? img.caption ?? project.title} />
+              <img src={asset(img.src)} alt={img.alt ?? img.caption ?? project.title} />
               <figcaption>{img.caption}</figcaption>
             </figure>
           ))}

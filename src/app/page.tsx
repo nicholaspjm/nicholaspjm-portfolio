@@ -7,6 +7,7 @@ import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule, BinaryLine } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
+import { asset } from "@/lib/asset";
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -52,7 +53,7 @@ function ProjectBlock({
           {p.images.map((img) => (
             <figure key={img.src} className="image-module">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img.src} alt={img.alt ?? img.caption ?? p.title} />
+              <img src={asset(img.src)} alt={img.alt ?? img.caption ?? p.title} />
               <figcaption>{img.caption}</figcaption>
             </figure>
           ))}
