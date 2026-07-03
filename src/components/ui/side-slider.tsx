@@ -1,32 +1,85 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { getListedProjects } from "@/lib/projects";
+import { performances, awards } from "@/content/cv";
+
+interface WorkPoint {
+  year: number;
+  title: string;
+  mag: number; // 0..1 magnitude → size + boldness
+  href?: string;
+  baseY: number; // position on the virtual timeline (px)
+}
+
+const SECTION_MAG: Record<string, number> = {
+  commissioned: 0.8,
+  installation: 0.62,
+  sketch: 0.42,
+  teaching: 0.42,
+};
 
 /**
- * Vertical histogram rail — a live minimap of the document's structure.
- * Every bar marks a real element (titles, entries, rules); bars breathe
- * with a slow sine and read darker inside the viewport. Functional:
- * hover to read what's at that point, click to jump there, drag to scrub.
+ * The right rail is a temporal histogram of the work: each piece is a bar
+ * placed by the year it was made, sized and darkened by its scale (bigger
+ * commissions read louder). The timeline drifts continuously upward and
+ * parallax-couples to page scroll. Hovering a bar pops its title out from
+ * the side; clicking opens the work. Not a scrollbar.
  */
 export function SideSlider() {
   const ref = useRef<HTMLCanvasElement>(null);
-  const tipRef = useRef<HTMLDivElement>(null);
+  const popRef = useRef<HTMLAnchorElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const canvas = ref.current;
-    const tip = tipRef.current;
-    if (!canvas || !tip) return;
+    const pop = popRef.current;
+    if (!canvas || !pop) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let raf = 0;
-    let dragging = false;
-    let hoverIdx = -1;
-    let marks: { y: number; kind: number; phase: number; label: string }[] =
-      [];
-    let docH = 1;
-
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    // --- build the timeline ------------------------------------------------
+    const projects = getListedProjects();
+    const items: Omit<WorkPoint, "baseY">[] = [
+      ...projects.map((p) => ({
+        year: parseInt(p.year, 10) || 2025,
+        title: p.title,
+        mag:
+          p.weight ?? SECTION_MAG[p.section ?? "commissioned"] ?? 0.6,
+        href: `/work/${p.slug}`,
+      })),
+      ...performances
+        .filter((p) => p.year !== "—")
+        .map((p) => ({
+          year: parseInt(p.year, 10) || 2025,
+          title: p.title,
+          mag: 0.55,
+        })),
+      ...awards.map((a) => ({
+        year: parseInt(a.year, 10) || 2026,
+        title: a.title,
+        mag: 1,
+      })),
+    ];
+    // newest first, biggest first within a year
+    items.sort((a, b) => b.year - a.year || b.mag - a.mag);
+
+    const GAP = 40 * dpr; // vertical spacing between bars
+    const totalH = Math.max(items.length * GAP, 1);
+    const work: WorkPoint[] = items.map((it, i) => ({
+      ...it,
+      baseY: i * GAP,
+    }));
+
+    // --- state -------------------------------------------------------------
+    let raf = 0;
+    let hoverIdx = -1;
+    let pointerY = -1;
+    let paused = false; // freeze drift while hovering for easy reading
+    let drift = 0;
 
     const resize = () => {
       const w = Math.max(1, Math.floor(canvas.clientWidth * dpr));
@@ -37,203 +90,141 @@ export function SideSlider() {
       }
     };
 
-    const measure = () => {
-      resize();
-      docH = Math.max(1, document.documentElement.scrollHeight);
-      const found: typeof marks = [];
-      document
-        .querySelectorAll<HTMLElement>(".extra, [data-prev], hr, .noise")
-        .forEach((el, i) => {
-          const y = el.getBoundingClientRect().top + window.scrollY;
-          const kind = el.classList.contains("extra")
-            ? 2
-            : el.matches("hr, .noise")
-              ? 0
-              : 1;
-          const label =
-            kind === 0
-              ? ""
-              : (el.textContent ?? "")
-                  .trim()
-                  .replace(/\s+/g, " ")
-                  .slice(0, 44);
-          found.push({ y, kind, phase: i * 0.7, label });
-        });
-      marks = found;
+    const theme = () => {
+      const cs = getComputedStyle(document.documentElement);
+      return {
+        ink: cs.getPropertyValue("--ink").trim() || "#000",
+        soft: cs.getPropertyValue("--soft").trim() || "#666",
+        accent: cs.getPropertyValue("--accent").trim() || "#00ff00",
+      };
     };
 
-    const ink = () =>
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--ink")
-        .trim() || "#000";
-    const accent = () =>
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--accent")
-        .trim() || "#00ff00";
+    // where a work currently sits, in canvas px (looped)
+    const screenY = (baseY: number, offset: number, h: number) => {
+      let y = (baseY - offset) % totalH;
+      if (y < 0) y += totalH;
+      // centre the loop window so items scroll through the viewport
+      return y - (totalH - h) * 0; // baseline: 0..totalH mapped, clipped by draw
+    };
+
+    const currentOffset = () =>
+      drift + window.scrollY * 0.35 * dpr;
 
     const draw = (t: number) => {
-      if ((window as unknown as Record<string, unknown>).__NPJM_PAUSE) {
-        raf = requestAnimationFrame(draw);
-        return;
-      }
       resize();
       const w = canvas.width;
       const h = canvas.height;
-      const time = t * 0.001;
+      const col = theme();
       ctx.clearRect(0, 0, w, h);
 
-      const col = ink();
-      ctx.fillStyle = col;
+      if (!paused) drift += 0.35 * dpr; // continuous upward scroll
+      const offset = currentOffset();
 
       // inner-edge hairline
+      ctx.fillStyle = col.ink;
       ctx.globalAlpha = 0.25;
       ctx.fillRect(0, 0, 1, h);
+      ctx.globalAlpha = 1;
 
-      // viewport window in rail space
-      const vTop = (window.scrollY / docH) * h;
-      const vBot = ((window.scrollY + window.innerHeight) / docH) * h;
+      let lastYearLabelled = -1;
+      hoverIdx = -1;
+      let hoverDist = 14 * dpr;
 
-      for (let i = 0; i < marks.length; i++) {
-        const m = marks[i];
-        const y = Math.floor((m.y / docH) * h);
-        // slow smooth breathing, per-bar phase — movement without jumpiness
-        const breathe = 1 + Math.sin(time * 0.6 + m.phase) * 0.14;
-        const base =
-          m.kind === 2 ? w - 2 * dpr : m.kind === 1 ? w * 0.55 : w * 0.3;
-        const len = Math.max(2, base * breathe);
-        const inView = y >= vTop && y <= vBot;
-        if (i === hoverIdx) {
-          ctx.fillStyle = accent();
-          ctx.globalAlpha = 1;
-        } else {
-          ctx.fillStyle = col;
-          ctx.globalAlpha =
-            (m.kind === 2 ? 0.62 : m.kind === 1 ? 0.4 : 0.22) +
-            (inView ? 0.3 : 0);
+      for (let i = 0; i < work.length; i++) {
+        const p = work[i];
+        // draw two copies (wrap) so bars are continuous across the loop seam
+        for (let k = -1; k <= 1; k++) {
+          let y = ((p.baseY - offset) % totalH) + k * totalH;
+          if (y < -GAP || y > h + GAP) continue;
+
+          const len = (5 + p.mag * 22) * dpr;
+          const thick = Math.max(1, (0.6 + p.mag * 3) * dpr);
+          const alpha = 0.22 + p.mag * 0.66;
+
+          // hover hit-test against the pointer (only the on-screen copy)
+          if (pointerY >= 0) {
+            const d = Math.abs(y - pointerY);
+            if (d < hoverDist) {
+              hoverDist = d;
+              hoverIdx = i;
+            }
+          }
+
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = i === hoverIdx ? col.accent : col.ink;
+          ctx.fillRect(w - len, y - thick / 2, len, thick);
         }
-        ctx.fillRect(w - len, y, len, Math.max(1, 1 * dpr));
+
+        // year tick + label at the first bar of each year
+        if (p.year !== lastYearLabelled) {
+          let y = ((p.baseY - offset) % totalH);
+          if (y < 0) y += totalH;
+          if (y >= 0 && y <= h) {
+            ctx.globalAlpha = 0.5;
+            ctx.fillStyle = col.soft;
+            ctx.font = `${9 * dpr}px 'Courier New', monospace`;
+            ctx.fillText(String(p.year), 2 * dpr, y - 3 * dpr);
+          }
+          lastYearLabelled = p.year;
+        }
       }
       ctx.globalAlpha = 1;
+
+      // --- pop-out label -------------------------------------------------
+      if (hoverIdx >= 0) {
+        const p = work[hoverIdx];
+        pop.textContent = `${p.year} · ${p.title}${p.href ? " ↗" : ""}`;
+        pop.style.top = `${pointerY / dpr}px`;
+        pop.classList.add("on");
+        pop.style.cursor = p.href ? "pointer" : "default";
+        canvas.style.cursor = p.href ? "pointer" : "default";
+      } else {
+        pop.classList.remove("on");
+        canvas.style.cursor = "default";
+      }
 
       raf = requestAnimationFrame(draw);
     };
 
-    /* interactions ------------------------------------------------------- */
-    const maxScroll = () =>
-      Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-
-    const railPct = (clientY: number) => {
+    // --- interaction -------------------------------------------------------
+    const onMove = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
-      return Math.min(1, Math.max(0, (clientY - r.top) / Math.max(1, r.height)));
+      pointerY = (e.clientY - r.top) * dpr;
+      paused = true;
     };
-
-    const nearestMark = (clientY: number, radius = 9) => {
-      const r = canvas.getBoundingClientRect();
-      const yCanvas = ((clientY - r.top) / Math.max(1, r.height)) * canvas.height;
-      let best = -1;
-      let bestD = radius * dpr;
-      for (let i = 0; i < marks.length; i++) {
-        const my = (marks[i].y / docH) * canvas.height;
-        const d = Math.abs(my - yCanvas);
-        if (d < bestD && marks[i].label) {
-          bestD = d;
-          best = i;
-        }
-      }
-      return best;
+    const onLeave = () => {
+      pointerY = -1;
+      paused = false;
+      pop.classList.remove("on");
     };
-
-    const scrub = (clientY: number) => {
-      window.scrollTo({ top: railPct(clientY) * maxScroll() });
-    };
-
-    const down = (e: PointerEvent) => {
-      dragging = true;
-      try {
-        canvas.setPointerCapture(e.pointerId);
-      } catch {
-        /* synthetic pointers can't be captured */
-      }
-      // magnetic: land exactly on a nearby entry, else proportional
-      const snap = nearestMark(e.clientY);
-      if (snap >= 0) {
-        window.scrollTo({ top: Math.max(0, marks[snap].y - 90) });
-      } else {
-        scrub(e.clientY);
-      }
-    };
-
-    let lastJump = -1;
-    const move = (e: PointerEvent) => {
-      if (dragging) {
-        scrub(e.clientY);
-        tip.style.display = "none";
-        return;
-      }
-      hoverIdx = nearestMark(e.clientY, 22); // generous — hover should bite
+    const onClick = () => {
       if (hoverIdx >= 0) {
-        const m = marks[hoverIdx];
-        tip.textContent = `${Math.round((m.y / docH) * 100)}% · ${m.label}`;
-        // hover-scrub: gliding over a bar takes the page straight there
-        if (hoverIdx !== lastJump) {
-          lastJump = hoverIdx;
-          window.scrollTo({
-            top: Math.max(0, m.y - 90),
-            behavior: "smooth",
-          });
-        }
-      } else {
-        tip.textContent = `${Math.round(railPct(e.clientY) * 100)}% · drag to scrub`;
+        const href = work[hoverIdx].href;
+        if (href) router.push(href);
       }
-      tip.style.display = "block";
-      tip.style.top = `${e.clientY}px`;
     };
 
-    const up = () => {
-      dragging = false;
-    };
-    const leave = () => {
-      hoverIdx = -1;
-      lastJump = -1;
-      tip.style.display = "none";
-    };
+    canvas.addEventListener("pointermove", onMove, { passive: true });
+    canvas.addEventListener("pointerleave", onLeave);
+    canvas.addEventListener("click", onClick);
+    window.addEventListener("resize", resize);
 
-    canvas.addEventListener("pointerdown", down);
-    canvas.addEventListener("pointermove", move);
-    canvas.addEventListener("pointerup", up);
-    canvas.addEventListener("pointercancel", up);
-    canvas.addEventListener("pointerleave", leave);
-
-    const remeasure = () => {
-      measure();
-    };
-    window.addEventListener("resize", remeasure);
-    document.addEventListener("visibilitychange", remeasure);
-
-    // measure now, and again once images/fonts have settled the layout
-    measure();
-    const t1 = setTimeout(remeasure, 600);
-    const t2 = setTimeout(remeasure, 2000);
+    resize();
     raf = requestAnimationFrame(draw);
 
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
       cancelAnimationFrame(raf);
-      canvas.removeEventListener("pointerdown", down);
-      canvas.removeEventListener("pointermove", move);
-      canvas.removeEventListener("pointerup", up);
-      canvas.removeEventListener("pointercancel", up);
-      canvas.removeEventListener("pointerleave", leave);
-      window.removeEventListener("resize", remeasure);
-      document.removeEventListener("visibilitychange", remeasure);
+      canvas.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerleave", onLeave);
+      canvas.removeEventListener("click", onClick);
+      window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [router]);
 
   return (
     <>
       <canvas ref={ref} className="side-slider" aria-hidden />
-      <div ref={tipRef} className="rail-tip" aria-hidden />
+      <a ref={popRef} className="rail-pop" aria-hidden />
     </>
   );
 }

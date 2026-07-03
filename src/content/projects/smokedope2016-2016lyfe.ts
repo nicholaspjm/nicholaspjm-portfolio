@@ -4,6 +4,7 @@ export const project: Project = {
   slug: "smokedope2016-2016lyfe",
   title: "2016LYFE — smokedope2016",
   year: "2025",
+  weight: 0.75,
   summary:
     "Official music video visual design for smokedope2016 via Lyrical Lemonade. 3D scan–based Gaussian splat environments.",
   role: "Visual design",

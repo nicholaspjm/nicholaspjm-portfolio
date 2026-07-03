@@ -106,6 +106,9 @@ export interface Project {
   links?: { href: string; label: string }[];
   /** Images shown as an image-row under the project entry on the index. */
   images?: { src: string; caption?: string; alt?: string }[];
+  /** Relative scale of the work (0–1), used to weight the timeline rail.
+   *  Higher = a bigger, bolder point. Defaults to a per-section value. */
+  weight?: number;
   /** Hero image, used as preview thumb on the index. */
   cover?: { src: string; alt: string; ratio?: string };
   /** Ordered content blocks. */

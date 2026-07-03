@@ -4,6 +4,7 @@ export const project: Project = {
   slug: "ravyn-lenae-sips-and-sounds",
   title: "Ravyn Lenae — Sips & Sounds",
   year: "2026",
+  weight: 0.75,
   summary:
     "Stage visual design for Ravyn Lenae's set at Sips & Sounds Music Festival, Austin, TX.",
   role: "Stage visual design",
