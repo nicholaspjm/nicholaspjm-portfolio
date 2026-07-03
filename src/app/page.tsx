@@ -72,39 +72,51 @@ interface FlatEntry {
   year: string;
   title: string;
   kind: string;
+  role?: string;
   href?: string;
   ext?: boolean;
 }
 
+/**
+ * Flat chronological index in the designforthe.net register: each row is
+ * a single slashed line — kind / year / title (linked) / role — newest
+ * first, no section headers, generous whitespace between entries.
+ */
 function SimpleList({ entries }: { entries: FlatEntry[] }) {
   return (
     <div className="leftcol">
-      <p>
-        <span className="extra">index — all work</span>
-        <br />
-        <i>Everything, newest first. Toggle back to the full view above.</i>
-      </p>
       <ul className="simple-list">
         {entries.map((e, i) => (
           <li key={`${e.title}-${i}`}>
-            <span className="sl-year">{e.year === "—" ? "····" : e.year}</span>
+            <span className="sl-kind">{e.kind}</span>
+            <span className="sl-sep"> / </span>
+            <span className="sl-year">{e.year === "—" ? "n.d." : e.year}</span>
             <span className="sl-sep"> / </span>
             {e.href ? (
               e.ext ? (
-                <a href={e.href} target="_blank" rel="noreferrer">
+                <a className="sl-title" href={e.href} target="_blank" rel="noreferrer">
                   {e.title}
                 </a>
               ) : (
-                <Link href={e.href}>{e.title}</Link>
+                <Link className="sl-title" href={e.href}>
+                  {e.title}
+                </Link>
               )
             ) : (
-              <span>{e.title}</span>
+              <span className="sl-title">{e.title}</span>
             )}
-            <span className="sl-sep"> / </span>
-            <span className="sl-kind">{e.kind}</span>
+            {e.role && (
+              <>
+                <span className="sl-sep"> / </span>
+                <span className="sl-role">{e.role}</span>
+              </>
+            )}
           </li>
         ))}
       </ul>
+      <p className="foot" style={{ marginTop: "1.4em" }}>
+        Everything, newest first. Written by me and reusable with credit.
+      </p>
     </div>
   );
 }
@@ -117,24 +129,39 @@ export default function Home() {
   const installations = all.filter((p) => p.section === "installation");
 
   // Flat index for the "list all" view.
+  const kindLabel = (s?: string) =>
+    s === "installation" ? "installation" : s === "sketch" ? "sketch" : "commission";
   const flat: FlatEntry[] = [
     ...all.map((p) => ({
       year: p.year,
       title: p.title,
-      kind: p.section ?? "commissioned",
+      kind: kindLabel(p.section),
+      role: p.role,
       href: `/work/${p.slug}`,
     })),
     ...performances.map((p) => ({
       year: p.year,
       title: p.title,
       kind: "performance",
+      role: p.detail,
     })),
-    ...awards.map((a) => ({ year: a.year, title: a.title, kind: "award" })),
-    ...press.map((p) => ({ year: p.year, title: p.title, kind: "press" })),
+    ...awards.map((a) => ({
+      year: a.year,
+      title: a.title,
+      kind: "award",
+      role: a.detail,
+    })),
+    ...press.map((p) => ({
+      year: p.year,
+      title: p.title,
+      kind: "press",
+      role: p.detail,
+    })),
     ...tools.map((t) => ({
       year: "—",
       title: t.name,
       kind: "tool",
+      role: t.stack,
       href: t.links[0]?.href,
       ext: true,
     })),
@@ -142,6 +169,7 @@ export default function Home() {
       year: e.year,
       title: e.title,
       kind: "education",
+      role: e.detail,
     })),
   ].sort((a, b) => (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0));
 

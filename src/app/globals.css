@@ -4,17 +4,19 @@
    Palette — stock mindyseu white. Work detail pages override via .bluepage.
    ------------------------------------------------------------------------ */
 :root {
+  /* Base = "blue": white ground, black text, classic blue links/titles,
+     solid small black point-cloud dots. */
   --bg: #ffffff;
   --ink: #000000;
-  --soft: #555555;
+  --soft: #666666;
   --link: #0000ff;
-  --hl-a-bg: #00ff00;   /* section/project titles */
-  --hl-a-fg: #000000;
-  --hl-b-bg: #0000ff;   /* featured inline links */
+  --hl-a-bg: #0000ff;   /* section/project titles */
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #000000;   /* featured inline links */
   --hl-b-fg: #ffffff;
-  --accent: #00ff00;    /* scanline, live dots */
-  --pt: 0, 0, 0;        /* pointcloud rgb — black */
-  --pt-alpha: 0.72;
+  --accent: #0000ff;    /* scanline, live dots */
+  --pt: 0, 0, 0;        /* pointcloud rgb — solid black */
+  --pt-alpha: 1;
   color-scheme: light;
 }
 
@@ -24,80 +26,62 @@
    --hl-a section-title highlight · --hl-b featured highlight · --accent ·
    --pt/--pt-alpha point-cloud colour.
    ------------------------------------------------------------------------ */
-/* Point cloud is fine neutral dots everywhere: black on light grounds,
-   white on dark — so it stays legible while reading like the original. */
+/* All variations of the blue base. Light grounds keep solid small black
+   point-cloud dots (--pt 0,0,0 @1); dark grounds use white dots. */
 
-/* ===== PHOSPHOR family — green terminal ========================== */
-html[data-theme="phosphor"] {
-  --bg: #000a00; --ink: #33ff66; --soft: #1c9e40; --link: #8affc0;
-  --hl-a-bg: #33ff66; --hl-a-fg: #000a00; --hl-b-bg: #ffb000; --hl-b-fg: #000a00;
-  --accent: #ffb000; --pt: 255,255,255; --pt-alpha: 0.4; color-scheme: dark;
-}
-html[data-theme="phosphor-cyan"] {
-  --bg: #000809; --ink: #3df2ff; --soft: #1b8f99; --link: #a8f6ff;
-  --hl-a-bg: #3df2ff; --hl-a-fg: #000809; --hl-b-bg: #ff5edb; --hl-b-fg: #000809;
-  --accent: #ff5edb; --pt: 255,255,255; --pt-alpha: 0.4; color-scheme: dark;
-}
-html[data-theme="phosphor-mono"] {
-  --bg: #060606; --ink: #e6e6e6; --soft: #8a8a8a; --link: #9dffc4;
-  --hl-a-bg: #33ff66; --hl-a-fg: #060606; --hl-b-bg: #33ff66; --hl-b-fg: #060606;
-  --accent: #33ff66; --pt: 255,255,255; --pt-alpha: 0.42; color-scheme: dark;
-}
-
-/* ===== BLUESCREEN family — blue ground =========================== */
-html[data-theme="bluescreen"] {
-  --bg: #0000aa; --ink: #ffffff; --soft: #b6b6ff; --link: #ffff55;
-  --hl-a-bg: #ffffff; --hl-a-fg: #0000aa; --hl-b-bg: #ffff55; --hl-b-fg: #0000aa;
-  --accent: #ffff55; --pt: 255,255,255; --pt-alpha: 0.36; color-scheme: dark;
-}
-html[data-theme="bluescreen-cyan"] {
-  --bg: #0018b0; --ink: #ffffff; --soft: #a9c2ff; --link: #66ffff;
-  --hl-a-bg: #66ffff; --hl-a-fg: #001a6b; --hl-b-bg: #ffffff; --hl-b-fg: #0018b0;
-  --accent: #66ffff; --pt: 255,255,255; --pt-alpha: 0.36; color-scheme: dark;
-}
-html[data-theme="navy"] {
-  --bg: #001845; --ink: #e6eeff; --soft: #7f97c8; --link: #ffcf5e;
-  --hl-a-bg: #ffcf5e; --hl-a-fg: #001845; --hl-b-bg: #e6eeff; --hl-b-fg: #001845;
-  --accent: #ffcf5e; --pt: 255,255,255; --pt-alpha: 0.34; color-scheme: dark;
-}
-
-/* ===== HOTDOG family — red / yellow ============================== */
-html[data-theme="hotdog"] {
-  --bg: #ff0000; --ink: #000000; --soft: #6a0000; --link: #ffff00;
-  --hl-a-bg: #ffff00; --hl-a-fg: #000000; --hl-b-bg: #ffffff; --hl-b-fg: #ff0000;
-  --accent: #ffff00; --pt: 0,0,0; --pt-alpha: 0.55; color-scheme: light;
-}
-html[data-theme="mustard"] {
-  --bg: #ffd400; --ink: #1a1a00; --soft: #7a6600; --link: #e02200;
-  --hl-a-bg: #e02200; --hl-a-fg: #ffffff; --hl-b-bg: #000000; --hl-b-fg: #ffd400;
-  --accent: #e02200; --pt: 0,0,0; --pt-alpha: 0.5; color-scheme: light;
-}
-html[data-theme="hotdog-noir"] {
-  --bg: #0a0000; --ink: #ff4a4a; --soft: #9e2020; --link: #ffdd00;
-  --hl-a-bg: #ffdd00; --hl-a-fg: #0a0000; --hl-b-bg: #ff4a4a; --hl-b-fg: #0a0000;
-  --accent: #ffdd00; --pt: 255,255,255; --pt-alpha: 0.4; color-scheme: dark;
-}
-
-/* ===== IKEDA family — white / black / red ======================= */
-html[data-theme="ikeda"] {
-  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #ff0000;
-  --hl-a-bg: #ff0000; --hl-a-fg: #ffffff; --hl-b-bg: #000000; --hl-b-fg: #ffffff;
-  --accent: #ff0000; --pt: 0,0,0; --pt-alpha: 0.62; color-scheme: light;
-}
-html[data-theme="ikeda-noir"] {
-  --bg: #000000; --ink: #ffffff; --soft: #8a8a8a; --link: #ff2d2d;
-  --hl-a-bg: #ff0000; --hl-a-fg: #ffffff; --hl-b-bg: #ffffff; --hl-b-fg: #000000;
-  --accent: #ff0000; --pt: 255,255,255; --pt-alpha: 0.45; color-scheme: dark;
-}
-html[data-theme="ikeda-blue"] {
+/* Cyan accent — blue titles/links, cyan scan-sweep + rail */
+html[data-theme="blue-cyan"] {
   --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
-  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #000000; --hl-b-fg: #ffffff;
-  --accent: #0000ff; --pt: 0,0,0; --pt-alpha: 0.62; color-scheme: light;
+  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #00c8ff; --hl-b-fg: #000000;
+  --accent: #00c8ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
 }
-html[data-theme="ikeda-mono"] {
-  --bg: #ffffff; --ink: #000000; --soft: #777777; --link: #000000;
-  --hl-a-bg: #000000; --hl-a-fg: #ffffff; --hl-b-bg: #000000; --hl-b-fg: #ffffff;
-  --accent: #000000; --pt: 0,0,0; --pt-alpha: 0.62; color-scheme: light;
+/* Yellow featured highlight — classic web contrast */
+html[data-theme="blue-yellow"] {
+  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
+  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #ffe000; --hl-b-fg: #000000;
+  --accent: #0000ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
+}
+/* Red accent against the blue — dual tone */
+html[data-theme="blue-red"] {
+  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
+  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #ff0000; --hl-b-fg: #ffffff;
+  --accent: #ff0000; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
+}
+/* Electric / brighter blue */
+html[data-theme="blue-electric"] {
+  --bg: #ffffff; --ink: #000000; --soft: #6a6a6a; --link: #1a3cff;
+  --hl-a-bg: #1a3cff; --hl-a-fg: #ffffff; --hl-b-bg: #000000; --hl-b-fg: #ffffff;
+  --accent: #1a3cff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
+}
+/* Deep navy */
+html[data-theme="blue-navy"] {
+  --bg: #ffffff; --ink: #0a1020; --soft: #5c6480; --link: #001a80;
+  --hl-a-bg: #001a80; --hl-a-fg: #ffffff; --hl-b-bg: #0a1020; --hl-b-fg: #ffffff;
+  --accent: #001a80; --pt: 10,16,32; --pt-alpha: 1; color-scheme: light;
+}
+/* Cream paper ground */
+html[data-theme="blue-paper"] {
+  --bg: #f4efe2; --ink: #16130c; --soft: #7a715c; --link: #0000ff;
+  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #16130c; --hl-b-fg: #f4efe2;
+  --accent: #0000ff; --pt: 22,19,12; --pt-alpha: 1; color-scheme: light;
+}
+/* Inverted highlights — black titles, blue featured */
+html[data-theme="blue-invert"] {
+  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
+  --hl-a-bg: #000000; --hl-a-fg: #ffffff; --hl-b-bg: #0000ff; --hl-b-fg: #ffffff;
+  --accent: #0000ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
+}
+/* All-blue highlights */
+html[data-theme="blue-mono"] {
+  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
+  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #0000ff; --hl-b-fg: #ffffff;
+  --accent: #0000ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
+}
+/* Night — black ground, white text, blue highlights, white dots */
+html[data-theme="blue-noir"] {
+  --bg: #000000; --ink: #ffffff; --soft: #888888; --link: #5b86ff;
+  --hl-a-bg: #2b5bff; --hl-a-fg: #ffffff; --hl-b-bg: #ffffff; --hl-b-fg: #000000;
+  --accent: #5b86ff; --pt: 255,255,255; --pt-alpha: 0.5; color-scheme: dark;
 }
 
 @theme inline {
@@ -569,22 +553,29 @@ html::-webkit-scrollbar {
 .simple-list {
   list-style: none;
   padding: 0;
-  margin: 0.6em 0;
+  margin: 0.4em 0;
+  max-width: 80ch;
 }
 .simple-list li {
-  margin: 0.12em 0;
-  line-height: 1.5;
+  margin: 0 0 0.75em 0;
+  line-height: 1.4;
+}
+.simple-list .sl-kind {
+  font-size: 15px;
+  color: var(--soft);
 }
 .simple-list .sl-year {
   font-family: "Courier New", Courier, monospace;
-  font-size: 13px;
-}
-.simple-list .sl-sep { color: var(--soft); }
-.simple-list .sl-kind {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--soft);
-  text-transform: uppercase;
+}
+.simple-list .sl-sep { color: var(--soft); opacity: 0.6; }
+.simple-list .sl-title {
+  color: var(--link);
+}
+.simple-list .sl-role {
+  color: var(--soft);
+  font-style: italic;
 }
 
 /* ---------------------------------------------------------------------------

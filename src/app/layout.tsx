@@ -9,7 +9,7 @@ import { PaletteSwitcher } from "@/components/ui/palette-switcher";
 import "./globals.css";
 
 // Apply the saved palette before first paint to avoid a flash of stock colours.
-const themeInit = `try{var t=localStorage.getItem('npjm-theme');if(t&&t!=='stock')document.documentElement.dataset.theme=t}catch(e){}`;
+const themeInit = `try{var t=localStorage.getItem('npjm-theme');if(t&&t!=='blue')document.documentElement.dataset.theme=t}catch(e){}`;
 
 export const metadata: Metadata = {
   title: { default: site.name, template: `%s — ${site.name}` },

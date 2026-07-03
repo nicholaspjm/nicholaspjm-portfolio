@@ -3,21 +3,18 @@
 import { useEffect, useState } from "react";
 
 /** Early-web palettes — keys match html[data-theme] blocks in globals.css. */
+/* "blue" is the base (:root, no data-theme); the rest are variations. */
 const PALETTES = [
-  "stock",
-  "phosphor",
-  "phosphor-cyan",
-  "phosphor-mono",
-  "bluescreen",
-  "bluescreen-cyan",
-  "navy",
-  "hotdog",
-  "mustard",
-  "hotdog-noir",
-  "ikeda",
-  "ikeda-noir",
-  "ikeda-blue",
-  "ikeda-mono",
+  "blue",
+  "blue-cyan",
+  "blue-yellow",
+  "blue-red",
+  "blue-electric",
+  "blue-navy",
+  "blue-paper",
+  "blue-invert",
+  "blue-mono",
+  "blue-noir",
 ] as const;
 
 /**
@@ -25,7 +22,7 @@ const PALETTES = [
  * by setting html[data-theme] and remembers the choice in localStorage.
  */
 export function PaletteSwitcher() {
-  const [theme, setTheme] = useState<string>("stock");
+  const [theme, setTheme] = useState<string>("blue");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -35,7 +32,7 @@ export function PaletteSwitcher() {
 
   const apply = (t: string) => {
     setTheme(t);
-    if (t === "stock") delete document.documentElement.dataset.theme;
+    if (t === "blue") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = t;
     localStorage.setItem("npjm-theme", t);
   };
