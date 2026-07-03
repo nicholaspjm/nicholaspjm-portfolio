@@ -24,12 +24,12 @@ export const performances: CVEntry[] = [
   {
     year: "2026",
     title: "For The Cause",
-    detail: "Naarm / Melbourne. Live visuals.",
+    detail: "Naarm / Melbourne. Visual design and live performance.",
   },
   {
     year: "2025",
     title: "For The Cause",
-    detail: "Naarm / Melbourne. Live visuals.",
+    detail: "Naarm / Melbourne. Visual design and live performance.",
   },
   {
     year: "2025",
@@ -39,12 +39,12 @@ export const performances: CVEntry[] = [
   {
     year: "2025",
     title: "Platform Presents",
-    detail: "Exhibition — presented work.",
+    detail: "Group exhibition, Naarm / Melbourne.",
   },
   {
     year: "2025",
-    title: "Reptant — live visuals",
-    detail: "Visuals for Reptant.",
+    title: "Reptant",
+    detail: "Live visual design.",
   },
   {
     year: "2025",
@@ -71,12 +71,12 @@ export const performances: CVEntry[] = [
   {
     year: "—",
     title: "Thread",
-    detail: "Miscellaneous visual work, ongoing.",
+    detail: "Ongoing visual design for the club night.",
   },
   {
     year: "—",
     title: "Babie Club",
-    detail: "Miscellaneous visual work, ongoing.",
+    detail: "Ongoing visual design for the club night.",
   },
 ];
 

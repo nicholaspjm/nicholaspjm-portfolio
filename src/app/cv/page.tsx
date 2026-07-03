@@ -76,9 +76,9 @@ export default function CVPage() {
         <span className="extra">Nicholas Marriott — CV</span>
         <br />
         <i>
-          A condensed, sortable ledger of everything. For context and images,
-          read the projects on the index. Updated continuously; this sheet is
-          the source of truth.
+          A complete, sortable record of projects, performances, awards, and
+          press. The formula bar accepts live queries; see individual projects
+          in context on the <a href="/">index</a>.
         </i>
       </p>
 

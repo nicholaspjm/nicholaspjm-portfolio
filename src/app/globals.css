@@ -13,8 +13,8 @@
   --hl-b-bg: #0000ff;   /* featured inline links */
   --hl-b-fg: #ffffff;
   --accent: #00ff00;    /* scanline, live dots */
-  --pt: 17, 17, 17;     /* pointcloud rgb */
-  --pt-alpha: 0.46;
+  --pt: 0, 0, 0;        /* pointcloud rgb — black */
+  --pt-alpha: 0.72;
   color-scheme: light;
 }
 

@@ -27,7 +27,9 @@ export function PointCloud() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    // render at CSS resolution (dpr 1): a 1px dot maps to exactly one CSS
+    // pixel, so it stays crisp black instead of being downsampled to grey
+    const dpr = 1;
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
     const resize = () => {
@@ -135,14 +137,12 @@ export function PointCloud() {
       const cy = Math.cos(ry), sy = Math.sin(ry);
       const cx = Math.cos(rx), sx = Math.sin(rx);
 
-      // centre the cloud in the region right of the text column; sized
-      // generously — a little spill past the edges reads as presence
-      const colEdge = Math.min(w * 0.5, 620 * dpr);
-      const regionW = w - colEdge;
-      const scale =
-        Math.min(regionW * 1.15, h * 1.25) * (1 + impulse * 0.05);
-      const cxp = colEdge + regionW * 0.5;
-      const cyp = h * 0.48;
+      // dead-centre and large — sized to the longest viewport edge so the
+      // scan reads as an immersive room you're standing inside of; points
+      // that fall past the edges are simply clipped
+      const scale = Math.max(w, h) * 1.9 * (1 + impulse * 0.05);
+      const cxp = w * 0.5;
+      const cyp = h * 0.5;
       const fov = 2.2;
       const word = themeCol.px;
       const accentWord = themeCol.accent;
@@ -180,14 +180,8 @@ export function PointCloud() {
         const iy = py | 0;
         if (ix < 0 || ix >= w - 1 || iy < 0 || iy >= h - 1) continue;
         const o = iy * w + ix;
-        const wrd = inScan && !reduced ? accentWord : word;
-        buf[o] = wrd;
-        if (pz > 1 || inScan) {
-          // near points (and scanned points) draw 2×2
-          buf[o + 1] = wrd;
-          buf[o + w] = wrd;
-          buf[o + w + 1] = wrd;
-        }
+        // every point is a single device pixel — very fine grain
+        buf[o] = inScan && !reduced ? accentWord : word;
       }
 
       ctx.putImageData(img, 0, 0);

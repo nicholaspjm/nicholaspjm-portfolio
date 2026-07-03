@@ -55,7 +55,7 @@ export default function WorkPage() {
         </span>
         <br />
         <i>
-          Visual work contributed across Naarm&rsquo;s dancefloors and
+          Visual work contributed across Naarm&rsquo;s club nights and
           festivals:
         </i>
         <br />

@@ -3,7 +3,7 @@ import { NavButton } from "@/components/ui/nav-button";
 
 export const metadata: Metadata = {
   title: "Sketches",
-  description: "Work made just for fun.",
+  description: "Self-directed experiments in real-time graphics.",
 };
 
 export default function SketchesPage() {
@@ -19,9 +19,8 @@ export default function SketchesPage() {
         <span className="extra">sketches</span>
         <br />
         <i>
-          Work made just for fun — instruments, ports, and studies that
-          escaped the client folder. Being re-catalogued; new work lands here
-          soon.
+          Self-directed experiments and studies in real-time graphics.
+          Currently being catalogued.
         </i>
       </p>
     </>

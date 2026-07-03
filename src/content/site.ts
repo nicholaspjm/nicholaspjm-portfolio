@@ -4,7 +4,7 @@ export const site: SiteInfo = {
   name: "Nicholas Marriott",
   shortName: "NPJM",
   tagline:
-    "Designer and technologist working in audio-reactive visuals, interactive installation, and motion. b. 1999 Aotearoa New Zealand, based Naarm / Melbourne.",
+    "Designer and technologist working across audio-reactive visuals, interactive installation, and real-time systems. Based in Naarm / Melbourne.",
   url: "https://nicholaspjm.com",
   email: "nicholaspjm@gmail.com",
   social: [

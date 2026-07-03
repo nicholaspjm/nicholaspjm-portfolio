@@ -5,9 +5,11 @@ import { performances, events, awards, press, education } from "@/content/cv";
 import { tools } from "@/content/tools";
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
-import { NoiseRule, BinaryLine } from "@/components/ui/noise";
+import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
-import { ScatterField, type ScatterItem } from "@/components/ui/scatter-field";
+// Blob scatter field parked for now — re-enable by restoring this import
+// and the <ScatterField items={scatter} /> mount below.
+// import { ScatterField, type ScatterItem } from "@/components/ui/scatter-field";
 import { asset } from "@/lib/asset";
 
 /** JSON payload for the right-hand preview zone. */
@@ -71,20 +73,8 @@ export default function Home() {
   );
   const installations = all.filter((p) => p.section === "installation");
 
-  // every project image becomes a blob-tracker detection in the whitespace
-  const scatter: ScatterItem[] = all.flatMap(
-    (p) =>
-      p.images?.map((img) => ({
-        src: img.src,
-        slug: p.slug,
-        title: p.title,
-        year: p.year,
-      })) ?? [],
-  );
-
   return (
     <>
-      <ScatterField items={scatter} />
       <div className="leftcol">
         {/* TOP NAV ---------------------------------------------------------- */}
         <div style={{ margin: "0.6em 0 1.4em 0" }}>
@@ -95,47 +85,46 @@ export default function Home() {
             <p>
               <span className="extra">about</span>
             </p>
-            <ul>
-              <li>b. 1999, aotearoa new zealand. naarm/melbourne now.</li>
-              <li>designer; technologist. the slash does real work.</li>
-              <li>
-                make: visuals that listen. rooms that watch back. type that
-                moves. light that behaves like weather.
-              </li>
-              <li>
-                trained: BCompSci + BA, university of auckland. industry
-                software developer before stages — the rigour stayed.
-              </li>
-              <li>
-                tools: touchdesigner. glsl. python. arduino. gaussian splats.
-                depth cameras. whatever the room needs.
-              </li>
-              <li>
-                co-founded <em>touch collective</em> — workshops, talks, live
-                visual events.
-              </li>
-              <li>grammy on the shelf; still patching at 2am.</li>
-            </ul>
-            <p className="foot">
-              full pseudoprose at <Link href="/info">/info</Link>. the
-              background is a real room scan — it flinches from your cursor.
-              the bars down the right edge are this page&rsquo;s structure.
+            <p>
+              Nicholas Marriott (b. 1999, Aotearoa New Zealand) is a designer
+              and technologist based in Naarm / Melbourne. He holds a Bachelor
+              of Computer Science and a Bachelor of Arts from the University of
+              Auckland, and worked as a software developer before moving into
+              visual design.
+            </p>
+            <p style={{ marginTop: "0.6em" }}>
+              His practice centres on real-time systems — audio-reactive
+              visuals, interactive installation, and motion — for artists,
+              brands, and cultural institutions. He is a co-founder of{" "}
+              <em>Touch Collective</em>, a creative-technology studio and
+              workshop series in Naarm / Melbourne. Working tools include
+              TouchDesigner, GLSL, Python, and depth-sensing hardware.
+            </p>
+            <p style={{ marginTop: "0.6em" }}>
+              Available for commissions, art direction, teaching, and speaking.
+            </p>
+            <p className="foot" style={{ marginTop: "0.6em" }}>
+              Extended biography at <Link href="/info">/info</Link>. The
+              background is a point-cloud scan; the rail at right maps the
+              structure of the page.
             </p>
           </InfoSheet>
         </div>
 
-        {/* INTRO — lucia format, no achievements ---------------------------- */}
+        {/* INTRO ------------------------------------------------------------ */}
         <p>
-          Nicholas Marriott is a designer, technologist and computational
-          artist. He is currently a live visual artist and co-founder of
-          Touch Collective in Naarm / Melbourne.
+          Nicholas Marriott is a designer and technologist working across
+          audio-reactive visuals, interactive installation, and real-time
+          systems. He is a co-founder of Touch Collective, a
+          creative-technology studio and workshop series based in Naarm /
+          Melbourne.
         </p>
 
         <p style={{ marginTop: "0.8em" }}>
-          Nicholas conceives his practice as a space where software
-          engineering and live performance can conceptualize, visualize and
-          provoke new vibrant aesthetics, drawing attention to complex and
-          invisible systems.
+          His practice sits between software engineering and live performance,
+          building responsive systems for touring artists, brands, and
+          cultural institutions. Recent work spans stage and festival visual
+          design, music-video VFX, and interactive installation.
         </p>
 
         <p style={{ marginTop: "1.2em" }}>
@@ -171,26 +160,23 @@ export default function Home() {
 
         <div className="spacer-v" aria-hidden />
 
-        {/* ATM — current status ------------------------------------------- */}
+        {/* NOW — current status ------------------------------------------- */}
         <p className="atm-mark">
-          atm
+          now
           <br />↪
         </p>
-        <p style={{ maxWidth: "52ch" }}>
-          about to open the 2026 festival season — The xx (incl. Coachella
-          Main Stage), Its Murph&rsquo;s Weightless Tour across North
-          America, VFX for Nike&rsquo;s Air Liquid Max, and a festival tent
-          installation at Mach1. Running TouchDesigner workshops with Touch
-          Collective in Naarm throughout.
+        <p style={{ maxWidth: "58ch" }}>
+          Current and upcoming work for the 2026 season includes visual design
+          for The xx&rsquo;s festival tour (including Coachella main stage),
+          Its Murph&rsquo;s Weightless Tour across North America, VFX for
+          Nike&rsquo;s Air Liquid Max, and a festival installation at Mach1,
+          alongside ongoing TouchDesigner workshops with Touch Collective.
         </p>
 
         <p className="callout" style={{ marginTop: "1.2em" }}>
-          <span className="bang">!!</span>{" "}
-          looking for new opportunities to build interactive rooms, teach
-          real-time systems, and talk to people interested in &ldquo;rooms
-          that watch back&rdquo;
-          <br />
-          <span className="pinme">(pin me if interested)</span>
+          Available for commissions, collaborations, teaching, and speaking.
+          Enquiries:{" "}
+          <a href={`mailto:${site.email}`}>{site.email}</a>.
         </p>
 
         <p style={{ marginTop: "1.6em" }}>&hellip;</p>
@@ -226,10 +212,7 @@ export default function Home() {
             items
           </span>
           <br />
-          <i>
-            Interactive rooms and live improvised audiovisual sets. Rooms
-            that watch back.
-          </i>
+          <i>Interactive installations and live audiovisual performance.</i>
         </p>
         {installations.map((p, i) => (
           <ProjectBlock
@@ -264,8 +247,10 @@ export default function Home() {
             ~/practice/dancefloors · {events.length}+
           </span>
           <br />
-          <i>Visual work contributed across Naarm&rsquo;s dancefloors and
-          festivals:</i>
+          <i>
+            Visual work contributed across Naarm&rsquo;s club nights and
+            festivals:
+          </i>
           <br />
           {events.join(" · ")} &hellip;
         </p>
@@ -278,9 +263,8 @@ export default function Home() {
           <span className="pathnote">~/practice/fun</span>
           <br />
           <i>
-            Work made just for fun — instruments, ports, and studies that
-            escaped the client folder. Being re-catalogued; new work lands
-            here soon.
+            Self-directed experiments and studies in real-time graphics.
+            Currently being catalogued.
           </i>
         </p>
 
@@ -294,8 +278,8 @@ export default function Home() {
           </span>
           <br />
           <i>
-            Software I&rsquo;ve made and released — trackers, bridges, and
-            note-taking for the TouchDesigner ecosystem.
+            Open-source software and components for the TouchDesigner
+            ecosystem — trackers, bridges, and utilities.
           </i>
         </p>
         <ul>
@@ -335,12 +319,12 @@ export default function Home() {
             youtube
           </NavButton>
           <br />
-          Co-founder of <i>Touch Collective</i> — regular TouchDesigner
+          Co-founder of <i>Touch Collective</i>, running TouchDesigner
           workshops, artist talks, and live visual events in Naarm /
-          Melbourne. Technical TouchDesigner tutorials and creative-coding
-          education on YouTube. Recent talks include{" "}
-          <i>Creative Technology Melbourne</i>. For workshop bookings,{" "}
-          <a href={`mailto:${site.email}`}>write to me</a>.
+          Melbourne, with technical tutorials published on YouTube. Recent
+          speaking includes <i>Creative Technology Melbourne</i>. Available
+          for workshops and talks &mdash;{" "}
+          <a href={`mailto:${site.email}`}>get in touch</a>.
         </p>
 
         <NoiseRule />
@@ -415,20 +399,16 @@ export default function Home() {
         </p>
 
         {/* FOOTER ---------------------------------------------------------------- */}
-        <BinaryLine text="all things are nothing to us" />
         <p className="foot">
-          This website was last updated on{" "}
+          Last updated{" "}
           {new Date().toLocaleDateString("en-GB", {
             day: "numeric",
             month: "long",
             year: "numeric",
           })}
-          . It is always rendering. The background is a point-cloud scan of a
-          real room; the bars down the right edge are the page itself.
-          Contact{" "}
-          <a href={`mailto:${site.email}`}>{site.email}</a> for commissions,
-          talks, teaching, and press. Everything written by me on this page
-          can be reused with credit. <span className="pagemark">0*</span>
+          . For commissions, collaborations, and press, contact{" "}
+          <a href={`mailto:${site.email}`}>{site.email}</a>. &copy;{" "}
+          {new Date().getFullYear()} Nicholas Marriott, Naarm / Melbourne.
         </p>
       </div>
     </>
