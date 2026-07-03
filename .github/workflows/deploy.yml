@@ -5,10 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Publishes the static export to the gh-pages branch, then explicitly
-# requests a Pages build. GitHub's auto-trigger sometimes wedges after a
-# force-push (build stuck in "building" indefinitely); requesting the build
-# via the API reliably kicks it, so deploys don't silently stall.
+# Publishes the static export to the gh-pages branch as a normal commit on
+# top of the existing history (NOT a force-pushed orphan — that jammed
+# GitHub's Pages builder, wedging builds in "building"), then sends one
+# gentle build nudge.
 permissions:
   contents: write
   pages: write
@@ -38,16 +38,27 @@ jobs:
       # Keep GitHub Pages from stripping the _next/ directory.
       - run: touch out/.nojekyll
 
-      - name: Publish out/ to gh-pages
+      - name: Publish out/ to gh-pages (linear history, no force-push)
         run: |
-          cd out
-          git init -q
-          git checkout -q -b gh-pages
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          remote="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Check out the existing gh-pages branch, or start it as an orphan once.
+          if git clone --branch gh-pages --depth 1 "$remote" publish 2>/dev/null; then
+            find publish -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+          else
+            git clone --depth 1 "$remote" publish
+            ( cd publish && git checkout --orphan gh-pages && git rm -rf . >/dev/null 2>&1 || true )
+          fi
+          cp -a out/. publish/
+          touch publish/.nojekyll
+          cd publish
           git add -A
+          if git diff --cached --quiet; then
+            echo "no changes to publish"; exit 0
+          fi
           git commit -q -m "Deploy ${GITHUB_SHA}"
-          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages:gh-pages
+          git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -18,6 +18,67 @@
   color-scheme: light;
 }
 
+/* ---------------------------------------------------------------------------
+   Early-web palettes — switch with the palette picker (html[data-theme]).
+   Vars: --bg background · --ink text · --soft muted · --link hyperlink ·
+   --hl-a section-title highlight · --hl-b featured highlight · --accent ·
+   --pt/--pt-alpha point-cloud colour.
+   ------------------------------------------------------------------------ */
+/* Green phosphor terminal */
+html[data-theme="phosphor"] {
+  --bg: #000900; --ink: #33ff66; --soft: #1c9e40; --link: #7dffb0;
+  --hl-a-bg: #33ff66; --hl-a-fg: #000900; --hl-b-bg: #ffb000; --hl-b-fg: #000900;
+  --accent: #ffb000; --pt: 51,255,102; --pt-alpha: 0.5; color-scheme: dark;
+}
+/* Amber monochrome monitor */
+html[data-theme="amber"] {
+  --bg: #140b00; --ink: #ffb000; --soft: #a86e00; --link: #ffd75e;
+  --hl-a-bg: #ffb000; --hl-a-fg: #140b00; --hl-b-bg: #fff4d6; --hl-b-fg: #140b00;
+  --accent: #ffd75e; --pt: 255,176,0; --pt-alpha: 0.42; color-scheme: dark;
+}
+/* Blue screen of death */
+html[data-theme="bluescreen"] {
+  --bg: #0000aa; --ink: #ffffff; --soft: #b6b6ff; --link: #ffff55;
+  --hl-a-bg: #ffffff; --hl-a-fg: #0000aa; --hl-b-bg: #ffff55; --hl-b-fg: #0000aa;
+  --accent: #ffff55; --pt: 255,255,255; --pt-alpha: 0.35; color-scheme: dark;
+}
+/* Windows 95 desktop teal */
+html[data-theme="teal95"] {
+  --bg: #008080; --ink: #ffffff; --soft: #cfd8d8; --link: #ffff00;
+  --hl-a-bg: #c0c0c0; --hl-a-fg: #000080; --hl-b-bg: #000080; --hl-b-fg: #ffffff;
+  --accent: #ffffff; --pt: 255,255,255; --pt-alpha: 0.3; color-scheme: dark;
+}
+/* "Hot Dog Stand" — the infamous Win 3.1 scheme */
+html[data-theme="hotdog"] {
+  --bg: #ff0000; --ink: #000000; --soft: #6a0000; --link: #ffff00;
+  --hl-a-bg: #ffff00; --hl-a-fg: #000000; --hl-b-bg: #ffffff; --hl-b-fg: #ff0000;
+  --accent: #ffff00; --pt: 0,0,0; --pt-alpha: 0.5; color-scheme: light;
+}
+/* GeoCities midnight — lime, cyan, magenta */
+html[data-theme="geocities"] {
+  --bg: #000000; --ink: #00ff00; --soft: #12a012; --link: #00ffff;
+  --hl-a-bg: #ff00ff; --hl-a-fg: #000000; --hl-b-bg: #ffff00; --hl-b-fg: #000000;
+  --accent: #00ffff; --pt: 0,255,0; --pt-alpha: 0.4; color-scheme: dark;
+}
+/* Commodore 64 blues */
+html[data-theme="c64"] {
+  --bg: #3e31c0; --ink: #b6acff; --soft: #7f75dd; --link: #ffffff;
+  --hl-a-bg: #b6acff; --hl-a-fg: #3e31c0; --hl-b-bg: #ffffff; --hl-b-fg: #3e31c0;
+  --accent: #ffffff; --pt: 182,172,255; --pt-alpha: 0.34; color-scheme: dark;
+}
+/* Aged paper / sepia */
+html[data-theme="paper"] {
+  --bg: #f4ecd8; --ink: #33291a; --soft: #8a7a5c; --link: #8a3324;
+  --hl-a-bg: #ddc98a; --hl-a-fg: #33291a; --hl-b-bg: #8a3324; --hl-b-fg: #f4ecd8;
+  --accent: #8a3324; --pt: 51,41,26; --pt-alpha: 0.5; color-scheme: light;
+}
+/* Ikeda — white / black / red */
+html[data-theme="ikeda"] {
+  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #ff0000;
+  --hl-a-bg: #ff0000; --hl-a-fg: #ffffff; --hl-b-bg: #000000; --hl-b-fg: #ffffff;
+  --accent: #ff0000; --pt: 255,0,0; --pt-alpha: 0.55; color-scheme: light;
+}
+
 @theme inline {
   --color-paper: var(--bg);
   --color-ink: var(--ink);
@@ -242,6 +303,45 @@ html::-webkit-scrollbar {
   inset: 0;
   z-index: -1;
   pointer-events: none;
+}
+
+/* Palette picker — collapsible, bottom-left */
+.palette {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 85;
+  font-family: "Courier New", Courier, monospace;
+}
+.palette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  padding: 4px;
+  max-height: 62vh;
+  overflow: auto;
+}
+.palette .pal {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  margin: 0;
+}
+.palette .pal.on {
+  background: var(--hl-a-bg);
+  color: var(--hl-a-fg);
+}
+.palette-toggle {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+}
+@media (max-width: 560px) {
+  .palette { display: none; }
 }
 
 /* Mouse trail — pen-plotter line following the cursor */
