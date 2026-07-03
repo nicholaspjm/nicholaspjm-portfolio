@@ -66,12 +66,35 @@ export function SideSlider() {
     ];
     items.sort((a, b) => b.year - a.year || b.mag - a.mag);
 
+    // stable pseudo-random, so placement is fixed per item
+    const rnd = (i: number) => {
+      const s = Math.sin(i * 127.1 + 11.7) * 43758.5453;
+      return s - Math.floor(s);
+    };
+
+    // Group by year: each year gets a band sized by how many works it holds
+    // (busy years cluster densely), separated by small gaps, and items are
+    // scattered randomly inside their band so the spacing reads irregular.
     const N = Math.max(items.length, 1);
-    const work: WorkPoint[] = items.map((it, i) => ({
-      ...it,
-      frac: (i + 0.5) / N,
-      phase: i * 0.7,
-    }));
+    const years = [...new Set(items.map((it) => it.year))]; // desc
+    const GAP = 0.035;
+    const content = Math.max(0.1, 1 - GAP * Math.max(0, years.length - 1));
+    const work: WorkPoint[] = [];
+    let cursor = 0;
+    let idx = 0;
+    for (const yr of years) {
+      const group = items.filter((it) => it.year === yr);
+      const bandH = (group.length / N) * content;
+      for (const it of group) {
+        work.push({
+          ...it,
+          frac: cursor + rnd(idx) * bandH,
+          phase: idx * 0.7,
+        });
+        idx++;
+      }
+      cursor += bandH + GAP;
+    }
 
     // --- state -------------------------------------------------------------
     let raf = 0;
