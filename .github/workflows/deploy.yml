@@ -5,18 +5,18 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Publishes the static export to the gh-pages branch. Pages then serves
+# that branch via its classic static pipeline (reliable, unlike the
+# artifact-based actions/deploy-pages path which stalls on new sites).
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-# One deploy at a time; let a newer push cancel an in-flight run.
 concurrency:
-  group: pages
+  group: pages-deploy
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,29 +30,21 @@ jobs:
 
       - name: Build static export
         env:
-          # Project site lives under /<repo>; matches next.config basePath.
           NEXT_PUBLIC_BASE_PATH: /nicholaspjm-portfolio
         run: npm run build
 
-      # Stop GitHub Pages' Jekyll from dropping the _next/ directory.
+      # Keep GitHub Pages from stripping the _next/ directory.
       - run: touch out/.nojekyll
 
-      # enablement: turns Pages on (source = GitHub Actions) automatically,
-      # so no manual Settings toggle is needed once the repo is public.
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish out/ to gh-pages
+        run: |
+          cd out
+          git init -q
+          git checkout -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages:gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
