@@ -5,11 +5,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Publishes the static export to the gh-pages branch. Pages then serves
-# that branch via its classic static pipeline (reliable, unlike the
-# artifact-based actions/deploy-pages path which stalls on new sites).
+# Publishes the static export to the gh-pages branch, then explicitly
+# requests a Pages build. GitHub's auto-trigger sometimes wedges after a
+# force-push (build stuck in "building" indefinitely); requesting the build
+# via the API reliably kicks it, so deploys don't silently stall.
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: pages-deploy
@@ -46,5 +48,16 @@ jobs:
           git add -A
           git commit -q -m "Deploy ${GITHUB_SHA}"
           git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages:gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Request a fresh Pages build (unstick the queue)
+        run: |
+          sleep 5
+          curl -s -X POST \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
+            -o /dev/null -w "pages build request: HTTP %{http_code}\n" || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
