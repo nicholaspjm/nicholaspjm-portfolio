@@ -9,10 +9,7 @@ import { project as mach1Festival } from "./mach1-festival";
 import { project as ninAsAliveAsYouNeedMeToBe } from "./nin-as-alive-as-you-need-me-to-be";
 import { project as smokedope2016 } from "./smokedope2016-2016lyfe";
 import { project as forgottenOnceRemembered } from "./forgotten-once-remembered";
-import { project as orcaSequencer } from "./orca-sequencer";
-import { project as weavingType } from "./weaving-type";
-import { project as turrellGradients } from "./turrell-gradients";
-import { project as goldenSpiral } from "./golden-spiral";
+import { project as cheahdxPurespace } from "./cheahdx-purespace";
 
 export const projects: Project[] = [
   theXxFestivalTour,
@@ -24,8 +21,5 @@ export const projects: Project[] = [
   ninAsAliveAsYouNeedMeToBe,
   smokedope2016,
   forgottenOnceRemembered,
-  orcaSequencer,
-  weavingType,
-  turrellGradients,
-  goldenSpiral,
+  cheahdxPurespace,
 ];

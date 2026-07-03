@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { site } from "@/content/site";
 import { getListedProjects } from "@/lib/projects";
-import { performances, awards, press, education } from "@/content/cv";
+import { performances, events, awards, press, education } from "@/content/cv";
 import { tools } from "@/content/tools";
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule, BinaryLine } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
+import { ScatterField, type ScatterItem } from "@/components/ui/scatter-field";
 import { asset } from "@/lib/asset";
 
 /** JSON payload for the right-hand preview zone. */
@@ -69,10 +70,21 @@ export default function Home() {
     (p) => (p.section ?? "commissioned") === "commissioned",
   );
   const installations = all.filter((p) => p.section === "installation");
-  const sketches = all.filter((p) => p.section === "sketch");
+
+  // every project image becomes a blob-tracker detection in the whitespace
+  const scatter: ScatterItem[] = all.flatMap(
+    (p) =>
+      p.images?.map((img) => ({
+        src: img.src,
+        slug: p.slug,
+        title: p.title,
+        year: p.year,
+      })) ?? [],
+  );
 
   return (
     <>
+      <ScatterField items={scatter} />
       <div className="leftcol">
         {/* TOP NAV ---------------------------------------------------------- */}
         <div style={{ margin: "0.6em 0 1.4em 0" }}>
@@ -238,40 +250,39 @@ export default function Home() {
                 s: p.detail,
               })}
             >
-              <em>{p.year}.</em> <i>{p.title}</i>
+              {p.year !== "—" && <em>{p.year}. </em>}
+              <i>{p.title}</i>
               {p.detail && <> &mdash; {p.detail}</>}
             </li>
           ))}
         </ul>
+
+        {/* PARTIES & EVENTS ------------------------------------------------- */}
+        <p style={{ marginTop: "1em" }}>
+          <span className="extra">parties &amp; events</span>{" "}
+          <span className="pathnote">
+            ~/practice/dancefloors · {events.length}+
+          </span>
+          <br />
+          <i>Visual work contributed across Naarm&rsquo;s dancefloors and
+          festivals:</i>
+          <br />
+          {events.join(" · ")} &hellip;
+        </p>
 
         <NoiseRule char="/" />
 
         {/* SKETCHES --------------------------------------------------------- */}
         <p>
           <span className="extra">sketches</span>{" "}
-          <span className="pathnote">
-            ~/practice/fun · {sketches.length} items
-          </span>
-          <NavButton href="/sketches">all sketches</NavButton>
+          <span className="pathnote">~/practice/fun</span>
           <br />
           <i>
             Work made just for fun — instruments, ports, and studies that
-            escaped the client folder.
+            escaped the client folder. Being re-catalogued; new work lands
+            here soon.
           </i>
         </p>
-        <ul>
-          {sketches.map((p, i) => (
-            <li key={p.slug} data-prev={prev(p)}>
-              <span className="entry-num">
-                {String(i + 1).padStart(2, "0")}/
-                {String(sketches.length).padStart(2, "0")}
-              </span>
-              <em>{p.year}.</em>{" "}
-              <Link href={`/work/${p.slug}`}>{p.title}</Link> &mdash;{" "}
-              {p.summary}
-            </li>
-          ))}
-        </ul>
 
         <NoiseRule />
 
@@ -327,7 +338,8 @@ export default function Home() {
           Co-founder of <i>Touch Collective</i> — regular TouchDesigner
           workshops, artist talks, and live visual events in Naarm /
           Melbourne. Technical TouchDesigner tutorials and creative-coding
-          education on YouTube. For workshop bookings,{" "}
+          education on YouTube. Recent talks include{" "}
+          <i>Creative Technology Melbourne</i>. For workshop bookings,{" "}
           <a href={`mailto:${site.email}`}>write to me</a>.
         </p>
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
+import { events } from "@/content/cv";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule, BinaryLine } from "@/components/ui/noise";
 
@@ -52,9 +53,13 @@ export default function InfoPage() {
           visual events. teaching is practice, not a side quest.
         </li>
         <li>
-          worked with: the xx. nine inch nails. dom dolla. nike. odetari.
-          ravyn lenae. its murph. smokedope2016. lyrical lemonade. mtla
-          studio. 1080p studios. phase 3 concepts.
+          worked with: the xx. nine inch nails. nike. odetari. ravyn lenae.
+          its murph. smokedope2016. reptant. cheahdx / purespace. lyrical
+          lemonade. mtla studio. 1080p studios. phase 3 concepts.
+        </li>
+        <li>
+          played for: {events.map((e) => e.toLowerCase()).join(". ")}. more
+          being remembered.
         </li>
         <li>grammy on the shelf; still patching at 2am.</li>
       </ul>

@@ -12,6 +12,41 @@ export interface CVEntry {
 
 export const performances: CVEntry[] = [
   {
+    year: "2026",
+    title: "Pitch Music & Arts",
+    detail: "Grampian Plains, Victoria. Visual design and live performance.",
+  },
+  {
+    year: "2026",
+    title: "Luminous Festival",
+    detail: "Presented a commissioned work.",
+  },
+  {
+    year: "2026",
+    title: "For The Cause",
+    detail: "Naarm / Melbourne. Live visuals.",
+  },
+  {
+    year: "2025",
+    title: "For The Cause",
+    detail: "Naarm / Melbourne. Live visuals.",
+  },
+  {
+    year: "2025",
+    title: "Hybrid 2.0",
+    detail: "Live audiovisual performance.",
+  },
+  {
+    year: "2025",
+    title: "Platform Presents",
+    detail: "Exhibition — presented work.",
+  },
+  {
+    year: "2025",
+    title: "Reptant — live visuals",
+    detail: "Visuals for Reptant.",
+  },
+  {
     year: "2025",
     title: "Pitch Music & Arts — Far from God, Close to Heaven",
     detail:
@@ -33,6 +68,32 @@ export const performances: CVEntry[] = [
     detail:
       "Naarm / Melbourne. Headline audiovisual performance with Steve Pan.",
   },
+  {
+    year: "—",
+    title: "Thread",
+    detail: "Miscellaneous visual work, ongoing.",
+  },
+  {
+    year: "—",
+    title: "Babie Club",
+    detail: "Miscellaneous visual work, ongoing.",
+  },
+];
+
+/** Local parties, clubs, and festivals I've contributed visual work to. */
+export const events: string[] = [
+  "Concordia",
+  "Pythia",
+  "Atmos",
+  "Thread",
+  "Step Count",
+  "A3 Festival",
+  "Pitch Music & Arts",
+  "Mach1",
+  "1800Play",
+  "TOPIA",
+  "Ode",
+  "Order Up",
 ];
 
 export const awards: CVEntry[] = [
@@ -75,6 +136,11 @@ export const teaching: CVEntry[] = [
       "Regular TouchDesigner workshops, artist talks, and live visual events. Naarm / Melbourne.",
   },
   {
+    year: "2025",
+    title: "Speaker — Creative Technology Melbourne",
+    detail: "Talk on real-time visual systems.",
+  },
+  {
     year: "—",
     title: "YouTube (@nicholaspjm)",
     detail:
@@ -87,19 +153,11 @@ export const education: CVEntry[] = [
   {
     year: "2021",
     title: "Bachelor of Computer Science",
-    detail:
-      "University of Auckland, Aotearoa New Zealand. Completed alongside a full arts degree — the engineering half of a double degree, and the systems rigour behind every show since.",
+    detail: "University of Auckland, Aotearoa New Zealand.",
   },
   {
     year: "2021",
     title: "Bachelor of Arts",
-    detail:
-      "University of Auckland, Aotearoa New Zealand. The critical half of the double degree — theory and writing that keep the machines honest.",
-  },
-  {
-    year: "2021–",
-    title: "Industry software development",
-    detail:
-      "Professional software engineering practice before moving to stages — production code, versioned and tested, now applied to rooms and shows.",
+    detail: "University of Auckland, Aotearoa New Zealand.",
   },
 ];

@@ -12,32 +12,7 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
-    name: "zed-blob-tracker",
-    summary:
-      "Overhead depth people-tracker: ZED camera → stable blob tracks → OSC into TouchDesigner. Built for 24/7 installation duty on Jetson.",
-    stack: "Python · ZED SDK · OSC",
-    links: [
-      { href: "https://github.com/nicholaspjm/zed-blob-tracker", label: "github" },
-    ],
-  },
-  {
-    name: "zed-ai-tracker",
-    summary:
-      "Human tracker running natively on the ZED Box Mini: local YOLO inference on Jetson, same OSC contract as the blob tracker.",
-    stack: "Python · YOLO · Jetson",
-    links: [
-      { href: "https://github.com/nicholaspjm/zed-ai-tracker", label: "github" },
-    ],
-  },
-  {
-    name: "zed-ndi",
-    summary:
-      "Streams any ZED camera view — depth, RGB, confidence — over NDI to TouchDesigner or anything else on the network.",
-    stack: "Python · NDI",
-    links: [{ href: "https://github.com/nicholaspjm/zed-ndi", label: "github" }],
-  },
-  {
-    name: "td-blob-tracker",
+    name: "blob tracker",
     summary:
       "TouchDesigner-native blob tracking component for interactive floors and walls.",
     stack: "TouchDesigner · .tox",
@@ -46,13 +21,41 @@ export const tools: Tool[] = [
     ],
   },
   {
-    name: "dmx-live-code",
+    name: "lumen",
     summary:
-      "Live-coding environment for DMX lighting rigs — write patterns in the browser, lights follow on the next beat.",
+      "Live-coding environment for DMX lighting rigs — write patterns live, lights follow on the next beat.",
     stack: "TypeScript · WebSocket · DMX",
     links: [
       { href: "https://github.com/nicholaspjm/dmx-live-code", label: "github" },
     ],
+  },
+  {
+    name: "live coding",
+    summary:
+      "Live-coding environment for real-time visuals — write, hear, and see the patch change while it runs.",
+    stack: "TouchDesigner · Python",
+    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+  },
+  {
+    name: "wiki visualiser",
+    summary:
+      "Turns Wikipedia — articles, link graphs, live edits — into real-time visual maps.",
+    stack: "TypeScript · WebGL",
+    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+  },
+  {
+    name: "datamosh",
+    summary:
+      "Datamoshing as an instrument — compression-artifact glitching made controllable and performable.",
+    stack: "TouchDesigner · GLSL",
+    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+  },
+  {
+    name: "palette chooser",
+    summary:
+      "Real-time palette extraction — k-means colour analysis of any image or live feed into usable swatch palettes.",
+    stack: "TouchDesigner · Python",
+    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
   },
   {
     name: "TD-Notes-Tools",

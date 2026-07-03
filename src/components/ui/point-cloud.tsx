@@ -50,15 +50,11 @@ export function PointCloud() {
     let targetParY = 0;
     let parX = 0;
     let parY = 0;
-    let mx = -9999;
-    let my = -9999;
     let impulse = 0; // kick from page interactions
 
     const onMove = (e: MouseEvent) => {
       targetParX = (e.clientX / window.innerWidth - 0.5) * 0.5;
       targetParY = (e.clientY / window.innerHeight - 0.5) * 0.38;
-      mx = e.clientX * dpr;
-      my = e.clientY * dpr;
     };
     window.addEventListener("mousemove", onMove, { passive: true });
 
@@ -74,11 +70,17 @@ export function PointCloud() {
         .split(",")
         .map((v) => parseInt(v.trim(), 10) || 0);
       const alpha = parseFloat(cs.getPropertyValue("--pt-alpha")) || 0.15;
-      // premultiplied ABGR word for the pixel buffer (little-endian)
+      // premultiplied ABGR words for the pixel buffer (little-endian)
       const a = Math.round(alpha * 255);
+      const hex = (cs.getPropertyValue("--accent").trim() || "#00ff00")
+        .replace("#", "");
+      const ar = parseInt(hex.slice(0, 2), 16) || 0;
+      const ag = parseInt(hex.slice(2, 4), 16) || 255;
+      const ab = parseInt(hex.slice(4, 6), 16) || 0;
       return {
         px:
           (a << 24) | ((rgb[2] & 0xff) << 16) | ((rgb[1] & 0xff) << 8) | (rgb[0] & 0xff),
+        accent: (230 << 24) | ((ab & 0xff) << 16) | ((ag & 0xff) << 8) | (ar & 0xff),
       };
     };
     let themeCol = readTheme();
@@ -90,16 +92,19 @@ export function PointCloud() {
       attributeFilter: ["data-theme"],
     });
 
+    let bornAt = 0; // set when points arrive — drives the assembly animation
+
     fetch(asset("/data/scan.bin"))
       .then((r) => r.arrayBuffer())
       .then((buf) => {
         if (disposed) return;
         pts = new Float32Array(buf);
+        bornAt = performance.now();
         raf = requestAnimationFrame(draw);
       })
       .catch(() => {});
 
-    const draw = () => {
+    const draw = (now: number = performance.now()) => {
       if (!pts) return;
       // QA hook: freeze all canvas work when window.__NPJM_PAUSE is set
       if ((window as unknown as Record<string, unknown>).__NPJM_PAUSE) {
@@ -110,8 +115,14 @@ export function PointCloud() {
       if (!img || !buf) return;
       const w = canvas.width;
       const h = canvas.height;
+      const time = now * 0.001;
 
-      if (!reduced) rotY += 0.0008 + impulse * 0.02;
+      // assembly: points fly in from scatter over the first ~1.8s
+      const rawP = reduced ? 1 : Math.min(1, (now - bornAt) / 1800);
+      const ease = 1 - (1 - rawP) ** 3;
+      const settle = 1 - ease; // 1 → 0 as the cloud resolves
+
+      if (!reduced) rotY += 0.0012 + impulse * 0.02;
       impulse *= 0.94;
       const scrollT = window.scrollY * 0.0011; // scrolling visibly spins it
 
@@ -124,69 +135,68 @@ export function PointCloud() {
       const cy = Math.cos(ry), sy = Math.sin(ry);
       const cx = Math.cos(rx), sx = Math.sin(rx);
 
-      // centre the cloud in the region right of the text column, and size
-      // it to that region so it never drifts off-screen on wide displays
+      // centre the cloud in the region right of the text column; sized
+      // generously — a little spill past the edges reads as presence
       const colEdge = Math.min(w * 0.5, 620 * dpr);
       const regionW = w - colEdge;
       const scale =
-        Math.min(regionW * 0.85, h * 0.95) * (1 + impulse * 0.05);
+        Math.min(regionW * 1.15, h * 1.25) * (1 + impulse * 0.05);
       const cxp = colEdge + regionW * 0.5;
       const cyp = h * 0.48;
       const fov = 2.2;
-      const repelR = 175 * dpr;
-      const repelR2 = repelR * repelR;
       const word = themeCol.px;
+      const accentWord = themeCol.accent;
+
+      // scan sweep: a plane travels through the room every ~6.5s;
+      // points it touches flash in the accent colour
+      const scanX = ((time * 0.37) % 2.6) - 1.3;
 
       buf.fill(0);
 
       const n = pts.length;
       for (let i = 0; i < n; i += 3) {
-        const x0 = pts[i], y0 = pts[i + 1], z0 = pts[i + 2];
+        let x0 = pts[i], y0 = pts[i + 1], z0 = pts[i + 2];
+        // shimmer — a slow wave rolls through the scan like live sensor noise
+        if (!reduced) {
+          y0 += Math.sin(time * 1.3 + x0 * 5 + i * 0.11) * 0.008;
+        }
+        // assembly scatter — deterministic per point, collapses to zero
+        if (settle > 0.001) {
+          const s1 = Math.sin(i * 127.1) * 43758.5453;
+          const s2 = Math.sin(i * 311.7) * 24634.6345;
+          x0 += (s1 - Math.floor(s1) - 0.5) * 2.6 * settle;
+          y0 += (s2 - Math.floor(s2) - 0.5) * 2.6 * settle;
+        }
+        const inScan = Math.abs(x0 - scanX) < 0.02;
         // rotate Y then X
         const x1 = x0 * cy + z0 * sy;
         const z1 = -x0 * sy + z0 * cy;
         const y1 = y0 * cx - z1 * sx;
         const z2 = y0 * sx + z1 * cx;
         const pz = fov / (fov + z2);
-        let px = cxp + x1 * scale * pz * 0.5;
-        let py = cyp + y1 * scale * pz * 0.5;
-        // cursor repulsion — the scan flinches away from the pointer
-        const dx = px - mx;
-        const dy = py - my;
-        const d2 = dx * dx + dy * dy;
-        if (d2 < repelR2 && d2 > 0.01) {
-          const d = Math.sqrt(d2);
-          const f = ((repelR - d) / repelR) * 52 * dpr;
-          px += (dx / d) * f;
-          py += (dy / d) * f;
-        }
+        const px = cxp + x1 * scale * pz * 0.5;
+        const py = cyp + y1 * scale * pz * 0.5;
         const ix = px | 0;
         const iy = py | 0;
         if (ix < 0 || ix >= w - 1 || iy < 0 || iy >= h - 1) continue;
         const o = iy * w + ix;
-        buf[o] = word;
-        if (pz > 1) {
-          // near points draw 2×2
-          buf[o + 1] = word;
-          buf[o + w] = word;
-          buf[o + w + 1] = word;
+        const wrd = inScan && !reduced ? accentWord : word;
+        buf[o] = wrd;
+        if (pz > 1 || inScan) {
+          // near points (and scanned points) draw 2×2
+          buf[o + 1] = wrd;
+          buf[o + w] = wrd;
+          buf[o + w + 1] = wrd;
         }
       }
 
       ctx.putImageData(img, 0, 0);
 
-      if (!reduced) raf = requestAnimationFrame(draw);
+      // the loop always runs: interaction-driven motion (parallax, repel,
+      // scroll tilt) is user-initiated and exempt from reduced-motion;
+      // ambient motion (spin, shimmer, scan, fly-in) is gated on `reduced`.
+      raf = requestAnimationFrame(draw);
     };
-
-    // reduced motion: draw a single static frame once loaded
-    if (reduced) {
-      const tryStatic = setInterval(() => {
-        if (pts) {
-          draw();
-          clearInterval(tryStatic);
-        }
-      }, 200);
-    }
 
     return () => {
       disposed = true;
