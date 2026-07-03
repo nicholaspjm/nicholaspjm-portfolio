@@ -6,14 +6,18 @@ import { useEffect, useState } from "react";
 const PALETTES = [
   "stock",
   "phosphor",
-  "amber",
+  "phosphor-cyan",
+  "phosphor-mono",
   "bluescreen",
-  "teal95",
+  "bluescreen-cyan",
+  "navy",
   "hotdog",
-  "geocities",
-  "c64",
-  "paper",
+  "mustard",
+  "hotdog-noir",
   "ikeda",
+  "ikeda-noir",
+  "ikeda-blue",
+  "ikeda-mono",
 ] as const;
 
 /**
