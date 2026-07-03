@@ -26,8 +26,6 @@ export default function WorkPage() {
         <span className="pathnote">
           ~/practice/live · {performances.length} items
         </span>
-        <br />
-        <i>Live sets, festival stages, and exhibited work.</i>
       </p>
       <ul>
         {performances.map((p, i) => (
@@ -53,11 +51,6 @@ export default function WorkPage() {
         <span className="pathnote">
           ~/practice/dancefloors · {events.length}+
         </span>
-        <br />
-        <i>
-          Visual work contributed across Naarm&rsquo;s club nights and
-          festivals:
-        </i>
         <br />
         {events.join(" · ")} &hellip;
       </p>

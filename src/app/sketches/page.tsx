@@ -17,11 +17,6 @@ export default function SketchesPage() {
 
       <p>
         <span className="extra">sketches</span>
-        <br />
-        <i>
-          Self-directed experiments and studies in real-time graphics.
-          Currently being catalogued.
-        </i>
       </p>
     </>
   );

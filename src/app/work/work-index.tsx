@@ -29,9 +29,6 @@ function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
 
       <p>
         <span className="extra">index of work</span>
-        <br />A comprehensive list of selected projects. Filter by category
-        below, or read each entry in context on the{" "}
-        <Link href="/">index</Link>.
       </p>
 
       <p>

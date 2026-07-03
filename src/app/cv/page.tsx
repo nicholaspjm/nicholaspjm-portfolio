@@ -74,12 +74,6 @@ export default function CVPage() {
 
       <p>
         <span className="extra">Nicholas Marriott — CV</span>
-        <br />
-        <i>
-          A complete, sortable record of projects, performances, awards, and
-          press. The formula bar accepts live queries; see individual projects
-          in context on the <a href="/">index</a>.
-        </i>
       </p>
 
       <CVSheet rows={rows} />

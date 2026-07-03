@@ -233,15 +233,10 @@ export default function Home() {
 
       {/* COMMISSIONED — first entry featured for variety ----------------- */}
       <p style={{ marginTop: "1.4em" }}>
-        <span className="extra">commissioned</span>{" "}
+        <span className="extra">commissions</span>{" "}
         <span className="pathnote">
-          ~/practice/commissioned · {commissioned.length} items
+          ~/practice/commissions · {commissioned.length} items
         </span>
-        <br />
-        <i>
-          Tour visuals, stage design, and music-video VFX for artists and
-          brands.
-        </i>
       </p>
       {commissioned.map((p, i) => (
         <ProjectBlock
@@ -261,8 +256,6 @@ export default function Home() {
         <span className="pathnote">
           ~/practice/rooms · {installations.length + performances.length} items
         </span>
-        <br />
-        <i>Interactive installations and live audiovisual performance.</i>
       </p>
       {installations.map((p, i) => (
         <ProjectBlock
@@ -297,11 +290,6 @@ export default function Home() {
           ~/practice/dancefloors · {events.length}+
         </span>
         <br />
-        <i>
-          Visual work contributed across Naarm&rsquo;s club nights and
-          festivals:
-        </i>
-        <br />
         {events.join(" · ")} &hellip;
       </p>
 
@@ -311,11 +299,6 @@ export default function Home() {
       <p>
         <span className="extra">sketches</span>{" "}
         <span className="pathnote">~/practice/fun</span>
-        <br />
-        <i>
-          Self-directed experiments and studies in real-time graphics.
-          Currently being catalogued.
-        </i>
       </p>
 
       <NoiseRule />
@@ -326,11 +309,6 @@ export default function Home() {
         <span className="pathnote">
           ~/practice/released · {tools.length} items
         </span>
-        <br />
-        <i>
-          Open-source software and components for the TouchDesigner ecosystem —
-          trackers, bridges, and utilities.
-        </i>
       </p>
       <ul>
         {tools.map((t, i) => (
@@ -406,10 +384,6 @@ export default function Home() {
       {/* PRESS -------------------------------------------------------------- */}
       <p>
         <span className="extra">selected press</span>
-        <br />
-        <i>
-          Full press list in the <Link href="/cv">CV spreadsheet</Link>.
-        </i>
       </p>
       <ul>
         {press.map((p, i) => (
