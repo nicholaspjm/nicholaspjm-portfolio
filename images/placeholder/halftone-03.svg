@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#ece8db" />
+  <g fill="#131313">
+    <rect x="0" y="0" width="600" height="800" opacity="0.04" />
+  </g>
+  <g stroke="#1c39ff" stroke-width="1" fill="none">
+    <line x1="100" y1="100" x2="1100" y2="100" />
+    <line x1="100" y1="200" x2="1100" y2="200" />
+    <line x1="100" y1="300" x2="1100" y2="300" />
+    <line x1="100" y1="400" x2="1100" y2="400" />
+    <line x1="100" y1="500" x2="1100" y2="500" />
+    <line x1="100" y1="600" x2="1100" y2="600" />
+    <line x1="100" y1="700" x2="1100" y2="700" />
+  </g>
+  <g font-family="ui-monospace, monospace" fill="#131313">
+    <text x="40" y="60" font-size="14">PLATE 03 — RULES</text>
+    <text x="600" y="420" font-size="120" font-weight="700" text-anchor="middle">N · PJM</text>
+    <text x="40" y="780" font-size="12">PLACEHOLDER</text>
+  </g>
+</svg>

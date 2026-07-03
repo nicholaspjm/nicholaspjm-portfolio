@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="dots" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="7" cy="7" r="2.4" fill="#131313" />
+    </pattern>
+    <radialGradient id="vig" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#f4f1e8" stop-opacity="0" />
+      <stop offset="100%" stop-color="#f4f1e8" stop-opacity="1" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f4f1e8" />
+  <rect width="1200" height="800" fill="url(#dots)" opacity="0.55" />
+  <rect width="1200" height="800" fill="url(#vig)" />
+  <g font-family="ui-monospace, monospace" fill="#131313" opacity="0.7">
+    <text x="40" y="60" font-size="14">PLATE 01 — HALFTONE</text>
+    <text x="40" y="780" font-size="12">PLACEHOLDER · NICHOLASPJM.COM</text>
+  </g>
+  <g stroke="#1c39ff" stroke-width="2" fill="none">
+    <circle cx="600" cy="400" r="220" />
+    <circle cx="600" cy="400" r="170" opacity="0.6" />
+    <circle cx="600" cy="400" r="120" opacity="0.3" />
+  </g>
+</svg>
