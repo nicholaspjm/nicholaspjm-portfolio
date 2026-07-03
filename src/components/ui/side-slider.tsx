@@ -8,9 +8,10 @@ import { performances, awards } from "@/content/cv";
 interface WorkPoint {
   year: number;
   title: string;
-  mag: number; // 0..1 magnitude → size + boldness
+  mag: number; // 0..1 magnitude → bar length
   href?: string;
-  baseY: number; // position on the virtual timeline (px)
+  frac: number; // 0..1 base position along the rail
+  phase: number; // breathing offset
 }
 
 const SECTION_MAG: Record<string, number> = {
@@ -21,11 +22,11 @@ const SECTION_MAG: Record<string, number> = {
 };
 
 /**
- * The right rail is a temporal histogram of the work: each piece is a bar
- * placed by the year it was made, sized and darkened by its scale (bigger
- * commissions read louder). The timeline drifts continuously upward and
- * parallax-couples to page scroll. Hovering a bar pops its title out from
- * the side; clicking opens the work. Not a scrollbar.
+ * The right rail is a temporal histogram of the work: each piece is one thin
+ * bar, ordered by year (newest at top), its length set by the work's scale
+ * (bigger commissions reach further across). Bars breathe on a slow sine,
+ * the whole timeline drifts gently upward and parallax-couples to scroll.
+ * Hover a bar to slide its title out from the side; click to open it.
  */
 export function SideSlider() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -43,12 +44,11 @@ export function SideSlider() {
 
     // --- build the timeline ------------------------------------------------
     const projects = getListedProjects();
-    const items: Omit<WorkPoint, "baseY">[] = [
+    const items: Omit<WorkPoint, "frac" | "phase">[] = [
       ...projects.map((p) => ({
         year: parseInt(p.year, 10) || 2025,
         title: p.title,
-        mag:
-          p.weight ?? SECTION_MAG[p.section ?? "commissioned"] ?? 0.6,
+        mag: p.weight ?? SECTION_MAG[p.section ?? "commissioned"] ?? 0.6,
         href: `/work/${p.slug}`,
       })),
       ...performances
@@ -64,14 +64,13 @@ export function SideSlider() {
         mag: 1,
       })),
     ];
-    // newest first, biggest first within a year
     items.sort((a, b) => b.year - a.year || b.mag - a.mag);
 
-    const GAP = 40 * dpr; // vertical spacing between bars
-    const totalH = Math.max(items.length * GAP, 1);
+    const N = Math.max(items.length, 1);
     const work: WorkPoint[] = items.map((it, i) => ({
       ...it,
-      baseY: i * GAP,
+      frac: (i + 0.5) / N,
+      phase: i * 0.7,
     }));
 
     // --- state -------------------------------------------------------------
@@ -94,79 +93,52 @@ export function SideSlider() {
       const cs = getComputedStyle(document.documentElement);
       return {
         ink: cs.getPropertyValue("--ink").trim() || "#000",
-        soft: cs.getPropertyValue("--soft").trim() || "#666",
         accent: cs.getPropertyValue("--accent").trim() || "#00ff00",
       };
     };
-
-    // where a work currently sits, in canvas px (looped)
-    const screenY = (baseY: number, offset: number, h: number) => {
-      let y = (baseY - offset) % totalH;
-      if (y < 0) y += totalH;
-      // centre the loop window so items scroll through the viewport
-      return y - (totalH - h) * 0; // baseline: 0..totalH mapped, clipped by draw
-    };
-
-    const currentOffset = () =>
-      drift + window.scrollY * 0.35 * dpr;
 
     const draw = (t: number) => {
       resize();
       const w = canvas.width;
       const h = canvas.height;
+      const time = t * 0.001;
       const col = theme();
       ctx.clearRect(0, 0, w, h);
 
-      if (!paused) drift += 0.35 * dpr; // continuous upward scroll
-      const offset = currentOffset();
+      if (!paused) drift += 0.28 * dpr; // continuous upward scroll
+      // timeline wraps within the rail height; parallax couples to scroll
+      const offset = (drift + window.scrollY * 0.3 * dpr) % h;
 
       // inner-edge hairline
       ctx.fillStyle = col.ink;
       ctx.globalAlpha = 0.25;
       ctx.fillRect(0, 0, 1, h);
-      ctx.globalAlpha = 1;
 
-      let lastYearLabelled = -1;
       hoverIdx = -1;
-      let hoverDist = 14 * dpr;
+      let hoverDist = 11 * dpr;
+      const thick = 1 * dpr; // thin, hairline bars — as before
 
       for (let i = 0; i < work.length; i++) {
         const p = work[i];
-        // draw two copies (wrap) so bars are continuous across the loop seam
-        for (let k = -1; k <= 1; k++) {
-          let y = ((p.baseY - offset) % totalH) + k * totalH;
-          if (y < -GAP || y > h + GAP) continue;
+        let y = (p.frac * h - offset) % h;
+        if (y < 0) y += h;
+        const iy = Math.round(y);
 
-          const len = (5 + p.mag * 22) * dpr;
-          const thick = Math.max(1, (0.6 + p.mag * 3) * dpr);
-          const alpha = 0.22 + p.mag * 0.66;
+        const breathe = 1 + Math.sin(time * 0.6 + p.phase) * 0.14;
+        const len = (0.26 + p.mag * 0.74) * (w - 2 * dpr) * breathe;
+        const alpha = 0.3 + p.mag * 0.34;
 
-          // hover hit-test against the pointer (only the on-screen copy)
-          if (pointerY >= 0) {
-            const d = Math.abs(y - pointerY);
-            if (d < hoverDist) {
-              hoverDist = d;
-              hoverIdx = i;
-            }
+        if (pointerY >= 0) {
+          const d = Math.abs(iy - pointerY);
+          if (d < hoverDist) {
+            hoverDist = d;
+            hoverIdx = i;
           }
-
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = i === hoverIdx ? col.accent : col.ink;
-          ctx.fillRect(w - len, y - thick / 2, len, thick);
         }
 
-        // year tick + label at the first bar of each year
-        if (p.year !== lastYearLabelled) {
-          let y = ((p.baseY - offset) % totalH);
-          if (y < 0) y += totalH;
-          if (y >= 0 && y <= h) {
-            ctx.globalAlpha = 0.5;
-            ctx.fillStyle = col.soft;
-            ctx.font = `${9 * dpr}px 'Courier New', monospace`;
-            ctx.fillText(String(p.year), 2 * dpr, y - 3 * dpr);
-          }
-          lastYearLabelled = p.year;
-        }
+        ctx.globalAlpha = i === hoverIdx ? 1 : alpha;
+        ctx.fillStyle = i === hoverIdx ? col.accent : col.ink;
+        ctx.fillRect(w - len, iy, len, thick);
       }
       ctx.globalAlpha = 1;
 
@@ -176,7 +148,6 @@ export function SideSlider() {
         pop.textContent = `${p.year} · ${p.title}${p.href ? " ↗" : ""}`;
         pop.style.top = `${pointerY / dpr}px`;
         pop.classList.add("on");
-        pop.style.cursor = p.href ? "pointer" : "default";
         canvas.style.cursor = p.href ? "pointer" : "default";
       } else {
         pop.classList.remove("on");
