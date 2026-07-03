@@ -28,33 +28,32 @@ export default function InfoPage() {
 
       <div style={{ maxWidth: "64ch" }}>
         <p style={{ marginTop: "0.6em" }}>
-          Nicholas Marriott (b. 1999, Aotearoa New Zealand) is a designer and
-          technologist based in Naarm / Melbourne. His practice works across
+          I&rsquo;m a designer and technologist based in Naarm / Melbourne,
+          b. 1999 in Aotearoa New Zealand. My practice works across
           audio-reactive visuals, interactive installation, and motion,
           building real-time systems for touring artists, brands, and cultural
           institutions.
         </p>
         <p style={{ marginTop: "0.6em" }}>
-          He holds a Bachelor of Computer Science and a Bachelor of Arts from
-          the University of Auckland, and worked as a software developer before
+          I hold a Bachelor of Computer Science and a Bachelor of Arts from the
+          University of Auckland, and worked as a software developer before
           moving into visual design — an engineering background that shapes how
-          his shows are built: versioned, tested, and performed live. His
-          toolset spans TouchDesigner, GLSL, Python, and depth-sensing
-          hardware.
+          I build shows: versioned, tested, and performed live. I work
+          primarily in TouchDesigner, GLSL, Python, and depth-sensing hardware.
         </p>
         <p style={{ marginTop: "0.6em" }}>
           Recent work includes visual design for The xx, Nine Inch Nails, Nike,
           Odetari, Ravyn Lenae, Its Murph, and smokedope2016, in collaboration
           with studios including MTLA Studio, 1080p Studios, Phase 3 Concepts,
-          and Lyrical Lemonade. He is a co-founder of{" "}
+          and Lyrical Lemonade. I&rsquo;m a co-founder of{" "}
           <em>Touch Collective</em>, a creative-technology studio and workshop
-          series, and teaches TouchDesigner through workshops, talks, and
+          series, and I teach TouchDesigner through workshops, talks, and
           published tutorials.
         </p>
         <p style={{ marginTop: "0.6em" }}>
-          Available for commissions, art direction, teaching, and speaking. A
-          full record of projects, performances, awards, and press is on the{" "}
-          <Link href="/cv">CV</Link>.
+          I&rsquo;m available for commissions, art direction, teaching, and
+          speaking. A full record of projects, performances, awards, and press
+          is on the <Link href="/cv">CV</Link>.
         </p>
       </div>
 

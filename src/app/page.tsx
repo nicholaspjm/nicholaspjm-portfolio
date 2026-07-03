@@ -7,9 +7,7 @@ import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
-// Blob scatter field parked for now — re-enable by restoring this import
-// and the <ScatterField items={scatter} /> mount below.
-// import { ScatterField, type ScatterItem } from "@/components/ui/scatter-field";
+import { HomeShell } from "@/components/ui/home-shell";
 import { asset } from "@/lib/asset";
 
 /** JSON payload for the right-hand preview zone. */
@@ -24,33 +22,33 @@ function prev(p: Project) {
   });
 }
 
+/** A project entry — the whole block is a link to the project. */
 function ProjectBlock({
   p,
   num,
   total,
+  feature = false,
 }: {
   p: Project;
   num: number;
   total: number;
+  feature?: boolean;
 }) {
   return (
     <>
-      <p data-prev={prev(p)}>
+      <Link
+        href={`/work/${p.slug}`}
+        className={feature ? "entry feature" : "entry"}
+        data-prev={prev(p)}
+      >
         <span className="entry-num">
           {String(num).padStart(2, "0")}/{String(total).padStart(2, "0")}
         </span>
-        <Link className="extra" href={`/work/${p.slug}`}>
-          {p.title}
-        </Link>
-        {p.links?.map((l) => (
-          <NavButton key={l.href} href={l.href} external>
-            {l.label.toLowerCase()}
-          </NavButton>
-        ))}
+        <span className="extra">{p.title}</span>
         <br />
         <em>{p.year}.</em> {p.summary}
         {p.role && <> &mdash; {p.role}.</>}
-      </p>
+      </Link>
       {p.images && p.images.length > 0 && (
         <div className="image-row">
           {p.images.map((img) => (
@@ -66,6 +64,51 @@ function ProjectBlock({
   );
 }
 
+/* ---------------------------------------------------------------------------
+   Flat "list all" view — a single chronological index, newest first,
+   in the plain designforthe.net register.
+   ------------------------------------------------------------------------ */
+interface FlatEntry {
+  year: string;
+  title: string;
+  kind: string;
+  href?: string;
+  ext?: boolean;
+}
+
+function SimpleList({ entries }: { entries: FlatEntry[] }) {
+  return (
+    <div className="leftcol">
+      <p>
+        <span className="extra">index — all work</span>
+        <br />
+        <i>Everything, newest first. Toggle back to the full view above.</i>
+      </p>
+      <ul className="simple-list">
+        {entries.map((e, i) => (
+          <li key={`${e.title}-${i}`}>
+            <span className="sl-year">{e.year === "—" ? "····" : e.year}</span>
+            <span className="sl-sep"> / </span>
+            {e.href ? (
+              e.ext ? (
+                <a href={e.href} target="_blank" rel="noreferrer">
+                  {e.title}
+                </a>
+              ) : (
+                <Link href={e.href}>{e.title}</Link>
+              )
+            ) : (
+              <span>{e.title}</span>
+            )}
+            <span className="sl-sep"> / </span>
+            <span className="sl-kind">{e.kind}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function Home() {
   const all = getListedProjects();
   const commissioned = all.filter(
@@ -73,219 +116,230 @@ export default function Home() {
   );
   const installations = all.filter((p) => p.section === "installation");
 
-  return (
-    <>
-      <div className="leftcol">
-        {/* TOP NAV ---------------------------------------------------------- */}
-        <div style={{ margin: "0.6em 0 1.4em 0" }}>
-          <NavButton href="/cv">CV</NavButton>
-          <NavButton href="/work">visual work</NavButton>
-          <NavButton href="#tools">tools</NavButton>{" "}
-          <InfoSheet>
-            <p>
-              <span className="extra">about</span>
-            </p>
-            <p>
-              Nicholas Marriott (b. 1999, Aotearoa New Zealand) is a designer
-              and technologist based in Naarm / Melbourne. He holds a Bachelor
-              of Computer Science and a Bachelor of Arts from the University of
-              Auckland, and worked as a software developer before moving into
-              visual design.
-            </p>
-            <p style={{ marginTop: "0.6em" }}>
-              His practice centres on real-time systems — audio-reactive
-              visuals, interactive installation, and motion — for artists,
-              brands, and cultural institutions. He is a co-founder of{" "}
-              <em>Touch Collective</em>, a creative-technology studio and
-              workshop series in Naarm / Melbourne. Working tools include
-              TouchDesigner, GLSL, Python, and depth-sensing hardware.
-            </p>
-            <p style={{ marginTop: "0.6em" }}>
-              Available for commissions, art direction, teaching, and speaking.
-            </p>
-            <p className="foot" style={{ marginTop: "0.6em" }}>
-              Extended biography at <Link href="/info">/info</Link>. The
-              background is a point-cloud scan; the rail at right maps the
-              structure of the page.
-            </p>
-          </InfoSheet>
-        </div>
+  // Flat index for the "list all" view.
+  const flat: FlatEntry[] = [
+    ...all.map((p) => ({
+      year: p.year,
+      title: p.title,
+      kind: p.section ?? "commissioned",
+      href: `/work/${p.slug}`,
+    })),
+    ...performances.map((p) => ({
+      year: p.year,
+      title: p.title,
+      kind: "performance",
+    })),
+    ...awards.map((a) => ({ year: a.year, title: a.title, kind: "award" })),
+    ...press.map((p) => ({ year: p.year, title: p.title, kind: "press" })),
+    ...tools.map((t) => ({
+      year: "—",
+      title: t.name,
+      kind: "tool",
+      href: t.links[0]?.href,
+      ext: true,
+    })),
+    ...education.map((e) => ({
+      year: e.year,
+      title: e.title,
+      kind: "education",
+    })),
+  ].sort((a, b) => (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0));
 
-        {/* INTRO ------------------------------------------------------------ */}
-        <p>
-          Nicholas Marriott is a designer and technologist working across
-          audio-reactive visuals, interactive installation, and real-time
-          systems. He is a co-founder of Touch Collective, a
-          creative-technology studio and workshop series based in Naarm /
-          Melbourne.
-        </p>
+  const rich = (
+    <div className="leftcol">
+      {/* TOP NAV ---------------------------------------------------------- */}
+      <div style={{ margin: "0 0 1.4em 0" }}>
+        <NavButton href="/cv">CV</NavButton>
+        <NavButton href="/work">visual work</NavButton>
+        <NavButton href="#tools">tools</NavButton>{" "}
+        <InfoSheet>
+          <p>
+            <span className="extra">about</span>
+          </p>
+          <p>
+            I&rsquo;m a designer and technologist based in Naarm / Melbourne,
+            b. 1999 in Aotearoa New Zealand. I hold a Bachelor of Computer
+            Science and a Bachelor of Arts from the University of Auckland, and
+            worked as a software developer before moving into visual design.
+          </p>
+          <p style={{ marginTop: "0.6em" }}>
+            My practice centres on real-time systems — audio-reactive visuals,
+            interactive installation, and motion — for artists, brands, and
+            cultural institutions. I&rsquo;m a co-founder of{" "}
+            <em>Touch Collective</em>, a creative-technology studio and
+            workshop series. I work primarily in TouchDesigner, GLSL, Python,
+            and depth-sensing hardware.
+          </p>
+          <p style={{ marginTop: "0.6em" }}>
+            I&rsquo;m available for commissions, art direction, teaching, and
+            speaking.
+          </p>
+          <p className="foot" style={{ marginTop: "0.6em" }}>
+            Extended biography at <Link href="/info">/info</Link>. The
+            background is a point-cloud scan; the rail at right maps the
+            structure of the page.
+          </p>
+        </InfoSheet>
+      </div>
 
-        <p style={{ marginTop: "0.8em" }}>
-          His practice sits between software engineering and live performance,
-          building responsive systems for touring artists, brands, and
-          cultural institutions. Recent work spans stage and festival visual
-          design, music-video VFX, and interactive installation.
-        </p>
+      {/* INTRO — first person -------------------------------------------- */}
+      <p>
+        I&rsquo;m a designer and technologist working across audio-reactive
+        visuals, interactive installation, and real-time systems. I&rsquo;m a
+        co-founder of Touch Collective, a creative-technology studio and
+        workshop series based in Naarm / Melbourne.
+      </p>
 
-        <p style={{ marginTop: "1.2em" }}>
-          <a href={`mailto:${site.email}`}>{site.email}</a>
-          <br />
-          IG{" "}
-          <a
-            href="https://instagram.com/nicholaspjm"
-            target="_blank"
-            rel="noreferrer"
+      <p style={{ marginTop: "0.8em" }}>
+        My practice sits between software engineering and live performance,
+        building responsive systems for touring artists, brands, and cultural
+        institutions. Recent work spans stage and festival visual design,
+        music-video VFX, and interactive installation.
+      </p>
+
+      <p style={{ marginTop: "1.2em" }}>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <br />
+        IG{" "}
+        <a href="https://instagram.com/nicholaspjm" target="_blank" rel="noreferrer">
+          @nicholaspjm
+        </a>
+        <br />
+        YT{" "}
+        <a href="https://youtube.com/@nicholaspjm" target="_blank" rel="noreferrer">
+          @nicholaspjm
+        </a>
+        <br />
+        GH{" "}
+        <a href="https://github.com/nicholaspjm" target="_blank" rel="noreferrer">
+          nicholaspjm
+        </a>
+      </p>
+
+      <div className="spacer-v" aria-hidden />
+
+      {/* NOW — intentionally empty (to be filled) ------------------------ */}
+      <p className="atm-mark">
+        now
+        <br />↪
+      </p>
+
+      <p className="callout" style={{ marginTop: "1.2em" }}>
+        Available for commissions, collaborations, teaching, and speaking.
+        Enquiries: <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+
+      <p style={{ marginTop: "1.6em" }}>&hellip;</p>
+
+      {/* COMMISSIONED — first entry featured for variety ----------------- */}
+      <p style={{ marginTop: "1.4em" }}>
+        <span className="extra">commissioned</span>{" "}
+        <span className="pathnote">
+          ~/practice/commissioned · {commissioned.length} items
+        </span>
+        <br />
+        <i>
+          Tour visuals, stage design, and music-video VFX for artists and
+          brands.
+        </i>
+      </p>
+      {commissioned.map((p, i) => (
+        <ProjectBlock
+          key={p.slug}
+          p={p}
+          num={i + 1}
+          total={commissioned.length}
+          feature={i === 0}
+        />
+      ))}
+
+      <NoiseRule />
+
+      {/* INSTALLATION & PERFORMANCE -------------------------------------- */}
+      <p>
+        <span className="extra">installation &amp; performance</span>{" "}
+        <span className="pathnote">
+          ~/practice/rooms · {installations.length + performances.length} items
+        </span>
+        <br />
+        <i>Interactive installations and live audiovisual performance.</i>
+      </p>
+      {installations.map((p, i) => (
+        <ProjectBlock
+          key={p.slug}
+          p={p}
+          num={i + 1}
+          total={installations.length}
+        />
+      ))}
+      <ul>
+        {performances.map((p, i) => (
+          <li
+            key={`perf-${i}`}
+            data-prev={JSON.stringify({
+              t: p.title,
+              y: p.year,
+              k: "performance",
+              s: p.detail,
+            })}
           >
-            @nicholaspjm
-          </a>
-          <br />
-          YT{" "}
-          <a
-            href="https://youtube.com/@nicholaspjm"
-            target="_blank"
-            rel="noreferrer"
-          >
-            @nicholaspjm
-          </a>
-          <br />
-          GH{" "}
-          <a
-            href="https://github.com/nicholaspjm"
-            target="_blank"
-            rel="noreferrer"
-          >
-            nicholaspjm
-          </a>
-        </p>
-
-        <div className="spacer-v" aria-hidden />
-
-        {/* NOW — current status ------------------------------------------- */}
-        <p className="atm-mark">
-          now
-          <br />↪
-        </p>
-        <p style={{ maxWidth: "58ch" }}>
-          Current and upcoming work for the 2026 season includes visual design
-          for The xx&rsquo;s festival tour (including Coachella main stage),
-          Its Murph&rsquo;s Weightless Tour across North America, VFX for
-          Nike&rsquo;s Air Liquid Max, and a festival installation at Mach1,
-          alongside ongoing TouchDesigner workshops with Touch Collective.
-        </p>
-
-        <p className="callout" style={{ marginTop: "1.2em" }}>
-          Available for commissions, collaborations, teaching, and speaking.
-          Enquiries:{" "}
-          <a href={`mailto:${site.email}`}>{site.email}</a>.
-        </p>
-
-        <p style={{ marginTop: "1.6em" }}>&hellip;</p>
-
-        {/* COMMISSIONED ---------------------------------------------------- */}
-        <p style={{ marginTop: "1.4em" }}>
-          <span className="extra">commissioned</span>{" "}
-          <span className="pathnote">
-            ~/practice/commissioned · {commissioned.length} items
-          </span>
-          <br />
-          <i>
-            Tour visuals, stage design, and music-video VFX for artists and
-            brands.
-          </i>
-        </p>
-        {commissioned.map((p, i) => (
-          <ProjectBlock
-            key={p.slug}
-            p={p}
-            num={i + 1}
-            total={commissioned.length}
-          />
+            {p.year !== "—" && <em>{p.year}. </em>}
+            <i>{p.title}</i>
+            {p.detail && <> &mdash; {p.detail}</>}
+          </li>
         ))}
+      </ul>
 
-        <NoiseRule />
+      {/* PARTIES & EVENTS ------------------------------------------------- */}
+      <p style={{ marginTop: "1em" }}>
+        <span className="extra">parties &amp; events</span>{" "}
+        <span className="pathnote">
+          ~/practice/dancefloors · {events.length}+
+        </span>
+        <br />
+        <i>
+          Visual work contributed across Naarm&rsquo;s club nights and
+          festivals:
+        </i>
+        <br />
+        {events.join(" · ")} &hellip;
+      </p>
 
-        {/* INSTALLATION & PERFORMANCE -------------------------------------- */}
-        <p>
-          <span className="extra">installation &amp; performance</span>{" "}
-          <span className="pathnote">
-            ~/practice/rooms · {installations.length + performances.length}{" "}
-            items
-          </span>
-          <br />
-          <i>Interactive installations and live audiovisual performance.</i>
-        </p>
-        {installations.map((p, i) => (
-          <ProjectBlock
-            key={p.slug}
-            p={p}
-            num={i + 1}
-            total={installations.length}
-          />
-        ))}
-        <ul>
-          {performances.map((p, i) => (
-            <li
-              key={`perf-${i}`}
-              data-prev={JSON.stringify({
-                t: p.title,
-                y: p.year,
-                k: "performance",
-                s: p.detail,
-              })}
-            >
-              {p.year !== "—" && <em>{p.year}. </em>}
-              <i>{p.title}</i>
-              {p.detail && <> &mdash; {p.detail}</>}
-            </li>
-          ))}
-        </ul>
+      <NoiseRule char="/" />
 
-        {/* PARTIES & EVENTS ------------------------------------------------- */}
-        <p style={{ marginTop: "1em" }}>
-          <span className="extra">parties &amp; events</span>{" "}
-          <span className="pathnote">
-            ~/practice/dancefloors · {events.length}+
-          </span>
-          <br />
-          <i>
-            Visual work contributed across Naarm&rsquo;s club nights and
-            festivals:
-          </i>
-          <br />
-          {events.join(" · ")} &hellip;
-        </p>
+      {/* SKETCHES --------------------------------------------------------- */}
+      <p>
+        <span className="extra">sketches</span>{" "}
+        <span className="pathnote">~/practice/fun</span>
+        <br />
+        <i>
+          Self-directed experiments and studies in real-time graphics.
+          Currently being catalogued.
+        </i>
+      </p>
 
-        <NoiseRule char="/" />
+      <NoiseRule />
 
-        {/* SKETCHES --------------------------------------------------------- */}
-        <p>
-          <span className="extra">sketches</span>{" "}
-          <span className="pathnote">~/practice/fun</span>
-          <br />
-          <i>
-            Self-directed experiments and studies in real-time graphics.
-            Currently being catalogued.
-          </i>
-        </p>
-
-        <NoiseRule />
-
-        {/* TOOLS -------------------------------------------------------------- */}
-        <p id="tools">
-          <span className="extra">tools</span>{" "}
-          <span className="pathnote">
-            ~/practice/released · {tools.length} items
-          </span>
-          <br />
-          <i>
-            Open-source software and components for the TouchDesigner
-            ecosystem — trackers, bridges, and utilities.
-          </i>
-        </p>
-        <ul>
-          {tools.map((t, i) => (
-            <li
-              key={t.name}
+      {/* TOOLS — each row clickable to its repo -------------------------- */}
+      <p id="tools">
+        <span className="extra">tools</span>{" "}
+        <span className="pathnote">
+          ~/practice/released · {tools.length} items
+        </span>
+        <br />
+        <i>
+          Open-source software and components for the TouchDesigner ecosystem —
+          trackers, bridges, and utilities.
+        </i>
+      </p>
+      <ul>
+        {tools.map((t, i) => (
+          <li key={t.name}>
+            <a
+              className="entry"
+              href={t.links[0]?.href ?? "#"}
+              target="_blank"
+              rel="noreferrer"
               data-prev={JSON.stringify({
                 t: t.name,
                 k: "tool",
@@ -299,118 +353,114 @@ export default function Home() {
               <span className="data" style={{ fontSize: 14 }}>
                 {t.name}
               </span>{" "}
-              &mdash; {t.summary} <span className="foot">({t.stack})</span>{" "}
-              {t.links.map((l) => (
-                <NavButton key={l.href} href={l.href} external>
-                  {l.label}
-                </NavButton>
-              ))}
-            </li>
-          ))}
-        </ul>
+              &mdash; {t.summary} <span className="foot">({t.stack}) ↗</span>
+            </a>
+          </li>
+        ))}
+      </ul>
 
-        <NoiseRule char="/" />
+      <NoiseRule char="/" />
 
-        {/* TEACHING ---------------------------------------------------------- */}
-        <p>
-          <span className="extra">teaching</span>{" "}
-          <span className="pathnote">~/practice/teaching</span>
-          <NavButton href="https://youtube.com/@nicholaspjm" external>
-            youtube
-          </NavButton>
-          <br />
-          Co-founder of <i>Touch Collective</i>, running TouchDesigner
-          workshops, artist talks, and live visual events in Naarm /
-          Melbourne, with technical tutorials published on YouTube. Recent
-          speaking includes <i>Creative Technology Melbourne</i>. Available
-          for workshops and talks &mdash;{" "}
-          <a href={`mailto:${site.email}`}>get in touch</a>.
-        </p>
+      {/* TEACHING ---------------------------------------------------------- */}
+      <p>
+        <span className="extra">teaching</span>{" "}
+        <span className="pathnote">~/practice/teaching</span>
+        <NavButton href="https://youtube.com/@nicholaspjm" external>
+          youtube
+        </NavButton>
+        <br />
+        I co-founded <i>Touch Collective</i>, running TouchDesigner workshops,
+        artist talks, and live visual events in Naarm / Melbourne, with
+        technical tutorials published on YouTube. Recent speaking includes{" "}
+        <i>Creative Technology Melbourne</i>. I&rsquo;m available for workshops
+        and talks &mdash; <a href={`mailto:${site.email}`}>get in touch</a>.
+      </p>
 
-        <NoiseRule />
+      <NoiseRule />
 
-        {/* AWARDS ------------------------------------------------------------ */}
-        <p>
-          <span className="extra">awards</span>
-        </p>
-        <ul>
-          {awards.map((a, i) => (
-            <li
-              key={`award-${i}`}
-              data-prev={JSON.stringify({
-                t: a.title,
-                y: a.year,
-                k: "award",
-                s: a.detail,
-              })}
-            >
-              <em>{a.year}.</em> <span className="highlight">{a.title}</span>
-              {a.detail && <> &mdash; {a.detail}</>}
-            </li>
-          ))}
-        </ul>
+      {/* AWARDS ------------------------------------------------------------ */}
+      <p>
+        <span className="extra">awards</span>
+      </p>
+      <ul>
+        {awards.map((a, i) => (
+          <li
+            key={`award-${i}`}
+            data-prev={JSON.stringify({
+              t: a.title,
+              y: a.year,
+              k: "award",
+              s: a.detail,
+            })}
+          >
+            <em>{a.year}.</em> <span className="highlight">{a.title}</span>
+            {a.detail && <> &mdash; {a.detail}</>}
+          </li>
+        ))}
+      </ul>
 
-        <p>
-          <br />
-        </p>
+      <p>
+        <br />
+      </p>
 
-        {/* PRESS -------------------------------------------------------------- */}
-        <p>
-          <span className="extra">selected press</span>
-          <br />
-          <i>
-            Full press list in the <Link href="/cv">CV spreadsheet</Link>.
-          </i>
-        </p>
-        <ul>
-          {press.map((p, i) => (
-            <li key={`press-${i}`}>
-              {p.year !== "—" && <em>{p.year}. </em>}
-              {p.title}
-              {p.detail && (
-                <>
-                  {" "}
-                  &mdash; <i>{p.detail}</i>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
+      {/* PRESS -------------------------------------------------------------- */}
+      <p>
+        <span className="extra">selected press</span>
+        <br />
+        <i>
+          Full press list in the <Link href="/cv">CV spreadsheet</Link>.
+        </i>
+      </p>
+      <ul>
+        {press.map((p, i) => (
+          <li key={`press-${i}`}>
+            {p.year !== "—" && <em>{p.year}. </em>}
+            {p.title}
+            {p.detail && (
+              <>
+                {" "}
+                &mdash; <i>{p.detail}</i>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
 
-        <p>
-          <br />
-        </p>
+      <p>
+        <br />
+      </p>
 
-        {/* EDUCATION ----------------------------------------------------------- */}
-        <p>
-          <span className="extra">education</span>
-        </p>
-        <ul>
-          {education.map((e, i) => (
-            <li key={`edu-${i}`}>
-              <em>{e.year}.</em> {e.title}
-              {e.detail && <> &mdash; {e.detail}</>}
-            </li>
-          ))}
-        </ul>
+      {/* EDUCATION ----------------------------------------------------------- */}
+      <p>
+        <span className="extra">education</span>
+      </p>
+      <ul>
+        {education.map((e, i) => (
+          <li key={`edu-${i}`}>
+            <em>{e.year}.</em> {e.title}
+            {e.detail && <> &mdash; {e.detail}</>}
+          </li>
+        ))}
+      </ul>
 
-        <p>
-          <br />
-        </p>
+      <p>
+        <br />
+      </p>
 
-        {/* FOOTER ---------------------------------------------------------------- */}
-        <p className="foot">
-          Last updated{" "}
-          {new Date().toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-          . For commissions, collaborations, and press, contact{" "}
-          <a href={`mailto:${site.email}`}>{site.email}</a>. &copy;{" "}
-          {new Date().getFullYear()} Nicholas Marriott, Naarm / Melbourne.
-        </p>
-      </div>
-    </>
+      {/* FOOTER ---------------------------------------------------------------- */}
+      <p className="foot">
+        Last updated{" "}
+        {new Date().toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
+        . For commissions, collaborations, and press, contact{" "}
+        <a href={`mailto:${site.email}`}>{site.email}</a>. &copy;{" "}
+        {new Date().getFullYear()} Nicholas Marriott, Naarm / Melbourne.
+      </p>
+    </div>
   );
+
+  return <HomeShell rich={rich} simple={<SimpleList entries={flat} />} />;
 }

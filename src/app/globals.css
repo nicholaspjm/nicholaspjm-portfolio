@@ -392,6 +392,51 @@ html::-webkit-scrollbar {
   color: var(--hl-a-fg);
 }
 
+/* Clickable entry rows — the whole block is a link */
+.entry {
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 0.15em 0;
+}
+.entry:visited { color: var(--ink); }
+.entry:hover { color: var(--hl-a-fg); }
+.entry:hover .extra {
+  background: transparent !important;
+  color: var(--hl-a-fg) !important;
+}
+.entry:hover a,
+.entry:hover .foot { color: var(--hl-a-fg); }
+
+/* Featured project — larger title for structural variety */
+.feature .extra {
+  font-size: 21px;
+  letter-spacing: -0.01em;
+}
+.feature { margin: 0.2em 0 0.3em 0; }
+
+/* Flat "list all" view — designforthe.net register */
+.simple-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.6em 0;
+}
+.simple-list li {
+  margin: 0.12em 0;
+  line-height: 1.5;
+}
+.simple-list .sl-year {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+}
+.simple-list .sl-sep { color: var(--soft); }
+.simple-list .sl-kind {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  color: var(--soft);
+  text-transform: uppercase;
+}
+
 /* ---------------------------------------------------------------------------
    SCATTER FIELD — work images as blob-tracker detections
    ------------------------------------------------------------------------ */
