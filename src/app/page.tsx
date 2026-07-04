@@ -44,7 +44,7 @@ function ProjectBlock({
         <span className="entry-num">
           {String(num).padStart(2, "0")}/{String(total).padStart(2, "0")}
         </span>
-        <span className="extra">{p.title}</span>
+        <span className="ptitle">{p.title}</span>
         <br />
         <em>{p.year}.</em> {p.summary}
         {p.role && <> &mdash; {p.role}.</>}

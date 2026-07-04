@@ -44,7 +44,7 @@ function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
         {shown.map((p) => (
           <li key={p.slug}>
             <em>{p.year}.</em>{" "}
-            <Link className="extra" href={`/work/${p.slug}`}>
+            <Link className="ptitle" href={`/work/${p.slug}`}>
               {p.title}
             </Link>{" "}
             &mdash; {p.summary}{" "}
