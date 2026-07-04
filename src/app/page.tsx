@@ -14,6 +14,7 @@ import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
 import { ImageRow, type RowImage } from "@/components/ui/image-row";
 import { Editable } from "@/components/ui/editable";
+import { ProjectEntry } from "@/components/ui/project-entry";
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -43,19 +44,17 @@ function ProjectBlock({
 }) {
   return (
     <>
-      <Link
-        href={`/work/${p.slug}`}
-        className={feature ? "entry feature" : "entry"}
-        data-prev={prev(p)}
-      >
-        <span className="entry-num">
-          {String(num).padStart(2, "0")}/{String(total).padStart(2, "0")}
-        </span>
-        <span className="ptitle">{p.title}</span>
-        <br />
-        <em>{p.year}.</em> {p.summary}
-        {p.role && <> &mdash; {p.role}.</>}
-      </Link>
+      <ProjectEntry
+        slug={p.slug}
+        title={p.title}
+        year={p.year}
+        summary={p.summary}
+        role={p.role}
+        num={num}
+        total={total}
+        feature={feature}
+        prev={prev(p)}
+      />
       {showImages && p.images && p.images.length > 0 && (
         <ImageRow
           images={p.images}
@@ -89,9 +88,9 @@ export default function Home() {
 
   const rich = (
     <div className="leftcol">
-      {/* INDEX OF WORK — prominent, above the nav (the spot you liked) --- */}
+      {/* LIST VIEW — prominent, above the nav (the spot you liked) ------- */}
       <p style={{ margin: "0.4em 0 1em 0" }}>
-        <NavButton href="/work">index of work ↓</NavButton>
+        <NavButton href="/work">list view</NavButton>
       </p>
 
       {/* TOP NAV --------------------------------------------------------- */}
@@ -101,24 +100,26 @@ export default function Home() {
         <NavButton href="#tools">tools</NavButton>{" "}
         <InfoSheet>
           <p>
-            <span className="extra">about</span>
+            <Editable id="label.about" as="span" className="extra">
+              about
+            </Editable>
           </p>
-          <p>
-            I&rsquo;m a designer and technologist based in Naarm / Melbourne,
-            b. 1999 in Aotearoa New Zealand. I hold a Bachelor of Arts in
-            Computer Science from the University of Auckland, and worked as a
-            software developer before moving into visual design.
-          </p>
-          <p style={{ marginTop: "0.6em" }}>
+          <Editable id="about.p1" as="p">
+            I&rsquo;m a designer and technologist based in Naarm / Melbourne, b.
+            1999 in Aotearoa New Zealand. I hold a Bachelor of Arts in Computer
+            Science from the University of Auckland, and worked as a software
+            developer before moving into visual design.
+          </Editable>
+          <Editable id="about.p2" as="p" style={{ marginTop: "0.6em" }}>
             My practice centres on real-time systems — audio-reactive visuals,
             interactive installation, and motion — for artists, brands, and
             cultural institutions. I work primarily in TouchDesigner, GLSL,
             Python, and depth-sensing hardware.
-          </p>
-          <p style={{ marginTop: "0.6em" }}>
+          </Editable>
+          <Editable id="about.p3" as="p" style={{ marginTop: "0.6em" }}>
             I&rsquo;m available for commissions, art direction, teaching, and
             speaking.
-          </p>
+          </Editable>
           <p className="foot" style={{ marginTop: "0.6em" }}>
             Extended biography at <Link href="/info">/info</Link>. The
             background is a point-cloud scan; the rail at right maps the
@@ -128,9 +129,18 @@ export default function Home() {
       </div>
 
       {/* INTRO — first person -------------------------------------------- */}
-      <Editable id="intro.line1" as="p" />
+      <Editable id="intro.line1" as="p">
+        I&rsquo;m a designer and technologist working across audio-reactive
+        visuals, interactive installation, and real-time systems, based in Naarm
+        / Melbourne.
+      </Editable>
 
-      <Editable id="intro.line2" as="p" style={{ marginTop: "0.8em" }} />
+      <Editable id="intro.line2" as="p" style={{ marginTop: "0.8em" }}>
+        My practice sits between software engineering and live performance,
+        building responsive systems for touring artists, brands, and cultural
+        institutions. Recent work spans stage and festival visual design,
+        music-video VFX, and interactive installation.
+      </Editable>
 
       <p style={{ marginTop: "1.2em", lineHeight: 1.7 }}>
         <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -159,18 +169,25 @@ export default function Home() {
         id="now.statement"
         as="p"
         style={{ marginTop: "0.4em", maxWidth: "52ch" }}
-      />
+      >
+        Seeking experimentation and collaborative artistic exploration through
+        the use of real-time technology.
+      </Editable>
 
       <p className="callout" style={{ marginTop: "1.2em" }}>
-        <Editable id="availability" as="span" /> Enquiries:{" "}
-        <a href={`mailto:${site.email}`}>{site.email}</a>.
+        <Editable id="availability" as="span">
+          Available for commissions, collaborations, teaching, and speaking.
+        </Editable>{" "}
+        Enquiries: <a href={`mailto:${site.email}`}>{site.email}</a>.
       </p>
 
       <p style={{ marginTop: "1.6em" }}>&hellip;</p>
 
       {/* SELECTED WORKS — curated, hand-ordered highlights --------------- */}
       <p style={{ marginTop: "1.4em" }}>
-        <span className="extra">selected works</span>{" "}
+        <Editable id="label.selected" as="span" className="extra">
+          selected works
+        </Editable>{" "}
         <span className="pathnote">~/practice/selected</span>
       </p>
       {selected.map((p, i) => (
@@ -186,7 +203,9 @@ export default function Home() {
 
       {/* COMMISSIONED ---------------------------------------------------- */}
       <p style={{ marginTop: "1.4em" }}>
-        <span className="extra">commissions</span>{" "}
+        <Editable id="label.commissions" as="span" className="extra">
+          commissions
+        </Editable>{" "}
         <span className="pathnote">~/practice/commissions</span>
       </p>
       {commissioned.map((p, i) => (
@@ -208,7 +227,9 @@ export default function Home() {
 
       {/* INSTALLATION & PERFORMANCE -------------------------------------- */}
       <p>
-        <span className="extra">installation &amp; performance</span>{" "}
+        <Editable id="label.installation" as="span" className="extra">
+          installation &amp; performance
+        </Editable>{" "}
         <span className="pathnote">~/practice/rooms</span>
       </p>
       {installations.map((p, i) => (
@@ -232,8 +253,20 @@ export default function Home() {
             })}
           >
             {p.year !== "—" && <em>{p.year}. </em>}
-            <i>{p.title}</i>
-            {p.detail && <> &mdash; {p.detail}</>}
+            <i>
+              <Editable id={`perf.${i}.title`} as="span">
+                {p.title}
+              </Editable>
+            </i>
+            {p.detail && (
+              <>
+                {" "}
+                &mdash;{" "}
+                <Editable id={`perf.${i}.detail`} as="span">
+                  {p.detail}
+                </Editable>
+              </>
+            )}
           </li>
         ))}
       </ul>
@@ -245,17 +278,23 @@ export default function Home() {
 
       {/* PARTIES & EVENTS ------------------------------------------------- */}
       <p style={{ marginTop: "1em" }}>
-        <span className="extra">parties &amp; events</span>{" "}
+        <Editable id="label.events" as="span" className="extra">
+          parties &amp; events
+        </Editable>{" "}
         <span className="pathnote">~/practice/dancefloors</span>
         <br />
-        {events.join(" · ")} &hellip;
+        <Editable id="events.list" as="span">
+          {`${events.join(" · ")} …`}
+        </Editable>
       </p>
 
       <NoiseRule char="/" />
 
       {/* SKETCHES --------------------------------------------------------- */}
       <p>
-        <span className="extra">sketches</span>{" "}
+        <Editable id="label.sketches" as="span" className="extra">
+          sketches
+        </Editable>{" "}
         <span className="pathnote">~/practice/fun</span>
       </p>
 
@@ -263,7 +302,9 @@ export default function Home() {
 
       {/* TOOLS — each row clickable to its repo -------------------------- */}
       <p id="tools">
-        <span className="extra">tools</span>{" "}
+        <Editable id="label.tools" as="span" className="extra">
+          tools
+        </Editable>{" "}
         <span className="pathnote">~/practice/released</span>
       </p>
       <ul>
@@ -297,7 +338,9 @@ export default function Home() {
 
       {/* TEACHING ---------------------------------------------------------- */}
       <p>
-        <span className="extra">teaching</span>{" "}
+        <Editable id="label.teaching" as="span" className="extra">
+          teaching
+        </Editable>{" "}
         <span className="pathnote">~/practice/teaching</span>
         <NavButton href="https://youtube.com/@nicholaspjm" external>
           youtube
@@ -314,7 +357,9 @@ export default function Home() {
 
       {/* AWARDS ------------------------------------------------------------ */}
       <p>
-        <span className="extra">awards</span>
+        <Editable id="label.awards" as="span" className="extra">
+          awards
+        </Editable>
       </p>
       <ul>
         {awards.map((a, i) => (
@@ -327,8 +372,21 @@ export default function Home() {
               s: a.detail,
             })}
           >
-            <em>{a.year}.</em> <span className="highlight">{a.title}</span>
-            {a.detail && <> &mdash; {a.detail}</>}
+            <em>{a.year}.</em>{" "}
+            <span className="highlight">
+              <Editable id={`award.${i}.title`} as="span">
+                {a.title}
+              </Editable>
+            </span>
+            {a.detail && (
+              <>
+                {" "}
+                &mdash;{" "}
+                <Editable id={`award.${i}.detail`} as="span">
+                  {a.detail}
+                </Editable>
+              </>
+            )}
           </li>
         ))}
       </ul>
@@ -339,17 +397,26 @@ export default function Home() {
 
       {/* PRESS -------------------------------------------------------------- */}
       <p>
-        <span className="extra">selected press</span>
+        <Editable id="label.press" as="span" className="extra">
+          selected press
+        </Editable>
       </p>
       <ul>
         {press.map((p, i) => (
           <li key={`press-${i}`}>
             {p.year !== "—" && <em>{p.year}. </em>}
-            {p.title}
+            <Editable id={`press.${i}.title`} as="span">
+              {p.title}
+            </Editable>
             {p.detail && (
               <>
                 {" "}
-                &mdash; <i>{p.detail}</i>
+                &mdash;{" "}
+                <i>
+                  <Editable id={`press.${i}.detail`} as="span">
+                    {p.detail}
+                  </Editable>
+                </i>
               </>
             )}
           </li>
@@ -362,13 +429,26 @@ export default function Home() {
 
       {/* EDUCATION ----------------------------------------------------------- */}
       <p>
-        <span className="extra">education</span>
+        <Editable id="label.education" as="span" className="extra">
+          education
+        </Editable>
       </p>
       <ul>
         {education.map((e, i) => (
           <li key={`edu-${i}`}>
-            <em>{e.year}.</em> {e.title}
-            {e.detail && <> &mdash; {e.detail}</>}
+            <em>{e.year}.</em>{" "}
+            <Editable id={`edu.${i}.title`} as="span">
+              {e.title}
+            </Editable>
+            {e.detail && (
+              <>
+                {" "}
+                &mdash;{" "}
+                <Editable id={`edu.${i}.detail`} as="span">
+                  {e.detail}
+                </Editable>
+              </>
+            )}
           </li>
         ))}
       </ul>

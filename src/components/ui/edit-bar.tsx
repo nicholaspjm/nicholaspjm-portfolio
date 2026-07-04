@@ -23,10 +23,15 @@ export function EditBar() {
   if (!isEditorEnabled) return null;
 
   const save = async () => {
-    const edits: Record<string, string> = {};
+    const edits: Record<string, { value: string; default: string }> = {};
     document.querySelectorAll<HTMLElement>("[data-edit-id]").forEach((el) => {
       const key = el.getAttribute("data-edit-id");
-      if (key) edits[key] = el.innerText.trim();
+      if (key) {
+        edits[key] = {
+          value: el.innerText.trim(),
+          default: el.getAttribute("data-edit-default") ?? "",
+        };
+      }
     });
     setStatus("saving…");
     try {
@@ -39,9 +44,9 @@ export function EditBar() {
       if (!res.ok) {
         setStatus(`error: ${data.error ?? res.status}`);
       } else if (data.changed === 0) {
-        setStatus("no changes");
+        setStatus("no changes to save");
       } else {
-        setStatus(`saved + pushed (${data.changed}) — deploying`);
+        setStatus(`saved locally (${data.changed}) — pushes next update`);
       }
     } catch {
       setStatus("studio offline — run: npm run studio");
@@ -58,7 +63,7 @@ export function EditBar() {
       >
         {editMode ? "done editing" : "✎ edit text"}
       </button>
-      {editMode && <button onClick={save}>save &amp; push</button>}
+      {editMode && <button onClick={save}>save</button>}
       {status && <span className="editbar-status">{status}</span>}
     </div>
   );

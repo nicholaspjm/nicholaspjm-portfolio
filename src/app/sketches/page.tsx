@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { NavButton } from "@/components/ui/nav-button";
+import { Editable } from "@/components/ui/editable";
 
 export const metadata: Metadata = {
   title: "Sketches",
@@ -16,7 +17,9 @@ export default function SketchesPage() {
       </p>
 
       <p>
-        <span className="extra">sketches</span>
+        <Editable id="label.sketches" as="span" className="extra">
+          sketches
+        </Editable>
       </p>
     </>
   );

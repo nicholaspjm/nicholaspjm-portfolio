@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site } from "@/content/site";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
+import { Editable } from "@/components/ui/editable";
 
 export const metadata: Metadata = { title: "Info" };
 
@@ -23,24 +24,25 @@ export default function InfoPage() {
       </p>
 
       <p style={{ marginTop: "0.6em" }}>
-        <span className="extra">about</span>
+        <Editable id="info.label.about" as="span" className="extra">
+          about
+        </Editable>
       </p>
 
       <div style={{ maxWidth: "64ch" }}>
-        <p style={{ marginTop: "0.6em" }}>
-          I&rsquo;m a designer and technologist based in Naarm / Melbourne,
-          b. 1999 in Aotearoa New Zealand. My practice works across
-          audio-reactive visuals, interactive installation, and motion,
-          building real-time systems for touring artists, brands, and cultural
-          institutions.
-        </p>
-        <p style={{ marginTop: "0.6em" }}>
+        <Editable id="info.about.p1" as="p" style={{ marginTop: "0.6em" }}>
+          I&rsquo;m a designer and technologist based in Naarm / Melbourne, b.
+          1999 in Aotearoa New Zealand. My practice works across audio-reactive
+          visuals, interactive installation, and motion, building real-time
+          systems for touring artists, brands, and cultural institutions.
+        </Editable>
+        <Editable id="info.about.p2" as="p" style={{ marginTop: "0.6em" }}>
           I hold a Bachelor of Arts in Computer Science from the University of
-          Auckland, and worked as a software developer before moving into
-          visual design — an engineering background that shapes how
-          I build shows: versioned, tested, and performed live. I work
-          primarily in TouchDesigner, GLSL, Python, and depth-sensing hardware.
-        </p>
+          Auckland, and worked as a software developer before moving into visual
+          design — an engineering background that shapes how I build shows:
+          versioned, tested, and performed live. I work primarily in
+          TouchDesigner, GLSL, Python, and depth-sensing hardware.
+        </Editable>
         <p style={{ marginTop: "0.6em" }}>
           Recent work includes visual design for The xx, Nine Inch Nails, Nike,
           Odetari, Ravyn Lenae, Its Murph, and smokedope2016, in collaboration
@@ -60,7 +62,9 @@ export default function InfoPage() {
       <NoiseRule char="/" />
 
       <p>
-        <span className="extra">contact</span>
+        <Editable id="info.label.contact" as="span" className="extra">
+          contact
+        </Editable>
         <br />
         For commissions, collaborations, teaching, and press:{" "}
         <a href={`mailto:${site.email}`}>{site.email}</a> · +61 480 748 953 ·{" "}
@@ -70,7 +74,9 @@ export default function InfoPage() {
       </p>
 
       <p style={{ marginTop: "0.8em" }}>
-        <span className="extra">colophon</span>
+        <Editable id="info.label.colophon" as="span" className="extra">
+          colophon
+        </Editable>
         <br />
         Built with Next.js. Set in Arial with Courier for data. The background
         of the <Link href="/">index</Link> is a point-cloud scan; the rail at

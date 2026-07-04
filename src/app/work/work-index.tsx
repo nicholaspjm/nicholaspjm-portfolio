@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { NavButton } from "@/components/ui/nav-button";
+import { Editable } from "@/components/ui/editable";
+import { editableText } from "@/content/editable-text";
 
 export interface WorkItem {
   slug: string;
@@ -28,7 +30,9 @@ function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
       </p>
 
       <p>
-        <span className="extra">index of work</span>
+        <Editable id="label.indexOfWork" as="span" className="extra">
+          index of work
+        </Editable>
       </p>
 
       <p>
@@ -45,9 +49,9 @@ function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
           <li key={p.slug}>
             <em>{p.year}.</em>{" "}
             <Link className="ptitle" href={`/work/${p.slug}`}>
-              {p.title}
+              {editableText[`work.${p.slug}.title`] ?? p.title}
             </Link>{" "}
-            &mdash; {p.summary}{" "}
+            &mdash; {editableText[`work.${p.slug}.summary`] ?? p.summary}{" "}
             <span className="foot">({p.categories.join(" / ")})</span>
           </li>
         ))}

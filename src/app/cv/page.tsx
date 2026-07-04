@@ -10,6 +10,7 @@ import {
 } from "@/content/cv";
 import { NavButton } from "@/components/ui/nav-button";
 import { CVSheet, type CVRow } from "@/components/ui/cv-sheet";
+import { Editable } from "@/components/ui/editable";
 
 export const metadata: Metadata = { title: "CV" };
 
@@ -73,7 +74,9 @@ export default function CVPage() {
       </p>
 
       <p>
-        <span className="extra">Nicholas Marriott — CV</span>
+        <Editable id="label.cv" as="span" className="extra">
+          Nicholas Marriott — CV
+        </Editable>
       </p>
 
       <CVSheet rows={rows} />

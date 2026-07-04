@@ -1,13 +1,12 @@
 // Local content studio — receives text edits from the dev site's in-place
-// editor, writes them back to src/content/editable-text.json, then commits and
-// pushes to `origin` so the change deploys to live. Local only; never runs in
-// production (the site is a static export with no server).
+// editor and writes them to src/content/editable-text.json. It saves LOCALLY
+// only (no commit/push); the edits ride along with the next commit we make.
+// Local only; never runs in production (the site is a static export).
 //
 //   npm run studio      # run alongside `npm run dev`, in its own terminal
 //
 import http from "node:http";
 import { readFileSync, writeFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -27,10 +26,6 @@ function send(res, code, obj) {
   res.end(JSON.stringify(obj));
 }
 
-function git(...args) {
-  return execFileSync("git", args, { cwd: ROOT }).toString().trim();
-}
-
 function handleSave(body, res) {
   const { edits } = JSON.parse(body || "{}");
   if (!edits || typeof edits !== "object") {
@@ -39,10 +34,20 @@ function handleSave(body, res) {
 
   const current = JSON.parse(readFileSync(JSON_PATH, "utf8"));
   let changed = 0;
-  for (const [key, val] of Object.entries(edits)) {
-    // Only update keys we already know about, and only real string changes.
-    if (typeof val === "string" && key in current && current[key] !== val) {
-      current[key] = val;
+  // Each entry is { value, default }. Store the value only when it differs from
+  // the code default; if it's reverted to the default, drop the override so the
+  // overrides file stays minimal.
+  for (const [key, entry] of Object.entries(edits)) {
+    if (!entry || typeof entry.value !== "string") continue;
+    const value = entry.value;
+    const def = typeof entry.default === "string" ? entry.default : "";
+    if (value !== def) {
+      if (current[key] !== value) {
+        current[key] = value;
+        changed++;
+      }
+    } else if (key in current) {
+      delete current[key];
       changed++;
     }
   }
@@ -50,19 +55,8 @@ function handleSave(body, res) {
   if (changed === 0) return send(res, 200, { ok: true, changed: 0 });
 
   writeFileSync(JSON_PATH, JSON.stringify(current, null, 2) + "\n");
-
-  try {
-    git("add", REL);
-    git("commit", "-m", "Edit site text via studio");
-    const branch = git("rev-parse", "--abbrev-ref", "HEAD");
-    git("push", "origin", branch);
-    console.log(`✎ pushed ${changed} edit(s) to ${branch}`);
-    return send(res, 200, { ok: true, changed, pushed: true, branch });
-  } catch (e) {
-    return send(res, 500, {
-      error: `wrote file but git failed: ${String(e.message || e)}`,
-    });
-  }
+  console.log(`✎ saved ${changed} edit(s) locally (not pushed)`);
+  return send(res, 200, { ok: true, changed, saved: true });
 }
 
 const server = http.createServer((req, res) => {
@@ -84,6 +78,6 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, "127.0.0.1", () => {
   console.log(
-    `✎ content studio on http://127.0.0.1:${PORT} — saves push to live`,
+    `✎ content studio on http://127.0.0.1:${PORT} — saves locally (push with your next update)`,
   );
 });

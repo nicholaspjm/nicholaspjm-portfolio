@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getListedProjects, getCategories } from "@/lib/projects";
 import { performances, events } from "@/content/cv";
 import { NoiseRule } from "@/components/ui/noise";
+import { Editable } from "@/components/ui/editable";
+import { editableText } from "@/content/editable-text";
 import { WorkIndex, type WorkItem } from "./work-index";
 
 export const metadata: Metadata = { title: "Work" };
@@ -22,7 +24,9 @@ export default function WorkPage() {
 
       {/* PERFORMANCES & EXHIBITIONS ---------------------------------------- */}
       <p>
-        <span className="extra">performances &amp; exhibitions</span>{" "}
+        <Editable id="label.perfExhibitions" as="span" className="extra">
+          performances &amp; exhibitions
+        </Editable>{" "}
         <span className="pathnote">~/practice/live</span>
       </p>
       <ul>
@@ -37,18 +41,22 @@ export default function WorkPage() {
             })}
           >
             {p.year !== "—" && <em>{p.year}. </em>}
-            <i>{p.title}</i>
-            {p.detail && <> &mdash; {p.detail}</>}
+            <i>{editableText[`perf.${i}.title`] ?? p.title}</i>
+            {p.detail && (
+              <> &mdash; {editableText[`perf.${i}.detail`] ?? p.detail}</>
+            )}
           </li>
         ))}
       </ul>
 
       {/* PARTIES & EVENTS ---------------------------------------------------- */}
       <p style={{ marginTop: "1em" }}>
-        <span className="extra">parties &amp; events</span>{" "}
+        <Editable id="label.events" as="span" className="extra">
+          parties &amp; events
+        </Editable>{" "}
         <span className="pathnote">~/practice/dancefloors</span>
         <br />
-        {events.join(" · ")} &hellip;
+        {editableText["events.list"] ?? `${events.join(" · ")} …`}
       </p>
     </>
   );

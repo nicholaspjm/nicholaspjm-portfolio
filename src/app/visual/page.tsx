@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getListedProjects } from "@/lib/projects";
 import { NavButton } from "@/components/ui/nav-button";
 import { VisualField, type VisualItem } from "@/components/ui/visual-field";
+import { Editable } from "@/components/ui/editable";
 
 export const metadata: Metadata = {
   title: "Visual",
@@ -25,10 +26,14 @@ export default function VisualPage() {
         <NavButton href="/work">index of work</NavButton>
       </p>
       <p style={{ margin: "0 0 0.2em 0" }}>
-        <span className="extra">visual</span>{" "}
+        <Editable id="label.visual" as="span" className="extra">
+          visual
+        </Editable>{" "}
         <span className="pathnote">~/practice/visuals</span>
         <br />
-        Every image, scattered. Click any to open its work.
+        <Editable id="visual.intro" as="span">
+          Every image, scattered. Click any to open its work.
+        </Editable>
       </p>
       <VisualField items={items} />
     </div>
