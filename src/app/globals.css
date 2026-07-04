@@ -694,7 +694,8 @@ html[data-preview] .scatter-field { opacity: 0; }
    ------------------------------------------------------------------------ */
 .editbar {
   position: fixed;
-  left: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 12px;
   z-index: 200;
   display: flex;
@@ -708,6 +709,27 @@ html[data-preview] .scatter-field { opacity: 0; }
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
   color: var(--soft);
+}
+/* Per-row image resize control, shown in edit mode. */
+.img-resize {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  margin-bottom: 6px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  color: var(--soft);
+}
+.img-resize button {
+  all: revert;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 0 5px;
+  cursor: pointer;
+}
+.img-resize button.on {
+  background: var(--link);
+  color: var(--hl-a-fg);
 }
 .editable-on {
   outline: 1px dashed var(--link);

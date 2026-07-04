@@ -27,8 +27,11 @@ export function EditBar() {
     document.querySelectorAll<HTMLElement>("[data-edit-id]").forEach((el) => {
       const key = el.getAttribute("data-edit-id");
       if (key) {
+        // Text regions carry their value as innerText; non-text controls (e.g.
+        // the image-size picker) expose it via data-edit-value.
+        const raw = el.getAttribute("data-edit-value");
         edits[key] = {
-          value: el.innerText.trim(),
+          value: (raw !== null ? raw : el.innerText).trim(),
           default: el.getAttribute("data-edit-default") ?? "",
         };
       }

@@ -62,6 +62,7 @@ function ProjectBlock({
           sizeClass={imageSizeClass(p.imageSize)}
           title={p.title}
           oneOnMobile
+          resizeId={p.slug}
         />
       )}
     </>

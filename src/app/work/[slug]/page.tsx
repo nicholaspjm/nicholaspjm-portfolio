@@ -86,6 +86,7 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
           images={project.images}
           sizeClass={imageSizeClass(project.imageSize)}
           title={project.title}
+          resizeId={project.slug}
         />
       )}
 
