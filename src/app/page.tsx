@@ -15,6 +15,7 @@ import { InfoSheet } from "@/components/ui/info-sheet";
 import { ImageRow, type RowImage } from "@/components/ui/image-row";
 import { Editable } from "@/components/ui/editable";
 import { ProjectEntry } from "@/components/ui/project-entry";
+import { ToolEntry } from "@/components/ui/tool-entry";
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -310,26 +311,20 @@ export default function Home() {
       <ul>
         {tools.map((t, i) => (
           <li key={t.name}>
-            <a
-              className="entry"
+            <ToolEntry
               href={t.links[0]?.href ?? "#"}
-              target="_blank"
-              rel="noreferrer"
-              data-prev={JSON.stringify({
+              prev={JSON.stringify({
                 t: t.name,
                 k: "tool",
                 s: `${t.summary} (${t.stack})`,
               })}
-            >
-              <span className="entry-num">
-                {String(i + 1).padStart(2, "0")}/
-                {String(tools.length).padStart(2, "0")}
-              </span>
-              <span className="data" style={{ fontSize: 14 }}>
-                {t.name}
-              </span>{" "}
-              &mdash; {t.summary} <span className="foot">({t.stack}) ↗</span>
-            </a>
+              num={i + 1}
+              total={tools.length}
+              name={t.name}
+              summary={t.summary}
+              stack={t.stack}
+              idx={i}
+            />
           </li>
         ))}
       </ul>
@@ -346,11 +341,14 @@ export default function Home() {
           youtube
         </NavButton>
         <br />
-        I co-founded <i>Touch Collective</i>, running TouchDesigner workshops,
-        artist talks, and live visual events in Naarm / Melbourne, with
-        technical tutorials published on YouTube. Recent speaking includes{" "}
-        <i>Creative Technology Melbourne</i>. I&rsquo;m available for workshops
-        and talks &mdash; <a href={`mailto:${site.email}`}>get in touch</a>.
+        <Editable id="teaching.body" as="span">
+          I co-founded Touch Collective, running TouchDesigner workshops, artist
+          talks, and live visual events in Naarm / Melbourne, with technical
+          tutorials published on YouTube. Recent speaking includes Creative
+          Technology Melbourne. I&rsquo;m available for workshops and talks
+          &mdash;
+        </Editable>{" "}
+        <a href={`mailto:${site.email}`}>get in touch</a>.
       </p>
 
       <NoiseRule />

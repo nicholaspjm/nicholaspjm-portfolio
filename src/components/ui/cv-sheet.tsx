@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Editable } from "@/components/ui/editable";
 
 export interface CVRow {
   year: string;
@@ -239,11 +240,11 @@ export function CVSheet({ rows }: { rows: CVRow[] }) {
       <p>
         <button onClick={download}>export .csv ↓</button>{" "}
         <span className="foot">
-          the formula bar runs for real — try{" "}
-          <code>WHERE year &gt;= 2026</code>,{" "}
-          <code>WHERE title CONTAINS &apos;xx&apos;</code>, or{" "}
-          <code>LIMIT 5</code> · click headers to sort · click cells to
-          inspect
+          <Editable id="cv.formulaHint" as="span">
+            the formula bar runs for real — try WHERE year &gt;= 2026, WHERE
+            title CONTAINS &apos;xx&apos;, or LIMIT 5 · click headers to sort ·
+            click cells to inspect
+          </Editable>
         </span>
       </p>
 
