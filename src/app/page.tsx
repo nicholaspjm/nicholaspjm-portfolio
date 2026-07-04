@@ -13,6 +13,7 @@ import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
 import { ImageRow, type RowImage } from "@/components/ui/image-row";
+import { Editable } from "@/components/ui/editable";
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -122,18 +123,9 @@ export default function Home() {
       </div>
 
       {/* INTRO — first person -------------------------------------------- */}
-      <p>
-        I&rsquo;m a designer and technologist working across audio-reactive
-        visuals, interactive installation, and real-time systems, based in
-        Naarm / Melbourne.
-      </p>
+      <Editable id="intro.line1" as="p" />
 
-      <p style={{ marginTop: "0.8em" }}>
-        My practice sits between software engineering and live performance,
-        building responsive systems for touring artists, brands, and cultural
-        institutions. Recent work spans stage and festival visual design,
-        music-video VFX, and interactive installation.
-      </p>
+      <Editable id="intro.line2" as="p" style={{ marginTop: "0.8em" }} />
 
       <p style={{ marginTop: "1.2em", lineHeight: 1.7 }}>
         <a href={`mailto:${site.email}`}>{site.email}</a>
@@ -158,14 +150,15 @@ export default function Home() {
         now
         <br />↪
       </p>
-      <p style={{ marginTop: "0.4em", maxWidth: "52ch" }}>
-        Seeking experimentation and collaborative artistic exploration through
-        the use of real-time technology.
-      </p>
+      <Editable
+        id="now.statement"
+        as="p"
+        style={{ marginTop: "0.4em", maxWidth: "52ch" }}
+      />
 
       <p className="callout" style={{ marginTop: "1.2em" }}>
-        Available for commissions, collaborations, teaching, and speaking.
-        Enquiries: <a href={`mailto:${site.email}`}>{site.email}</a>.
+        <Editable id="availability" as="span" /> Enquiries:{" "}
+        <a href={`mailto:${site.email}`}>{site.email}</a>.
       </p>
 
       <p style={{ marginTop: "1.6em" }}>&hellip;</p>

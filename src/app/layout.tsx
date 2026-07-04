@@ -6,6 +6,7 @@ import { PointCloud } from "@/components/ui/point-cloud";
 import { PreviewZone } from "@/components/ui/preview-zone";
 import { SideSlider } from "@/components/ui/side-slider";
 import { DarkToggle } from "@/components/ui/dark-toggle";
+import { EditBar } from "@/components/ui/edit-bar";
 import "./globals.css";
 
 // Apply saved dark mode before first paint to avoid a flash of light.
@@ -37,6 +38,7 @@ export default function RootLayout({
         <Readout />
         <PreviewZone />
         <DarkToggle />
+        <EditBar />
       </body>
     </html>
   );

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "new-project": "node scripts/new-project.mjs"
+    "new-project": "node scripts/new-project.mjs",
+    "studio": "node scripts/studio-server.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
