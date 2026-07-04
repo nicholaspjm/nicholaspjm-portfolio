@@ -1,3 +1,3 @@
-:HL["/nicholaspjm-portfolio/_next/static/chunks/0a-gx9cxnmkyf.css","style"]
+:HL["/nicholaspjm-portfolio/_next/static/chunks/01dyo9egl2io3.css","style"]
 :HL["/nicholaspjm-portfolio/images/projects/for-the-cause/01.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"for-the-cause","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"LAey6rMnLuStv3UcxUmGM"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"for-the-cause","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"QzOe2uEr-suftC64SqTLH"}
