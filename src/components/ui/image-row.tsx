@@ -21,10 +21,13 @@ export function ImageRow({
   images,
   sizeClass,
   title,
+  oneOnMobile = false,
 }: {
   images: RowImage[];
   sizeClass: string; // "" | " size-m" | " size-l"
   title: string;
+  /** On mobile, show only the first image (one per work). */
+  oneOnMobile?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [firstHidden, setFirstHidden] = useState<number | null>(null);
@@ -64,7 +67,10 @@ export function ImageRow({
   if (images.length === 0) return null;
 
   return (
-    <div ref={ref} className={`image-row${sizeClass}`}>
+    <div
+      ref={ref}
+      className={`image-row${sizeClass}${oneOnMobile ? " one-mobile" : ""}`}
+    >
       {images.map((img, i) => {
         const hidden = firstHidden !== null && i >= firstHidden;
         const alt = img.alt ?? img.caption ?? title;

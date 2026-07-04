@@ -203,6 +203,8 @@ button {
   .image-module img,
   .image-row.size-m img,
   .image-row.size-l img { width: 100%; height: auto; max-height: none; }
+  /* one image per work on mobile — hide the rest of a work's strip */
+  .image-row.one-mobile .image-module:not(:first-child) { display: none; }
 }
 
 /* ---------------------------------------------------------------------------

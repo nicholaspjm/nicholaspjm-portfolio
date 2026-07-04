@@ -27,12 +27,19 @@ export function PointCloud() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // render at CSS resolution (dpr 1): a 1px dot maps to exactly one CSS
-    // pixel, so it stays crisp black instead of being downsampled to grey
-    const dpr = 1;
+    // render at the device pixel ratio (capped for perf) so the scan stays
+    // crisp on high-DPI / mobile screens instead of being upscaled from a
+    // CSS-resolution canvas. Each point is drawn as a dpr-sized block below so
+    // the dot reads at a consistent ~1 CSS-pixel size and stays solid, not grey.
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dot = Math.max(1, Math.round(dpr));
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
     const resize = () => {
+      // re-read each resize so the correct device pixel ratio is used even if
+      // the component mounted on a different screen / before rotation
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dot = Math.max(1, Math.round(dpr));
       const w = Math.max(1, Math.floor(window.innerWidth * dpr));
       const h = Math.max(1, Math.floor(window.innerHeight * dpr));
       if (canvas.width === w && canvas.height === h && img) return;
@@ -178,10 +185,13 @@ export function PointCloud() {
         const py = cyp + y1 * scale * pz * 0.5;
         const ix = px | 0;
         const iy = py | 0;
-        if (ix < 0 || ix >= w - 1 || iy < 0 || iy >= h - 1) continue;
-        const o = iy * w + ix;
-        // every point is a single device pixel — very fine grain
-        buf[o] = inScan && !reduced ? accentWord : word;
+        if (ix < 0 || iy < 0 || ix > w - dot || iy > h - dot) continue;
+        const wpx = inScan && !reduced ? accentWord : word;
+        // a dpr-sized block keeps the dot ~1 CSS pixel and crisp on any screen
+        for (let dy = 0; dy < dot; dy++) {
+          const row = (iy + dy) * w + ix;
+          for (let dx = 0; dx < dot; dx++) buf[row + dx] = wpx;
+        }
       }
 
       ctx.putImageData(img, 0, 0);

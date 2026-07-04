@@ -14,6 +14,7 @@ import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
 import { ImageRow, type RowImage } from "@/components/ui/image-row";
 import { Editable } from "@/components/ui/editable";
+import { HomeShell } from "@/components/ui/home-shell";
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -61,6 +62,7 @@ function ProjectBlock({
           images={p.images}
           sizeClass={imageSizeClass(p.imageSize)}
           title={p.title}
+          oneOnMobile
         />
       )}
     </>
@@ -72,6 +74,58 @@ function categoryImages(projects: Project[]): RowImage[] {
   return projects
     .filter((p) => p.images && p.images.length > 0)
     .map((p) => ({ src: p.images![0].src, slug: p.slug, alt: p.title }));
+}
+
+interface FlatEntry {
+  year: string;
+  title: string;
+  kind: string;
+  role?: string;
+  href?: string;
+  ext?: boolean;
+}
+
+/**
+ * Flat chronological "list all" view — one slashed line per item
+ * (kind / year / title / role), newest first, in the designforthe.net register.
+ */
+function SimpleList({ entries }: { entries: FlatEntry[] }) {
+  return (
+    <div className="leftcol">
+      <ul className="simple-list">
+        {entries.map((e, i) => (
+          <li key={`${e.title}-${i}`}>
+            <span className="sl-kind">{e.kind}</span>
+            <span className="sl-sep"> / </span>
+            <span className="sl-year">{e.year === "—" ? "n.d." : e.year}</span>
+            <span className="sl-sep"> / </span>
+            {e.href ? (
+              e.ext ? (
+                <a className="sl-title" href={e.href} target="_blank" rel="noreferrer">
+                  {e.title}
+                </a>
+              ) : (
+                <Link className="sl-title" href={e.href}>
+                  {e.title}
+                </Link>
+              )
+            ) : (
+              <span className="sl-title">{e.title}</span>
+            )}
+            {e.role && (
+              <>
+                <span className="sl-sep"> / </span>
+                <span className="sl-role">{e.role}</span>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p className="foot" style={{ marginTop: "1.4em" }}>
+        Everything, newest first.
+      </p>
+    </div>
+  );
 }
 
 export default function Home() {
@@ -86,12 +140,56 @@ export default function Home() {
     .map((slug) => getProjectBySlug(slug))
     .filter((p): p is Project => Boolean(p));
 
+  // Flat chronological index for the "list all" view.
+  const kindLabel = (s?: string) =>
+    s === "installation" ? "installation" : s === "sketch" ? "sketch" : "commission";
+  const flat: FlatEntry[] = [
+    ...all.map((p) => ({
+      year: p.year,
+      title: p.title,
+      kind: kindLabel(p.section),
+      role: p.role,
+      href: `/work/${p.slug}`,
+    })),
+    ...performances.map((p) => ({
+      year: p.year,
+      title: p.title,
+      kind: "performance",
+      role: p.detail,
+    })),
+    ...awards.map((a) => ({
+      year: a.year,
+      title: a.title,
+      kind: "award",
+      role: a.detail,
+    })),
+    ...press.map((p) => ({
+      year: p.year,
+      title: p.title,
+      kind: "press",
+      role: p.detail,
+    })),
+    ...tools.map((t) => ({
+      year: "—",
+      title: t.name,
+      kind: "tool",
+      role: t.stack,
+      href: t.links[0]?.href,
+      ext: true,
+    })),
+    ...education.map((e) => ({
+      year: e.year,
+      title: e.title,
+      kind: "education",
+      role: e.detail,
+    })),
+  ].sort((a, b) => (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0));
+
   const rich = (
     <div className="leftcol">
-      {/* TOP NAV — nudged down to sit level with the fixed dark toggle --- */}
-      <div style={{ margin: "7px 0 1.4em 0" }}>
+      {/* TOP NAV --------------------------------------------------------- */}
+      <div style={{ margin: "0 0 1.4em 0" }}>
         <NavButton href="/cv">CV</NavButton>
-        <NavButton href="/work">index of work</NavButton>
         <NavButton href="/visual">visual</NavButton>
         <NavButton href="#tools">tools</NavButton>{" "}
         <InfoSheet>
@@ -387,5 +485,5 @@ export default function Home() {
     </div>
   );
 
-  return rich;
+  return <HomeShell rich={rich} simple={<SimpleList entries={flat} />} />;
 }
