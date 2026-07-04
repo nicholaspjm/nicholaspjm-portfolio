@@ -23,9 +23,7 @@ export default function WorkPage() {
       {/* PERFORMANCES & EXHIBITIONS ---------------------------------------- */}
       <p>
         <span className="extra">performances &amp; exhibitions</span>{" "}
-        <span className="pathnote">
-          ~/practice/live · {performances.length} items
-        </span>
+        <span className="pathnote">~/practice/live</span>
       </p>
       <ul>
         {performances.map((p, i) => (
@@ -48,9 +46,7 @@ export default function WorkPage() {
       {/* PARTIES & EVENTS ---------------------------------------------------- */}
       <p style={{ marginTop: "1em" }}>
         <span className="extra">parties &amp; events</span>{" "}
-        <span className="pathnote">
-          ~/practice/dancefloors · {events.length}+
-        </span>
+        <span className="pathnote">~/practice/dancefloors</span>
         <br />
         {events.join(" · ")} &hellip;
       </p>

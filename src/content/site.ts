@@ -6,7 +6,7 @@ export const site: SiteInfo = {
   tagline:
     "Designer and technologist working across audio-reactive visuals, interactive installation, and real-time systems. Based in Naarm / Melbourne.",
   url: "https://nicholaspjm.com",
-  email: "nicholaspjm@gmail.com",
+  email: "contact@nicholaspjm.com",
   social: [
     { label: "Instagram", href: "https://instagram.com/nicholaspjm" },
     { label: "YouTube", href: "https://youtube.com/@nicholaspjm" },

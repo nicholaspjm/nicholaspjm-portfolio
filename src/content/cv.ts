@@ -142,7 +142,7 @@ export const teaching: CVEntry[] = [
 export const education: CVEntry[] = [
   {
     year: "2021",
-    title: "Bachelor of Computer Science & Bachelor of Arts",
+    title: "B.A. Computer Science",
     detail: "University of Auckland.",
   },
 ];

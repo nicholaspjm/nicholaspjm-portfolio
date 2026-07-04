@@ -608,6 +608,59 @@ html[data-preview] .scatter-field { opacity: 0; }
   border-bottom: 2px solid var(--ink);
 }
 
+/* ---------------------------------------------------------------------------
+   VISUAL FIELD — /visual: every image scattered, clickable to its work
+   ------------------------------------------------------------------------ */
+.visual-field {
+  position: relative;
+  width: 100%;
+  margin-top: 0.6em;
+}
+.vblob {
+  position: absolute;
+  display: block;
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  text-decoration: none;
+  color: inherit;
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.vblob img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.vblob:hover {
+  transform: rotate(0deg) scale(1.14);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.3);
+  z-index: 9999 !important;
+}
+.vblob:hover .blob-label {
+  background: var(--link);
+  color: var(--hl-a-fg);
+}
+.vblob::before,
+.vblob::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+}
+.vblob::before {
+  left: -1px;
+  top: -1px;
+  border-left: 2px solid var(--ink);
+  border-top: 2px solid var(--ink);
+}
+.vblob::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
 /* About sheet — slides up from the bottom, non-modal */
 .sheet-panel {
   position: fixed;
