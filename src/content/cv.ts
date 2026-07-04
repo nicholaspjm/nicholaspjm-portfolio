@@ -147,12 +147,11 @@ export const education: CVEntry[] = [
   },
   {
     year: "2021",
-    title: "Bachelor of Arts",
+    title: "B.A. of Arts",
     detail: "University of Auckland.",
   },
   {
     year: "2018",
-    title: "上智大学 (Sophia University)",
-    detail: "Honours, Intelligent Vision Systems. Tokyo.",
+    title: "上智大学",
   },
 ];

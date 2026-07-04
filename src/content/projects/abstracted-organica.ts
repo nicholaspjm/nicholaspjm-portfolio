@@ -14,6 +14,12 @@ export const project: Project = {
   role: "Featured artist",
   categories: ["Press", "Feature"],
   unlisted: true,
+  // Mach1's mycelium renders as the featured example of the aesthetic.
+  images: [
+    { src: "/images/projects/mach1-festival/01.jpg", caption: "Mach1 Festival — mycelium system" },
+    { src: "/images/projects/mach1-festival/02.jpg", caption: "Tent installation" },
+    { src: "/images/projects/mach1-festival/03.jpg", caption: "Render variation" },
+  ],
   blocks: [
     {
       kind: "text",

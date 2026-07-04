@@ -12,7 +12,7 @@ import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
-import { ImageRow } from "@/components/ui/image-row";
+import { ImageRow, type RowImage } from "@/components/ui/image-row";
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -32,11 +32,13 @@ function ProjectBlock({
   num,
   total,
   feature = false,
+  showImages = true,
 }: {
   p: Project;
   num: number;
   total: number;
   feature?: boolean;
+  showImages?: boolean;
 }) {
   return (
     <>
@@ -53,7 +55,7 @@ function ProjectBlock({
         <em>{p.year}.</em> {p.summary}
         {p.role && <> &mdash; {p.role}.</>}
       </Link>
-      {p.images && p.images.length > 0 && (
+      {showImages && p.images && p.images.length > 0 && (
         <ImageRow
           images={p.images}
           sizeClass={imageSizeClass(p.imageSize)}
@@ -62,6 +64,13 @@ function ProjectBlock({
       )}
     </>
   );
+}
+
+/** One representative image per work in a category, each linking to its work. */
+function categoryImages(projects: Project[]): RowImage[] {
+  return projects
+    .filter((p) => p.images && p.images.length > 0)
+    .map((p) => ({ src: p.images![0].src, slug: p.slug, alt: p.title }));
 }
 
 export default function Home() {
@@ -78,8 +87,8 @@ export default function Home() {
 
   const rich = (
     <div className="leftcol">
-      {/* TOP NAV ---------------------------------------------------------- */}
-      <div style={{ margin: "0 0 1.4em 0" }}>
+      {/* TOP NAV — nudged down to sit level with the fixed dark toggle --- */}
+      <div style={{ margin: "7px 0 1.4em 0" }}>
         <NavButton href="/cv">CV</NavButton>
         <NavButton href="/work">index of work</NavButton>
         <NavButton href="/visual">visual</NavButton>
@@ -188,8 +197,14 @@ export default function Home() {
           p={p}
           num={i + 1}
           total={commissioned.length}
+          showImages={false}
         />
       ))}
+      <ImageRow
+        images={categoryImages(commissioned)}
+        sizeClass=""
+        title="commissions"
+      />
 
       <NoiseRule />
 
@@ -204,6 +219,7 @@ export default function Home() {
           p={p}
           num={i + 1}
           total={installations.length}
+          showImages={false}
         />
       ))}
       <ul>
@@ -223,6 +239,11 @@ export default function Home() {
           </li>
         ))}
       </ul>
+      <ImageRow
+        images={categoryImages(installations)}
+        sizeClass=""
+        title="installation and performance"
+      />
 
       {/* PARTIES & EVENTS ------------------------------------------------- */}
       <p style={{ marginTop: "1em" }}>

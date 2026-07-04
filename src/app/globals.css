@@ -132,8 +132,7 @@ button {
   all: revert;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
-  padding: 3px 10px;
-  margin: 0 3px 3px 0;
+  margin: 0 2px 2px 0;
   cursor: pointer;
 }
 

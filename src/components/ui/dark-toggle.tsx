@@ -27,7 +27,7 @@ export function DarkToggle() {
       onClick={toggle}
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {dark ? "☀ light" : "☾ dark"}
+      {dark ? "light" : "dark"}
     </button>
   );
 }

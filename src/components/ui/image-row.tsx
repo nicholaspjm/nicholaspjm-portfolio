@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { asset } from "@/lib/asset";
 
 export interface RowImage {
   src: string;
   caption?: string;
   alt?: string;
+  /** When set, the image links through to /work/<slug>. */
+  slug?: string;
 }
 
 /**
@@ -58,22 +61,31 @@ export function ImageRow({
     };
   }, [images]);
 
+  if (images.length === 0) return null;
+
   return (
     <div ref={ref} className={`image-row${sizeClass}`}>
-      {images.map((img, i) => (
-        <figure
-          key={img.src}
-          className="image-module"
-          style={
-            firstHidden !== null && i >= firstHidden
-              ? { visibility: "hidden" }
-              : undefined
-          }
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={asset(img.src)} alt={img.alt ?? img.caption ?? title} />
-        </figure>
-      ))}
+      {images.map((img, i) => {
+        const hidden = firstHidden !== null && i >= firstHidden;
+        const alt = img.alt ?? img.caption ?? title;
+        return (
+          <figure
+            key={img.src}
+            className="image-module"
+            style={hidden ? { visibility: "hidden" } : undefined}
+          >
+            {img.slug ? (
+              <Link href={`/work/${img.slug}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={asset(img.src)} alt={alt} />
+              </Link>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={asset(img.src)} alt={alt} />
+            )}
+          </figure>
+        );
+      })}
     </div>
   );
 }
