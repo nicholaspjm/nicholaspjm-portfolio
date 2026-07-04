@@ -1,2 +1,2 @@
-:HL["/nicholaspjm-portfolio/_next/static/chunks/0i-yfxlv35z58.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"ravyn-lenae-sips-and-sounds","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"8B26ec5xHhVbmMh3vqBvs"}
+:HL["/nicholaspjm-portfolio/_next/static/chunks/16.9c_bs7b0q5.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"work","param":null,"prefetchHints":8,"slots":{"children":{"name":"slug","param":{"type":"d","key":"ravyn-lenae-sips-and-sounds","siblings":null},"prefetchHints":4,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"jXDLt3R5ZKQbhEfP4knVy"}
