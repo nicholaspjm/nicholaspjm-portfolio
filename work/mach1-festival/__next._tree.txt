@@ -2,4 +2,4 @@
 :HL["/nicholaspjm-portfolio/images/projects/mach1-festival/01.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/mach1-festival/02.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/mach1-festival/03.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"mach1-festival","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"8W8PujsMyOt0TOJgvFYwu"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"mach1-festival","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"1tFIzP1wlvDi4krZezx6O"}
