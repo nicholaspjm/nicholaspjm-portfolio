@@ -341,16 +341,42 @@ export default function Home() {
         <NavButton href="https://youtube.com/@nicholaspjm" external>
           youtube
         </NavButton>
-        <br />
-        <Editable id="teaching.body" as="span">
-          I co-founded Touch Collective, running TouchDesigner workshops, artist
-          talks, and live visual events in Naarm / Melbourne, with technical
-          tutorials published on YouTube. Recent speaking includes Creative
-          Technology Melbourne. I&rsquo;m available for workshops and talks
-          &mdash;
-        </Editable>{" "}
-        <a href={`mailto:${site.email}`}>get in touch</a>.
       </p>
+      <ul>
+        <li>
+          <Editable id="teaching.b1" as="span">
+            Co-founded Touch Collective — TouchDesigner workshops, artist talks,
+            and live visual events in Naarm / Melbourne.
+          </Editable>
+        </li>
+        <li>
+          <Editable id="teaching.b2" as="span">
+            Technical tutorials published on YouTube.
+          </Editable>
+        </li>
+        <li>
+          <Editable id="teaching.b3" as="span">
+            Recent speaking includes Creative Technology Melbourne.
+          </Editable>
+        </li>
+        <li>
+          <Editable id="teaching.b4" as="span">
+            I try to keep this not-for-profit, and would love to speak and teach
+            more.
+          </Editable>
+        </li>
+        <li>
+          <Editable id="teaching.b5" as="span">
+            Private tutoring and consultation also available.
+          </Editable>
+        </li>
+        <li>
+          <Editable id="teaching.b6" as="span">
+            Available for workshops and talks —
+          </Editable>{" "}
+          <a href={`mailto:${site.email}`}>get in touch</a>.
+        </li>
+      </ul>
 
       <NoiseRule />
 
