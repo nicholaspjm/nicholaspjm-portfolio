@@ -32,6 +32,13 @@ export function getProjectNeighbors(slug: string) {
   return { prev, next };
 }
 
+/** Modifier class for a project's image-row size. "" = Small (default). */
+export function imageSizeClass(size?: Project["imageSize"]): string {
+  if (size === "L") return " size-l";
+  if (size === "M") return " size-m";
+  return "";
+}
+
 export function getCategories(): string[] {
   const set = new Set<string>();
   for (const p of getListedProjects()) {

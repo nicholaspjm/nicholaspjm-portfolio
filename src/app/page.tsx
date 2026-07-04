@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { site } from "@/content/site";
-import { getListedProjects } from "@/lib/projects";
+import { getListedProjects, imageSizeClass } from "@/lib/projects";
 import { performances, events, awards, press, education } from "@/content/cv";
 import { tools } from "@/content/tools";
 import type { Project } from "@/types/content";
@@ -50,12 +50,11 @@ function ProjectBlock({
         {p.role && <> &mdash; {p.role}.</>}
       </Link>
       {p.images && p.images.length > 0 && (
-        <div className="image-row">
+        <div className={`image-row${imageSizeClass(p.imageSize)}`}>
           {p.images.map((img) => (
             <figure key={img.src} className="image-module">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={asset(img.src)} alt={img.alt ?? img.caption ?? p.title} />
-              <figcaption>{img.caption}</figcaption>
             </figure>
           ))}
         </div>

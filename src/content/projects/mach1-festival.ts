@@ -11,6 +11,7 @@ export const project: Project = {
   role: "Installation, visual design",
   categories: ["Installation", "Festival"],
   tags: ["TouchDesigner"],
+  imageSize: "L",
   images: [
     {
       src: "/images/projects/mach1-festival/01.jpg",

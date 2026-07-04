@@ -106,6 +106,8 @@ export interface Project {
   links?: { href: string; label: string }[];
   /** Images shown as an image-row under the project entry on the index. */
   images?: { src: string; caption?: string; alt?: string }[];
+  /** Image-row thumbnail size on the index. Defaults to "S" (small). */
+  imageSize?: "S" | "M" | "L";
   /** Relative scale of the work (0–1), used to weight the timeline rail.
    *  Higher = a bigger, bolder point. Defaults to a per-section value. */
   weight?: number;
