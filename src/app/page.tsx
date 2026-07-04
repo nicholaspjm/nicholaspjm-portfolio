@@ -281,7 +281,6 @@ export default function Home() {
           p={p}
           num={i + 1}
           total={selected.length}
-          feature={i === 0}
         />
       ))}
 
@@ -300,7 +299,6 @@ export default function Home() {
           p={p}
           num={i + 1}
           total={commissioned.length}
-          feature={i === 0}
         />
       ))}
 

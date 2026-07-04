@@ -116,10 +116,6 @@ export const press: CVEntry[] = [
     title: "“2016LYFE — smokedope2016”",
     detail: "Lyrical Lemonade, 13 September 2025.",
   },
-  {
-    year: "—",
-    title: "Featured artist, TouchDesigner Official Instagram (Derivative)",
-  },
 ];
 
 export const teaching: CVEntry[] = [
@@ -146,12 +142,7 @@ export const teaching: CVEntry[] = [
 export const education: CVEntry[] = [
   {
     year: "2021",
-    title: "Bachelor of Computer Science",
-    detail: "University of Auckland, Aotearoa New Zealand.",
-  },
-  {
-    year: "2021",
-    title: "Bachelor of Arts",
-    detail: "University of Auckland, Aotearoa New Zealand.",
+    title: "Bachelor of Computer Science & Bachelor of Arts",
+    detail: "University of Auckland.",
   },
 ];

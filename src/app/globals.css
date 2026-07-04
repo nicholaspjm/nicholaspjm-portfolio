@@ -152,7 +152,8 @@ button {
    ------------------------------------------------------------------------ */
 .image-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow: hidden; /* one row only — clip anything past the row width */
   align-items: flex-start;
   gap: 0.5em;
   width: 100%;
@@ -197,7 +198,7 @@ button {
 
 @media (max-width: 560px) {
   .image-row,
-  .image-row.size-l { flex-direction: column; gap: 1em; width: 100%; }
+  .image-row.size-l { flex-direction: column; gap: 1em; width: 100%; overflow: visible; }
   .image-module { width: 100%; flex-shrink: 1; }
   .image-module img,
   .image-row.size-m img,
