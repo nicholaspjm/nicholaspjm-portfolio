@@ -1,2 +1,2 @@
-:HL["/nicholaspjm-portfolio/_next/static/chunks/0z5.28hnmni99.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"nike-air-liquid-max","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"rOKSfchiuOydDwdD2y4dL"}
+:HL["/nicholaspjm-portfolio/_next/static/chunks/0v531u0yqqan3.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"nike-air-liquid-max","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"8W8PujsMyOt0TOJgvFYwu"}
