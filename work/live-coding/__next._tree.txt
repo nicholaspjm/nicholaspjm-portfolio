@@ -1,8 +1,8 @@
-:HL["/nicholaspjm-portfolio/_next/static/chunks/01dyo9egl2io3.css","style"]
+:HL["/nicholaspjm-portfolio/_next/static/chunks/0i-yfxlv35z58.css","style"]
 :HL["/nicholaspjm-portfolio/images/projects/live-coding/01.png","image"]
 :HL["/nicholaspjm-portfolio/images/projects/live-coding/02.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/live-coding/03.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/live-coding/04.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/live-coding/05.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/live-coding/06.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"live-coding","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"QzOe2uEr-suftC64SqTLH"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"live-coding","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"8B26ec5xHhVbmMh3vqBvs"}
