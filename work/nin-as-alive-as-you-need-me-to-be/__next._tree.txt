@@ -7,4 +7,4 @@
 :HL["/nicholaspjm-portfolio/images/projects/nin-as-alive-as-you-need-me-to-be/07.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/nin-as-alive-as-you-need-me-to-be/02.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/nin-as-alive-as-you-need-me-to-be/08.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"nin-as-alive-as-you-need-me-to-be","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"jyaXH_cBjrHQ0UwG6nbjw"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"nin-as-alive-as-you-need-me-to-be","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"LAey6rMnLuStv3UcxUmGM"}

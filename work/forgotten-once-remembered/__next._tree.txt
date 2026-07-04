@@ -4,4 +4,4 @@
 :HL["/nicholaspjm-portfolio/images/projects/forgotten-once-remembered/02.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/forgotten-once-remembered/04.jpg","image"]
 :HL["/nicholaspjm-portfolio/images/projects/forgotten-once-remembered/05.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"forgotten-once-remembered","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"jyaXH_cBjrHQ0UwG6nbjw"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"work","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"forgotten-once-remembered","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"LAey6rMnLuStv3UcxUmGM"}
