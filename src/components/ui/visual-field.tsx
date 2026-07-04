@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 
@@ -11,87 +11,50 @@ export interface VisualItem {
   year: string;
 }
 
-interface Pos {
-  left: number; // % of field width
-  top: number; // px
-  w: number; // % of field width
-  rot: number; // deg
-  z: number;
-  conf: string;
-}
-
 /**
- * Every work image scattered across the page in the blob-tracker look —
- * bounding box, corner ticks, mono track label. Positions are rolled once
- * on mount and then hold still; each detection is a link straight to its
- * work page. A focus on the visuals themselves.
+ * Every work image laid out as a clean, non-overlapping masonry in the
+ * blob-tracker frame (bounding box, corner ticks, track label). Images sit
+ * straight; the order is reshuffled on each visit. Each detection links to
+ * its work, with a hover CTA prompting the click-through.
  */
 export function VisualField({ items }: { items: VisualItem[] }) {
-  const [pos, setPos] = useState<Pos[] | null>(null);
-  const [height, setHeight] = useState(0);
+  const [order, setOrder] = useState<number[] | null>(null);
 
   useEffect(() => {
-    // Defer to a frame so the state update isn't synchronous in the effect
-    // body; positions are client-only (window size + random) and roll once.
+    // Reshuffle client-side so the arrangement is random each visit. Deferred
+    // to a frame so the state update isn't synchronous in the effect body.
     const raf = requestAnimationFrame(() => {
-      const vw = window.innerWidth;
-      const cols = vw < 700 ? 2 : vw < 1100 ? 3 : 4;
-      const rowH = vw < 700 ? 210 : 250; // vertical spacing per row (px)
-      const cellW = 100 / cols;
-      const p: Pos[] = items.map((_, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        const w = cellW * (0.6 + Math.random() * 0.22); // 60–82% of a cell
-        const left = Math.min(
-          100 - w,
-          Math.max(0, col * cellW + (Math.random() - 0.5) * cellW * 0.5),
-        );
-        const top = 24 + row * rowH + (Math.random() - 0.5) * rowH * 0.5;
-        return {
-          left,
-          top,
-          w,
-          rot: (Math.random() - 0.5) * 9,
-          z: 1 + Math.floor(Math.random() * items.length),
-          conf: (0.6 + Math.random() * 0.39).toFixed(2),
-        };
-      });
-      const rows = Math.ceil(items.length / cols);
-      setHeight(24 + rows * rowH + 240);
-      setPos(p);
+      const idx = items.map((_, i) => i);
+      for (let i = idx.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [idx[i], idx[j]] = [idx[j], idx[i]];
+      }
+      setOrder(idx);
     });
     return () => cancelAnimationFrame(raf);
   }, [items]);
 
-  if (!pos) return null;
+  if (!order) return null;
 
   return (
-    <div className="visual-field" style={{ height }}>
-      {items.map((it, i) => {
-        const b = pos[i];
-        if (!b) return null;
-        const style = {
-          left: `${b.left.toFixed(2)}%`,
-          top: `${b.top.toFixed(0)}px`,
-          width: `${b.w.toFixed(2)}%`,
-          zIndex: b.z,
-          "--rot": `${b.rot.toFixed(2)}deg`,
-        } as CSSProperties;
+    <div className="visual-field">
+      {order.map((idx, n) => {
+        const it = items[idx];
         return (
           <Link
-            key={`${it.src}-${i}`}
+            key={`${it.src}-${idx}`}
             href={`/work/${it.slug}`}
             className="vblob"
-            style={style}
           >
             <span className="blob-label">
-              trk_{String(i + 1).padStart(2, "0")} · {it.slug} · {b.conf}
+              trk_{String(n + 1).padStart(2, "0")} · {it.slug}
             </span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={asset(it.src)} alt={it.title} />
             <span className="blob-meta">
               {it.title} · {it.year}
             </span>
+            <span className="vblob-cta">open work ↗</span>
           </Link>
         );
       })}

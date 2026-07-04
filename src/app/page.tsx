@@ -12,7 +12,7 @@ import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
-import { asset } from "@/lib/asset";
+import { ImageRow } from "@/components/ui/image-row";
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -54,14 +54,11 @@ function ProjectBlock({
         {p.role && <> &mdash; {p.role}.</>}
       </Link>
       {p.images && p.images.length > 0 && (
-        <div className={`image-row${imageSizeClass(p.imageSize)}`}>
-          {p.images.map((img) => (
-            <figure key={img.src} className="image-module">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={asset(img.src)} alt={img.alt ?? img.caption ?? p.title} />
-            </figure>
-          ))}
-        </div>
+        <ImageRow
+          images={p.images}
+          sizeClass={imageSizeClass(p.imageSize)}
+          title={p.title}
+        />
       )}
     </>
   );
@@ -129,37 +126,32 @@ export default function Home() {
         music-video VFX, and interactive installation.
       </p>
 
-      <p style={{ marginTop: "1.2em" }}>
+      <p style={{ marginTop: "1.2em", lineHeight: 1.7 }}>
         <a href={`mailto:${site.email}`}>{site.email}</a>
         <br />
-        <span style={{ whiteSpace: "nowrap" }}>
-          IG{" "}
-          <a href="https://instagram.com/nicholaspjm" target="_blank" rel="noreferrer">
-            @nicholaspjm
-          </a>
-        </span>{" "}
-        &middot;{" "}
-        <span style={{ whiteSpace: "nowrap" }}>
-          YT{" "}
-          <a href="https://youtube.com/@nicholaspjm" target="_blank" rel="noreferrer">
-            @nicholaspjm
-          </a>
-        </span>{" "}
-        &middot;{" "}
-        <span style={{ whiteSpace: "nowrap" }}>
-          GH{" "}
-          <a href="https://github.com/nicholaspjm" target="_blank" rel="noreferrer">
-            nicholaspjm
-          </a>
-        </span>
+        <a href="https://instagram.com/nicholaspjm" target="_blank" rel="noreferrer">
+          instagram
+        </a>
+        <br />
+        <a href="https://youtube.com/@nicholaspjm" target="_blank" rel="noreferrer">
+          youtube
+        </a>
+        <br />
+        <a href="https://github.com/nicholaspjm" target="_blank" rel="noreferrer">
+          github
+        </a>
       </p>
 
       <div className="spacer-v" aria-hidden />
 
-      {/* NOW — intentionally empty (to be filled) ------------------------ */}
+      {/* NOW ------------------------------------------------------------- */}
       <p className="atm-mark">
         now
         <br />↪
+      </p>
+      <p style={{ marginTop: "0.4em", maxWidth: "52ch" }}>
+        Seeking experimentation and collaborative artistic exploration through
+        the use of real-time technology.
       </p>
 
       <p className="callout" style={{ marginTop: "1.2em" }}>

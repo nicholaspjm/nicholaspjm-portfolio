@@ -8,7 +8,7 @@ import {
 } from "@/lib/projects";
 import { Blocks } from "@/components/content/block-renderer";
 import { NavButton } from "@/components/ui/nav-button";
-import { asset } from "@/lib/asset";
+import { ImageRow } from "@/components/ui/image-row";
 
 export function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
@@ -68,14 +68,11 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
       </div>
 
       {project.images && project.images.length > 0 && (
-        <div className={`image-row${imageSizeClass(project.imageSize)}`}>
-          {project.images.map((img) => (
-            <figure key={img.src} className="image-module">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={asset(img.src)} alt={img.alt ?? img.caption ?? project.title} />
-            </figure>
-          ))}
-        </div>
+        <ImageRow
+          images={project.images}
+          sizeClass={imageSizeClass(project.imageSize)}
+          title={project.title}
+        />
       )}
 
       <p>

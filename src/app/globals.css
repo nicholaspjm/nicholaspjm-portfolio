@@ -132,7 +132,8 @@ button {
   all: revert;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
-  margin: 0 2px 2px 0;
+  padding: 3px 10px;
+  margin: 0 3px 3px 0;
   cursor: pointer;
 }
 
@@ -288,8 +289,6 @@ html::-webkit-scrollbar {
   top: 8px;
   right: 26px;
   z-index: 85;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 12px;
 }
 
 /* Mouse trail — pen-plotter line following the cursor */
@@ -612,19 +611,28 @@ html[data-preview] .scatter-field { opacity: 0; }
    VISUAL FIELD — /visual: every image scattered, clickable to its work
    ------------------------------------------------------------------------ */
 .visual-field {
-  position: relative;
+  column-count: 4;
+  column-gap: 18px;
   width: 100%;
-  margin-top: 0.6em;
+  margin-top: 1.4em;
 }
+@media (max-width: 1100px) {
+  .visual-field { column-count: 3; }
+}
+@media (max-width: 700px) {
+  .visual-field { column-count: 2; column-gap: 12px; }
+}
+
 .vblob {
-  position: absolute;
+  position: relative;
   display: block;
+  break-inside: avoid;
+  margin: 0 0 34px 0;
   border: 1px solid var(--ink);
   background: var(--bg);
   text-decoration: none;
   color: inherit;
-  transform: rotate(var(--rot, 0deg));
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition: box-shadow 160ms ease;
 }
 .vblob img {
   display: block;
@@ -632,13 +640,31 @@ html[data-preview] .scatter-field { opacity: 0; }
   height: auto;
 }
 .vblob:hover {
-  transform: rotate(0deg) scale(1.14);
-  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.3);
-  z-index: 9999 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
 .vblob:hover .blob-label {
   background: var(--link);
   color: var(--hl-a-fg);
+}
+/* hover CTA prompting the click-through to the work */
+.vblob-cta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 7px 9px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--link);
+  color: var(--hl-a-fg);
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none;
+}
+.vblob:hover .vblob-cta {
+  opacity: 1;
 }
 .vblob::before,
 .vblob::after {
@@ -647,6 +673,7 @@ html[data-preview] .scatter-field { opacity: 0; }
   width: 7px;
   height: 7px;
   pointer-events: none;
+  z-index: 2;
 }
 .vblob::before {
   left: -1px;
@@ -661,19 +688,21 @@ html[data-preview] .scatter-field { opacity: 0; }
   border-bottom: 2px solid var(--ink);
 }
 
-/* About sheet — slides up from the bottom, non-modal */
+/* About sheet — a compact panel that slides up in the bottom-right corner,
+   non-modal. Narrow, but grows tall enough to fit its contents. */
 .sheet-panel {
   position: fixed;
-  left: 0;
+  left: auto;
   right: 20px;
-  bottom: 0;
-  max-height: 44vh;
+  bottom: 20px;
+  width: min(400px, calc(100vw - 40px));
+  max-height: 82vh;
   overflow: auto;
   background: var(--bg);
-  border-top: 1px solid var(--ink);
-  padding: 10px 14px 14px 14px;
-  transform: translateY(103%);
-  transition: transform 220ms ease;
+  border: 1px solid var(--ink);
+  padding: 12px 16px 16px 16px;
+  transform: translateY(calc(100% + 28px));
+  transition: transform 240ms ease;
   z-index: 60;
 }
 .sheet-panel.open { transform: translateY(0); }
