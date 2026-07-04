@@ -11,6 +11,10 @@ import { project as smokedope2016 } from "./smokedope2016-2016lyfe";
 import { project as forgottenOnceRemembered } from "./forgotten-once-remembered";
 import { project as catAmongAnimals } from "./cat-among-animals";
 import { project as liveCoding } from "./live-coding";
+import { project as forTheCause } from "./for-the-cause";
+import { project as hybrid20 } from "./hybrid-2-0";
+import { project as a3Festival } from "./a3-festival";
+import { project as abstractedOrganica } from "./abstracted-organica";
 import { project as cheahdxPurespace } from "./cheahdx-purespace";
 
 export const projects: Project[] = [
@@ -25,5 +29,9 @@ export const projects: Project[] = [
   forgottenOnceRemembered,
   catAmongAnimals,
   liveCoding,
+  forTheCause,
+  hybrid20,
+  a3Festival,
+  abstractedOrganica,
   cheahdxPurespace,
 ];

@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { site } from "@/content/site";
-import { getListedProjects, imageSizeClass } from "@/lib/projects";
+import {
+  getListedProjects,
+  getProjectBySlug,
+  imageSizeClass,
+} from "@/lib/projects";
+import { selectedWorks } from "@/content/selected";
 import { performances, events, awards, press, education } from "@/content/cv";
 import { tools } from "@/content/tools";
 import type { Project } from "@/types/content";
@@ -126,6 +131,11 @@ export default function Home() {
     (p) => (p.section ?? "commissioned") === "commissioned",
   );
   const installations = all.filter((p) => p.section === "installation");
+
+  // Curated highlight reel, hand-ordered in src/content/selected.ts.
+  const selected = selectedWorks
+    .map((slug) => getProjectBySlug(slug))
+    .filter((p): p is Project => Boolean(p));
 
   // Flat index for the "list all" view.
   const kindLabel = (s?: string) =>
@@ -258,7 +268,26 @@ export default function Home() {
 
       <p style={{ marginTop: "1.6em" }}>&hellip;</p>
 
-      {/* COMMISSIONED — first entry featured for variety ----------------- */}
+      {/* SELECTED WORKS — curated, hand-ordered highlights --------------- */}
+      <p style={{ marginTop: "1.4em" }}>
+        <span className="extra">selected works</span>{" "}
+        <span className="pathnote">
+          ~/practice/selected · {selected.length} items
+        </span>
+      </p>
+      {selected.map((p, i) => (
+        <ProjectBlock
+          key={`sel-${p.slug}`}
+          p={p}
+          num={i + 1}
+          total={selected.length}
+          feature={i === 0}
+        />
+      ))}
+
+      <NoiseRule />
+
+      {/* COMMISSIONED ---------------------------------------------------- */}
       <p style={{ marginTop: "1.4em" }}>
         <span className="extra">commissions</span>{" "}
         <span className="pathnote">
