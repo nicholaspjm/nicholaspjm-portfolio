@@ -1,5 +1,6 @@
 import type { VideoBlock as Block } from "@/types/content";
 import { cn } from "@/lib/cn";
+import { asset } from "@/lib/asset";
 
 export function VideoBlock({ block }: { block: Block }) {
   const layout = block.layout ?? "center";
@@ -19,8 +20,8 @@ export function VideoBlock({ block }: { block: Block }) {
       >
         <video
           className="h-full w-full object-cover"
-          src={block.src}
-          poster={block.poster}
+          src={asset(block.src)}
+          poster={block.poster ? asset(block.poster) : undefined}
           autoPlay={auto}
           muted={auto}
           loop={auto}

@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Held imports — media recovered from the old Cargo site (nicholaspjm.com) for
+# projects that don't have pages yet. Downloaded locally and documented in
+# docs/cargo-import.md. Un-ignore a folder here when you promote it to a page.
+/public/videos/projects/for-the-cause/
+/public/videos/projects/pitch-far-from-god/
+/public/videos/projects/atmos-norla-dome/
+/public/videos/projects/thread-congee-club/
+/public/images/projects/for-the-cause/
+/public/images/projects/pitch-far-from-god/
+/public/images/projects/atmos-norla-dome/
+/public/images/projects/thread-congee-club/

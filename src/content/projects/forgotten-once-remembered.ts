@@ -6,17 +6,38 @@ export const project: Project = {
   section: "installation",
   year: "2025",
   summary:
-    "Interactive audiovisual installation with Grace Kim (Nabii) and Carmen Y 易嘉敏. Pitch Music & Arts Festival.",
-  role: "Installation, code",
-  categories: ["Installation", "Collaboration"],
+    "Interactive audiovisual dance piece with Grace Kim (Nabii), interpreted by Carmen Y 易嘉敏. Pitch Music & Arts and Babie Club.",
+  role: "Concept, code",
+  categories: ["Installation", "Interactive", "Collaboration"],
   tags: ["TouchDesigner", "Interactive"],
+  links: [
+    { href: "https://www.youtube.com/watch?v=EnOhNIyQtSk", label: "watch" },
+  ],
+  images: [
+    { src: "/images/projects/forgotten-once-remembered/01.jpg", caption: "Pitch Music & Arts" },
+    { src: "/images/projects/forgotten-once-remembered/03.jpg", caption: "Interactive dance piece" },
+    { src: "/images/projects/forgotten-once-remembered/02.jpg", caption: "Babie Club" },
+    { src: "/images/projects/forgotten-once-remembered/04.jpg", caption: "Performance" },
+    { src: "/images/projects/forgotten-once-remembered/05.jpg", caption: "Documentation" },
+  ],
   blocks: [
     {
       kind: "text",
       lead: true,
       paragraphs: [
-        "Interactive audiovisual installation made in collaboration with Grace Kim (Nabii) and Carmen Y 易嘉敏. Premiered at Pitch Music & Arts Festival, Naarm / Melbourne.",
+        "Forgotten, Once Remembered is an interactive audiovisual piece by Nick Marriott and Grace Kim (Nabii), interpreted and brought to life by Carmen Y 易嘉敏. Presented at Pitch Music & Arts Festival and Babie Club, Naarm / Melbourne.",
       ],
+    },
+    {
+      kind: "embed",
+      url: "https://www.youtube.com/embed/EnOhNIyQtSk",
+      caption: "Forgotten, Once Remembered — interactive TouchDesigner dance piece",
+    },
+    {
+      kind: "video",
+      src: "/videos/projects/forgotten-once-remembered/01.mov",
+      ratio: "9/16",
+      caption: "Live capture",
     },
   ],
 };

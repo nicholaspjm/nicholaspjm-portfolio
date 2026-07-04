@@ -9,6 +9,8 @@ import { project as mach1Festival } from "./mach1-festival";
 import { project as ninAsAliveAsYouNeedMeToBe } from "./nin-as-alive-as-you-need-me-to-be";
 import { project as smokedope2016 } from "./smokedope2016-2016lyfe";
 import { project as forgottenOnceRemembered } from "./forgotten-once-remembered";
+import { project as catAmongAnimals } from "./cat-among-animals";
+import { project as liveCoding } from "./live-coding";
 import { project as cheahdxPurespace } from "./cheahdx-purespace";
 
 export const projects: Project[] = [
@@ -21,5 +23,7 @@ export const projects: Project[] = [
   ninAsAliveAsYouNeedMeToBe,
   smokedope2016,
   forgottenOnceRemembered,
+  catAmongAnimals,
+  liveCoding,
   cheahdxPurespace,
 ];

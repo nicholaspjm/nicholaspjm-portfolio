@@ -63,12 +63,6 @@ export const performances: CVEntry[] = [
     detail: "Visual design and live performance.",
   },
   {
-    year: "2025",
-    title: "Cat Among Animals, Oddany Gallery",
-    detail:
-      "Naarm / Melbourne. Headline audiovisual performance with Steve Pan.",
-  },
-  {
     year: "—",
     title: "Thread",
     detail: "Ongoing visual design for the club night.",
