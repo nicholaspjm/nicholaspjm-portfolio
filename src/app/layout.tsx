@@ -5,11 +5,11 @@ import { Readout } from "@/components/ui/readout";
 import { PointCloud } from "@/components/ui/point-cloud";
 import { PreviewZone } from "@/components/ui/preview-zone";
 import { SideSlider } from "@/components/ui/side-slider";
-import { PaletteSwitcher } from "@/components/ui/palette-switcher";
+import { DarkToggle } from "@/components/ui/dark-toggle";
 import "./globals.css";
 
-// Apply the saved palette before first paint to avoid a flash of stock colours.
-const themeInit = `try{var t=localStorage.getItem('npjm-theme');if(t&&t!=='blue')document.documentElement.dataset.theme=t}catch(e){}`;
+// Apply saved dark mode before first paint to avoid a flash of light.
+const themeInit = `try{if(localStorage.getItem('npjm-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}`;
 
 export const metadata: Metadata = {
   title: { default: site.name, template: `%s — ${site.name}` },
@@ -36,7 +36,7 @@ export default function RootLayout({
         <SideSlider />
         <Readout />
         <PreviewZone />
-        <PaletteSwitcher />
+        <DarkToggle />
       </body>
     </html>
   );

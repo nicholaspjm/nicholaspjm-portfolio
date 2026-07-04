@@ -4,16 +4,16 @@
    Palette — stock mindyseu white. Work detail pages override via .bluepage.
    ------------------------------------------------------------------------ */
 :root {
-  /* Base = "blue": white ground, black text, classic blue links/titles,
-     solid small black point-cloud dots. */
+  /* Base = blue-yellow: white ground, black text, blue links + section
+     titles, yellow featured highlight, solid small black point-cloud dots. */
   --bg: #ffffff;
   --ink: #000000;
   --soft: #666666;
   --link: #0000ff;
   --hl-a-bg: #0000ff;   /* section/project titles */
   --hl-a-fg: #ffffff;
-  --hl-b-bg: #000000;   /* featured inline links */
-  --hl-b-fg: #ffffff;
+  --hl-b-bg: #ffe000;   /* featured highlight */
+  --hl-b-fg: #000000;
   --accent: #0000ff;    /* scanline, live dots */
   --pt: 0, 0, 0;        /* pointcloud rgb — solid black */
   --pt-alpha: 1;
@@ -21,73 +21,31 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Early-web palettes — switch with the palette picker (html[data-theme]).
-   Vars: --bg background · --ink text · --soft muted · --link hyperlink ·
-   --hl-a section-title highlight · --hl-b featured highlight · --accent ·
-   --pt/--pt-alpha point-cloud colour.
+   Dark mode — blue-noir: the night twin of the blue-yellow base. Black
+   ground, white text, blue links + titles, yellow featured highlight,
+   white point-cloud dots. Toggled via the light/dark switch.
    ------------------------------------------------------------------------ */
-/* All variations of the blue base. Light grounds keep solid small black
-   point-cloud dots (--pt 0,0,0 @1); dark grounds use white dots. */
-
-/* Cyan accent — blue titles/links, cyan scan-sweep + rail */
-html[data-theme="blue-cyan"] {
-  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
-  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #00c8ff; --hl-b-fg: #000000;
-  --accent: #00c8ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
-}
-/* Yellow featured highlight — classic web contrast */
-html[data-theme="blue-yellow"] {
-  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
-  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #ffe000; --hl-b-fg: #000000;
-  --accent: #0000ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
-}
-/* Red accent against the blue — dual tone */
-html[data-theme="blue-red"] {
-  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
-  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #ff0000; --hl-b-fg: #ffffff;
-  --accent: #ff0000; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
-}
-/* Electric / brighter blue */
-html[data-theme="blue-electric"] {
-  --bg: #ffffff; --ink: #000000; --soft: #6a6a6a; --link: #1a3cff;
-  --hl-a-bg: #1a3cff; --hl-a-fg: #ffffff; --hl-b-bg: #000000; --hl-b-fg: #ffffff;
-  --accent: #1a3cff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
-}
-/* Deep navy */
-html[data-theme="blue-navy"] {
-  --bg: #ffffff; --ink: #0a1020; --soft: #5c6480; --link: #001a80;
-  --hl-a-bg: #001a80; --hl-a-fg: #ffffff; --hl-b-bg: #0a1020; --hl-b-fg: #ffffff;
-  --accent: #001a80; --pt: 10,16,32; --pt-alpha: 1; color-scheme: light;
-}
-/* Cream paper ground */
-html[data-theme="blue-paper"] {
-  --bg: #f4efe2; --ink: #16130c; --soft: #7a715c; --link: #0000ff;
-  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #16130c; --hl-b-fg: #f4efe2;
-  --accent: #0000ff; --pt: 22,19,12; --pt-alpha: 1; color-scheme: light;
-}
-/* Inverted highlights — black titles, blue featured */
-html[data-theme="blue-invert"] {
-  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
-  --hl-a-bg: #000000; --hl-a-fg: #ffffff; --hl-b-bg: #0000ff; --hl-b-fg: #ffffff;
-  --accent: #0000ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
-}
-/* All-blue highlights */
-html[data-theme="blue-mono"] {
-  --bg: #ffffff; --ink: #000000; --soft: #666666; --link: #0000ff;
-  --hl-a-bg: #0000ff; --hl-a-fg: #ffffff; --hl-b-bg: #0000ff; --hl-b-fg: #ffffff;
-  --accent: #0000ff; --pt: 0,0,0; --pt-alpha: 1; color-scheme: light;
-}
-/* Night — black ground, white text, blue highlights, white dots */
-html[data-theme="blue-noir"] {
-  --bg: #000000; --ink: #ffffff; --soft: #888888; --link: #5b86ff;
-  --hl-a-bg: #2b5bff; --hl-a-fg: #ffffff; --hl-b-bg: #ffffff; --hl-b-fg: #000000;
-  --accent: #5b86ff; --pt: 255,255,255; --pt-alpha: 0.5; color-scheme: dark;
+html[data-theme="dark"] {
+  --bg: #000000;
+  --ink: #ffffff;
+  --soft: #8a8a8a;
+  --link: #6f9bff;
+  --hl-a-bg: #2b5bff;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #000000;
+  --accent: #6f9bff;
+  --pt: 255, 255, 255;
+  --pt-alpha: 0.5;
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-paper: var(--bg);
+  --color-paper-soft: color-mix(in srgb, var(--ink) 5%, var(--bg));
   --color-ink: var(--ink);
   --color-ink-soft: var(--soft);
+  --color-rule: color-mix(in srgb, var(--ink) 28%, var(--bg));
   --color-link: var(--link);
 
   --font-serif: "Arial Narrow", Arial, sans-serif;
@@ -310,43 +268,14 @@ html::-webkit-scrollbar {
   pointer-events: none;
 }
 
-/* Palette picker — collapsible, bottom-left */
-.palette {
+/* Light/dark toggle — top-right, clear of the rail */
+.dark-toggle {
   position: fixed;
-  left: 8px;
-  bottom: 8px;
+  top: 8px;
+  right: 26px;
   z-index: 85;
   font-family: "Courier New", Courier, monospace;
-}
-.palette-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: 4px;
-  background: var(--bg);
-  border: 1px solid var(--ink);
-  padding: 4px;
-  max-height: 62vh;
-  overflow: auto;
-}
-.palette .pal {
-  display: block;
-  width: 100%;
-  text-align: left;
-  font-family: "Courier New", Courier, monospace;
   font-size: 12px;
-  margin: 0;
-}
-.palette .pal.on {
-  background: var(--hl-a-bg);
-  color: var(--hl-a-fg);
-}
-.palette-toggle {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 11px;
-}
-@media (max-width: 560px) {
-  .palette { display: none; }
 }
 
 /* Mouse trail — pen-plotter line following the cursor */
