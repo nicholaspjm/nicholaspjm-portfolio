@@ -64,7 +64,7 @@ export function ProjectEntry({
   if (editMode) return <div className={cls}>{inner}</div>;
 
   return (
-    <Link href={`/work/${slug}`} className={cls} data-prev={prev}>
+    <Link href={`/work/${slug}`} className={cls} data-prev={prev} data-work={slug}>
       {inner}
     </Link>
   );

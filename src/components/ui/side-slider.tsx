@@ -116,11 +116,9 @@ export function SideSlider() {
     let drift = 0;
     // current on-screen top (CSS px) of every bar, refreshed each frame
     const curY = new Float32Array(work.length);
-    // ambient auto-reveal: up to two Selected Works names at a time
-    const autoState: ({ idx: number; lastY: number; until: number } | null)[] = [
-      null,
-      null,
-    ];
+    // ambient auto-reveal: up to two Selected Works names at a time, each
+    // staying until it rides to the top of the screen
+    const autoState: ({ idx: number; lastY: number } | null)[] = [null, null];
     let sinceSpawn = 0;
     let spawnEvery = 1400;
     let prevT = 0;
@@ -220,7 +218,8 @@ export function SideSlider() {
           const el = autos[s];
           if (!st || !el) continue;
           const yc = curY[st.idx];
-          if (yc < 10 || Math.abs(yc - st.lastY) > railH * 0.4 || t > st.until) {
+          // stay put until it reaches the top of the screen (or wraps around)
+          if (yc < 10 || Math.abs(yc - st.lastY) > railH * 0.4) {
             el.classList.remove("on");
             autoState[s] = null;
           } else {
@@ -256,11 +255,7 @@ export function SideSlider() {
                 el.textContent = `${p.year} · ${p.title}`;
                 el.style.top = `${curY[pick]}px`;
                 el.classList.add("on");
-                autoState[free] = {
-                  idx: pick,
-                  lastY: curY[pick],
-                  until: t + 4000 + Math.random() * 3000, // linger 4–7s
-                };
+                autoState[free] = { idx: pick, lastY: curY[pick] };
               }
             }
           }

@@ -98,19 +98,18 @@ a.highlight, .highlight {
   background-color: var(--hl-b-bg);
   color: var(--hl-b-fg);
 }
-a.highlight:hover, .highlight:hover {
+/* Links carrying .highlight still recolour on hover; the plain-span version
+   (e.g. award titles) does not, since it isn't clickable. */
+a.highlight:hover {
   background-color: var(--bg);
   color: var(--ink);
 }
 
-/* Section labels — yellow highlighter swipe (commissions, tools, awards…) */
+/* Section labels — yellow highlighter swipe (commissions, tools, awards…).
+   These head a section but aren't themselves links, so no hover recolour. */
 a.extra, .extra {
   background-color: var(--hl-b-bg) !important;
   color: var(--hl-b-fg) !important;
-}
-a.extra:hover, .extra:hover {
-  background-color: var(--ink) !important;
-  color: var(--bg) !important;
 }
 
 /* Non-interactive section labels (teaching, awards, press, education, events):
@@ -493,18 +492,10 @@ html::-webkit-scrollbar {
   margin-right: 0.4em;
 }
 
-/* Hoverable entries — unmistakable highlighter swipe while previewing */
-[data-prev]:hover {
-  background: var(--hl-a-bg);
-  color: var(--hl-a-fg);
-}
-[data-prev]:hover .foot,
-[data-prev]:hover .entry-num,
-[data-prev]:hover .pathnote {
-  color: var(--hl-a-fg);
-}
-
-/* Clickable entry rows — the whole block is a link */
+/* Clickable entry rows — the whole block is a link. The highlighter swipe is
+   scoped to .entry (a real link) so non-clickable previewable rows (awards,
+   performances) don't recolour on hover. .work-hover mirrors :hover so hovering
+   a work's image lights up its entry exactly as hovering the text does. */
 .entry {
   display: block;
   color: var(--ink);
@@ -512,13 +503,24 @@ html::-webkit-scrollbar {
   padding: 0.15em 0;
 }
 .entry:visited { color: var(--ink); }
-.entry:hover { color: var(--hl-a-fg); }
-.entry:hover .ptitle {
+.entry:hover,
+.entry.work-hover {
+  background: var(--hl-a-bg);
+  color: var(--hl-a-fg);
+}
+.entry:hover .ptitle,
+.entry.work-hover .ptitle {
   background: transparent !important;
   color: var(--hl-a-fg) !important;
 }
 .entry:hover a,
-.entry:hover .foot { color: var(--hl-a-fg); }
+.entry:hover .foot,
+.entry:hover .entry-num,
+.entry:hover .pathnote,
+.entry.work-hover a,
+.entry.work-hover .foot,
+.entry.work-hover .entry-num,
+.entry.work-hover .pathnote { color: var(--hl-a-fg); }
 
 /* Featured project — larger title for structural variety */
 .feature .ptitle {

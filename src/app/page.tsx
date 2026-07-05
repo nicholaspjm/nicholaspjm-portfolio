@@ -62,6 +62,8 @@ function ProjectBlock({
           title={p.title}
           oneOnMobile
           resizeId={p.slug}
+          rowSlug={p.slug}
+          rowPrev={prev(p)}
         />
       )}
     </>
@@ -80,6 +82,7 @@ function categoryImages(projects: Project[]): RowImage[] {
         youtube: first.youtube,
         start: first.start,
         slug: p.slug,
+        prev: prev(p),
         alt: p.title,
       };
     });

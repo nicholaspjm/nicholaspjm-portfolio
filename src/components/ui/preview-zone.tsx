@@ -23,8 +23,25 @@ export function PreviewZone() {
 
   useEffect(() => {
     let clearTimer: ReturnType<typeof setTimeout> | null = null;
+    // Cross-highlight: hovering anything tagged data-work lights up every
+    // element for that work (its entry text + its image) via .work-hover, so an
+    // image hover highlights the linked text exactly like hovering the text.
+    let lastWork: string | null = null;
+    const syncWork = (slug: string | null) => {
+      if (slug === lastWork) return;
+      if (lastWork)
+        document
+          .querySelectorAll(`[data-work="${CSS.escape(lastWork)}"]`)
+          .forEach((x) => x.classList.remove("work-hover"));
+      if (slug)
+        document
+          .querySelectorAll(`[data-work="${CSS.escape(slug)}"]`)
+          .forEach((x) => x.classList.add("work-hover"));
+      lastWork = slug;
+    };
     const over = (e: MouseEvent) => {
-      const el = (e.target as HTMLElement | null)?.closest?.("[data-prev]");
+      const target = e.target as HTMLElement | null;
+      const el = target?.closest?.("[data-prev]");
       if (el) {
         if (clearTimer) {
           clearTimeout(clearTimer);
@@ -43,6 +60,8 @@ export function PreviewZone() {
           setPv(null);
         }, 180);
       }
+      const workEl = target?.closest?.("[data-work]");
+      syncWork(workEl?.getAttribute("data-work") ?? null);
     };
     const custom = (e: Event) => {
       const d = (e as CustomEvent<PreviewData>).detail;
@@ -58,6 +77,7 @@ export function PreviewZone() {
     window.addEventListener("npjm:preview", custom);
     return () => {
       if (clearTimer) clearTimeout(clearTimer);
+      syncWork(null);
       document.removeEventListener("mouseover", over);
       window.removeEventListener("npjm:preview", custom);
     };

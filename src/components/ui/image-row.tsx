@@ -17,6 +17,8 @@ export interface RowImage {
   alt?: string;
   /** When set, the item links through to /work/<slug>. */
   slug?: string;
+  /** Preview-zone JSON for this item's work (drives the hover preview). */
+  prev?: string;
 }
 
 type Size = "S" | "M" | "L";
@@ -50,12 +52,18 @@ export function ImageRow({
   title,
   oneOnMobile = false,
   resizeId,
+  rowSlug,
+  rowPrev,
 }: {
   images: RowImage[];
   sizeClass: string; // "" | " size-m" | " size-l"
   title: string;
   oneOnMobile?: boolean;
   resizeId?: string;
+  /** When every image belongs to one work (e.g. a Selected Works row), the
+   *  slug + preview JSON to link and preview to. Per-image slug/prev win. */
+  rowSlug?: string;
+  rowPrev?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [firstHidden, setFirstHidden] = useState<number | null>(null);
@@ -134,6 +142,10 @@ export function ImageRow({
           const hidden = firstHidden !== null && i >= firstHidden;
           const alt = img.alt ?? img.caption ?? title;
           const key = img.src ?? img.youtube ?? String(i);
+          // Per-image slug/preview win; otherwise fall back to the row's work
+          // (Selected Works rows carry rowSlug/rowPrev for all their images).
+          const slug = img.slug ?? rowSlug;
+          const prev = img.prev ?? rowPrev;
           const media = img.youtube ? (
             <iframe
               className="yt"
@@ -152,10 +164,12 @@ export function ImageRow({
               className="image-module"
               style={hidden ? { visibility: "hidden" } : undefined}
             >
-              {img.slug ? (
+              {slug ? (
                 <Link
-                  href={`/work/${img.slug}`}
+                  href={`/work/${slug}`}
                   className={img.youtube ? "yt-link" : undefined}
+                  data-prev={prev}
+                  data-work={slug}
                 >
                   {media}
                 </Link>
