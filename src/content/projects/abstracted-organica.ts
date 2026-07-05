@@ -7,7 +7,7 @@ export const project: Project = {
   year: "2026",
   weight: 0.7,
   summary:
-    "A recent series spanning multiple practices — Australian landscapes meeting real-time biomimicry (DLA, Physarum). A term coined by Gabriella Brown for It's Nice That.",
+    "A recent series spanning multiple practices, where Australian landscapes meet real-time biomimicry (DLA, Physarum). A term coined by Gabriella Brown for It's Nice That.",
   role: "Featured artist",
   categories: ["Press", "Feature"],
   unlisted: true,
@@ -19,7 +19,7 @@ export const project: Project = {
   ],
   // Mach1's mycelium renders as the featured example of the aesthetic.
   images: [
-    { src: "/images/projects/mach1-festival/01.jpg", caption: "Mach1 Festival — mycelium system" },
+    { src: "/images/projects/mach1-festival/01.jpg", caption: "Mach1 Festival mycelium system" },
     { src: "/images/projects/mach1-festival/02.jpg", caption: "Tent installation" },
     { src: "/images/projects/mach1-festival/03.jpg", caption: "Render variation" },
   ],
@@ -28,7 +28,7 @@ export const project: Project = {
       kind: "text",
       lead: true,
       paragraphs: [
-        "“Abstracted Organica” — a term coined by Gabriella Brown — was a perfect way to encapsulate a recent series of work that spanned across multiple practices in early 2026. The culmination of inspiration from Australian landscapes and real-time biomimicry-style algorithms (DLA, Physarum, and others) resulted in this.",
+        "“Abstracted Organica”, a term coined by Gabriella Brown, was a perfect way to encapsulate a recent series of work that spanned across multiple practices in early 2026. The culmination of inspiration from Australian landscapes and real-time biomimicry-style algorithms (DLA, Physarum, and others) resulted in this.",
       ],
     },
     {

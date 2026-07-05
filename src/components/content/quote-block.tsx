@@ -9,7 +9,7 @@ export function QuoteBlock({ block }: { block: Block }) {
         </p>
         {block.cite && (
           <cite className="caption mt-3 block not-italic text-ink-soft">
-            — {block.cite}
+            {block.cite}
           </cite>
         )}
       </blockquote>

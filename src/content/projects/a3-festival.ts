@@ -1,6 +1,6 @@
 import type { Project } from "@/types/content";
 
-// Stub built from CV facts — add media / fuller text when ready, then remove
+// Stub built from CV facts. Add media / fuller text when ready, then remove
 // `unlisted` to surface it in the installation & performance list as well.
 export const project: Project = {
   slug: "a3-festival",

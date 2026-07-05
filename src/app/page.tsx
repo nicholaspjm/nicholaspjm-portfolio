@@ -23,7 +23,7 @@ function prev(p: Project) {
     y: p.year,
     k: p.section ?? "commissioned",
     s: p.summary,
-    img: p.images?.[0]?.src,
+    img: p.images?.find((im) => im.src)?.src,
     href: `/work/${p.slug}`,
   });
 }
@@ -68,11 +68,21 @@ function ProjectBlock({
   );
 }
 
-/** One representative image per work in a category, each linking to its work. */
+/** One representative image (or video embed) per work in a category, each
+ *  linking to its work. */
 function categoryImages(projects: Project[]): RowImage[] {
   return projects
     .filter((p) => p.images && p.images.length > 0)
-    .map((p) => ({ src: p.images![0].src, slug: p.slug, alt: p.title }));
+    .map((p) => {
+      const first = p.images![0];
+      return {
+        src: first.src,
+        youtube: first.youtube,
+        start: first.start,
+        slug: p.slug,
+        alt: p.title,
+      };
+    });
 }
 
 export default function Home() {
@@ -89,7 +99,7 @@ export default function Home() {
 
   const rich = (
     <div className="leftcol">
-      {/* LIST VIEW — prominent, above the nav (the spot you liked) ------- */}
+      {/* LIST VIEW: prominent, above the nav (the spot you liked) -------- */}
       <p style={{ margin: "0.4em 0 1em 0" }}>
         <NavButton href="/work">list view</NavButton>
       </p>
@@ -112,9 +122,9 @@ export default function Home() {
             developer before moving into visual design.
           </Editable>
           <Editable id="about.p2" as="p" style={{ marginTop: "0.6em" }}>
-            My practice centres on real-time systems — audio-reactive visuals,
-            interactive installation, and motion — for artists, brands, and
-            cultural institutions. I work primarily in TouchDesigner, GLSL,
+            My practice centres on real-time systems, spanning audio-reactive
+            visuals, interactive installation, and motion for artists, brands,
+            and cultural institutions. I work primarily in TouchDesigner, GLSL,
             Python, and depth-sensing hardware.
           </Editable>
           <Editable id="about.p3" as="p" style={{ marginTop: "0.6em" }}>
@@ -124,7 +134,7 @@ export default function Home() {
         </InfoSheet>
       </div>
 
-      {/* INTRO — first person -------------------------------------------- */}
+      {/* INTRO: first person --------------------------------------------- */}
       <Editable id="intro.line1" as="p">
         I&rsquo;m a designer and technologist working across audio-reactive
         visuals, interactive installation, and real-time systems, based in Naarm
@@ -179,7 +189,7 @@ export default function Home() {
 
       <p style={{ marginTop: "1.6em" }}>&hellip;</p>
 
-      {/* SELECTED WORKS — curated, hand-ordered highlights --------------- */}
+      {/* SELECTED WORKS: curated, hand-ordered highlights ---------------- */}
       <p style={{ marginTop: "1.4em" }}>
         <Editable id="label.selected" as="span" className="extra">
           selected works
@@ -248,7 +258,7 @@ export default function Home() {
               s: p.detail,
             })}
           >
-            {p.year !== "—" && <em>{p.year}. </em>}
+            {p.year && <em>{p.year}. </em>}
             <i>
               <Editable id={`perf.${i}.title`} as="span">
                 {p.title}
@@ -256,8 +266,7 @@ export default function Home() {
             </i>
             {p.detail && (
               <>
-                {" "}
-                &mdash;{" "}
+                {", "}
                 <Editable id={`perf.${i}.detail`} as="span">
                   {p.detail}
                 </Editable>
@@ -296,7 +305,7 @@ export default function Home() {
 
       <NoiseRule />
 
-      {/* TOOLS — each row clickable to its repo -------------------------- */}
+      {/* TOOLS: each row clickable to its repo --------------------------- */}
       <p id="tools">
         <Editable id="label.tools" as="span" className="extra">
           tools
@@ -339,8 +348,8 @@ export default function Home() {
       <ul>
         <li>
           <Editable id="teaching.b1" as="span">
-            Co-founded Touch Collective — TouchDesigner workshops, artist talks,
-            and live visual events in Naarm / Melbourne.
+            Co-founded Touch Collective, running TouchDesigner workshops, artist
+            talks, and live visual events in Naarm / Melbourne.
           </Editable>
         </li>
         <li>
@@ -366,7 +375,7 @@ export default function Home() {
         </li>
         <li>
           <Editable id="teaching.b6" as="span">
-            Available for workshops and talks —
+            Available for workshops and talks,
           </Editable>{" "}
           <a href={`mailto:${site.email}`}>get in touch</a>.
         </li>
@@ -399,8 +408,7 @@ export default function Home() {
             </span>
             {a.detail && (
               <>
-                {" "}
-                &mdash;{" "}
+                {", "}
                 <Editable id={`award.${i}.detail`} as="span">
                   {a.detail}
                 </Editable>
@@ -423,14 +431,13 @@ export default function Home() {
       <ul>
         {press.map((p, i) => (
           <li key={`press-${i}`}>
-            {p.year !== "—" && <em>{p.year}. </em>}
+            {p.year && <em>{p.year}. </em>}
             <Editable id={`press.${i}.title`} as="span">
               {p.title}
             </Editable>
             {p.detail && (
               <>
-                {" "}
-                &mdash;{" "}
+                {", "}
                 <i>
                   <Editable id={`press.${i}.detail`} as="span">
                     {p.detail}
@@ -461,8 +468,7 @@ export default function Home() {
             </Editable>
             {e.detail && (
               <>
-                {" "}
-                &mdash;{" "}
+                {", "}
                 <Editable id={`edu.${i}.detail`} as="span">
                   {e.detail}
                 </Editable>

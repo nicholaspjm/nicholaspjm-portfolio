@@ -171,6 +171,20 @@ button {
 .image-row.size-l { gap: 4px; }
 .image-row.size-l img { height: 340px; }
 
+/* Muted autoplay video embed, sized like an image in the row. */
+.image-module .yt {
+  display: block;
+  border: 0;
+  height: 118px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+.image-row.size-m .image-module .yt { height: 210px; }
+.image-row.size-l .image-module .yt { height: 340px; }
+/* The embed is a silent preview; the link layered over it opens the work. */
+.yt-link { display: block; line-height: 0; }
+.yt-link .yt { pointer-events: none; }
+
 .image-module {
   display: inline-flex;
   flex-direction: column;
@@ -203,6 +217,9 @@ button {
   .image-module img,
   .image-row.size-m img,
   .image-row.size-l img { width: 100%; height: auto; max-height: none; }
+  .image-module .yt,
+  .image-row.size-m .image-module .yt,
+  .image-row.size-l .image-module .yt { width: 100%; height: auto; }
   /* one image per work on mobile — hide the rest of a work's strip */
   .image-row.one-mobile .image-module:not(:first-child) { display: none; }
 }
@@ -295,23 +312,29 @@ html::-webkit-scrollbar {
   gap: 4px;
 }
 
-/* Page content frame — full-height normally; in the "squished" layout the
-   full-width desktop view is confined to a band across the top of the screen
-   (scrollable) with the bottom left empty, showing the point-cloud through. */
 .page-frame {
   width: 100%;
 }
-html[data-squish] .page-frame {
-  height: 58vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border-bottom: 1px solid var(--soft);
-}
-@media (min-width: 901px) {
-  html[data-squish] .preview-zone {
-    bottom: auto;
-    height: 52vh;
-  }
+
+/* Squish preview. The real app is hidden and a fresh copy of the whole site is
+   loaded inside .squish-frame (an iframe) at half the screen width, so it
+   reflows to that smaller resolution and stays fully interactive, like the site
+   opened in a half-size window. The rest of the screen is left empty.
+   data-sq-frame is the copy inside the iframe: it renders normally. */
+html[data-squish]:not([data-sq-frame]) .app-root { display: none; }
+html[data-squish]:not([data-sq-frame]) .editbar { display: none; }
+
+.squish-frame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50vw;
+  height: 100vh;
+  border: 0;
+  border-right: 1px solid var(--soft);
+  background: var(--bg);
+  z-index: 60;
+  display: block;
 }
 
 /* Mouse trail — pen-plotter line following the cursor */

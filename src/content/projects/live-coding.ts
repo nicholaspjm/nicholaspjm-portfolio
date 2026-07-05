@@ -7,7 +7,7 @@ export const project: Project = {
   year: "2025",
   weight: 0.6,
   summary:
-    "Live-coded visual performances — Six12 with Steve Pan, Odd Chaos, and Pop Pop with Cy_.",
+    "Live-coded visual performances, including Six12 with Steve Pan, Odd Chaos, and Pop Pop with Cy_.",
   role: "Live coding, visual performance",
   categories: ["Performance", "Live Coding"],
   tags: ["TouchDesigner", "GLSL", "Live Coding"],
@@ -24,13 +24,13 @@ export const project: Project = {
       kind: "text",
       lead: true,
       paragraphs: [
-        "Live coding is the use of code in real time as both a creative tool and a performance medium. It produces visuals that shift and evolve spontaneously with music, touch, or environment — blurring the line between programming and performance.",
+        "Live coding is the use of code in real time as both a creative tool and a performance medium. It produces visuals that shift and evolve spontaneously with music, touch, or environment, blurring the line between programming and performance.",
       ],
     },
     {
       kind: "text",
       paragraphs: [
-        "I craft all my visuals live so they can respond dynamically, while the audience sees the code unfold alongside the visuals and sound. The renders and clips here are from recent performances that featured live coding — Six12 with Steve Pan, Odd Chaos, and Pop Pop with Cy_.",
+        "I craft all my visuals live so they can respond dynamically, while the audience sees the code unfold alongside the visuals and sound. The renders and clips here are from recent performances that featured live coding, including Six12 with Steve Pan, Odd Chaos, and Pop Pop with Cy_.",
       ],
     },
     {

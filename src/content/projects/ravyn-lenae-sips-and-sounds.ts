@@ -2,7 +2,7 @@ import type { Project } from "@/types/content";
 
 export const project: Project = {
   slug: "ravyn-lenae-sips-and-sounds",
-  title: "Ravyn Lenae — Sips & Sounds",
+  title: "Ravyn Lenae at Sips & Sounds",
   year: "2026",
   weight: 0.75,
   summary:

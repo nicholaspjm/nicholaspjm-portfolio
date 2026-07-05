@@ -241,7 +241,7 @@ export function CVSheet({ rows }: { rows: CVRow[] }) {
         <button onClick={download}>export .csv ↓</button>{" "}
         <span className="foot">
           <Editable id="cv.formulaHint" as="span">
-            the formula bar runs for real — try WHERE year &gt;= 2026, WHERE
+            the formula bar runs for real. Try WHERE year &gt;= 2026, WHERE
             title CONTAINS &apos;xx&apos;, or LIMIT 5 · click headers to sort ·
             click cells to inspect
           </Editable>
@@ -306,7 +306,7 @@ export function CVSheet({ rows }: { rows: CVRow[] }) {
                   }
                   onClick={() => setSel({ r: ri, c: ci })}
                 >
-                  {c === "year" && r.year === "—" ? "" : r[c]}
+                  {c === "year" && !r.year ? "" : r[c]}
                 </td>
               ))}
             </tr>
@@ -315,7 +315,7 @@ export function CVSheet({ rows }: { rows: CVRow[] }) {
             <tr>
               <td className="rownum">2</td>
               <td colSpan={4}>
-                <i>#N/A — query matched nothing</i>
+                <i>#N/A: query matched nothing</i>
               </td>
             </tr>
           )}

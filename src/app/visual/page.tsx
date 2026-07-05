@@ -6,17 +6,19 @@ import { Editable } from "@/components/ui/editable";
 
 export const metadata: Metadata = {
   title: "Visual",
-  description: "Every image, scattered — click through to the work.",
+  description: "Every image, scattered. Click through to the work.",
 };
 
 export default function VisualPage() {
   const items: VisualItem[] = getListedProjects().flatMap((p) =>
-    (p.images ?? []).map((img) => ({
-      src: img.src,
-      slug: p.slug,
-      title: p.title,
-      year: p.year,
-    })),
+    (p.images ?? [])
+      .filter((img) => img.src) // skip video-embed items with no still to scatter
+      .map((img) => ({
+        src: img.src!,
+        slug: p.slug,
+        title: p.title,
+        year: p.year,
+      })),
   );
 
   return (

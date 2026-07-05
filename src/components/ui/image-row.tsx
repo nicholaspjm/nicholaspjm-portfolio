@@ -7,15 +7,36 @@ import { editableText } from "@/content/editable-text";
 import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 
 export interface RowImage {
-  src: string;
+  /** Image path under /public. Omit when `youtube` is set. */
+  src?: string;
+  /** YouTube video id. Renders a muted, autoplaying, looping embed instead. */
+  youtube?: string;
+  /** Optional start time (seconds) for the embed. */
+  start?: number;
   caption?: string;
   alt?: string;
-  /** When set, the image links through to /work/<slug>. */
+  /** When set, the item links through to /work/<slug>. */
   slug?: string;
 }
 
 type Size = "S" | "M" | "L";
 const SIZE_CLASS: Record<Size, string> = { S: "", M: " size-m", L: " size-l" };
+
+/** Muted, autoplaying, looping, chromeless YouTube embed URL. */
+function ytEmbed(id: string, start?: number) {
+  const q = new URLSearchParams({
+    autoplay: "1",
+    mute: "1",
+    controls: "0",
+    loop: "1",
+    playlist: id,
+    playsinline: "1",
+    modestbranding: "1",
+    rel: "0",
+  });
+  if (start) q.set("start", String(start));
+  return `https://www.youtube.com/embed/${id}?${q.toString()}`;
+}
 
 /**
  * Single-row image strip. Images that don't fully fit within the row width are
@@ -112,20 +133,34 @@ export function ImageRow({
         {images.map((img, i) => {
           const hidden = firstHidden !== null && i >= firstHidden;
           const alt = img.alt ?? img.caption ?? title;
+          const key = img.src ?? img.youtube ?? String(i);
+          const media = img.youtube ? (
+            <iframe
+              className="yt"
+              src={ytEmbed(img.youtube, img.start)}
+              title={alt}
+              loading="lazy"
+              allow="autoplay; encrypted-media; picture-in-picture"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={asset(img.src!)} alt={alt} />
+          );
           return (
             <figure
-              key={img.src}
+              key={key}
               className="image-module"
               style={hidden ? { visibility: "hidden" } : undefined}
             >
               {img.slug ? (
-                <Link href={`/work/${img.slug}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={asset(img.src)} alt={alt} />
+                <Link
+                  href={`/work/${img.slug}`}
+                  className={img.youtube ? "yt-link" : undefined}
+                >
+                  {media}
                 </Link>
               ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={asset(img.src)} alt={alt} />
+                media
               )}
             </figure>
           );

@@ -2,7 +2,7 @@ import type { Project } from "@/types/content";
 
 export const project: Project = {
   slug: "odetari-dont-die",
-  title: "DON'T DIE — Odetari ft. SOYEON",
+  title: "DON'T DIE, Odetari ft. SOYEON",
   year: "2026",
   weight: 0.8,
   summary:
@@ -13,8 +13,8 @@ export const project: Project = {
   links: [{ href: "https://youtu.be/h3FZlwFDwy4", label: "official video" }],
   images: [
     {
-      src: "/images/projects/odetari-dont-die/video.jpg",
-      caption: "DON'T DIE — official music video",
+      youtube: "h3FZlwFDwy4",
+      caption: "DON'T DIE, official music video",
     },
   ],
   blocks: [
@@ -28,7 +28,7 @@ export const project: Project = {
     {
       kind: "embed",
       url: "https://www.youtube.com/embed/h3FZlwFDwy4",
-      caption: "DON'T DIE — official music video",
+      caption: "DON'T DIE, official music video",
     },
   ],
 };

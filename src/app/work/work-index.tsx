@@ -50,8 +50,8 @@ function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
             <em>{p.year}.</em>{" "}
             <Link className="ptitle" href={`/work/${p.slug}`}>
               {editableText[`work.${p.slug}.title`] ?? p.title}
-            </Link>{" "}
-            &mdash; {editableText[`work.${p.slug}.summary`] ?? p.summary}{" "}
+            </Link>{". "}
+            {editableText[`work.${p.slug}.summary`] ?? p.summary}{" "}
             <span className="foot">({p.categories.join(" / ")})</span>
           </li>
         ))}

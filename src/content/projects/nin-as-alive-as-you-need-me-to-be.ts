@@ -2,7 +2,7 @@ import type { Project } from "@/types/content";
 
 export const project: Project = {
   slug: "nin-as-alive-as-you-need-me-to-be",
-  title: "Nine Inch Nails — As Alive As You Need Me To Be",
+  title: "Nine Inch Nails, As Alive As You Need Me To Be",
   year: "2025",
   weight: 1,
   summary:
@@ -15,7 +15,7 @@ export const project: Project = {
     { href: "https://www.instagram.com/p/DJdm9BCypp7/", label: "instagram" },
   ],
   images: [
-    { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/video.jpg", caption: "As Alive As You Need Me To Be — official video" },
+    { youtube: "SnMyroAH0rg", caption: "As Alive As You Need Me To Be, official video" },
     { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/01.jpg", caption: "Particle field render" },
     { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/03.jpg", caption: "Depth-augmented footage" },
     { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/04.jpg", caption: "Layered video feedback" },
@@ -42,7 +42,7 @@ export const project: Project = {
     {
       kind: "embed",
       url: "https://www.youtube.com/embed/SnMyroAH0rg",
-      caption: "Nine Inch Nails — As Alive As You Need Me To Be (official music video)",
+      caption: "Nine Inch Nails, As Alive As You Need Me To Be (official music video)",
     },
     {
       kind: "video",

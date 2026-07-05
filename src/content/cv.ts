@@ -1,5 +1,5 @@
 /**
- * Curriculum vitae data — awards, press, performances, teaching, education.
+ * Curriculum vitae data: awards, press, performances, teaching, education.
  * Rendered on the homepage (short list) and the /info page (full).
  */
 
@@ -48,7 +48,7 @@ export const performances: CVEntry[] = [
   },
   {
     year: "2025",
-    title: "Pitch Music & Arts — Far from God, Close to Heaven",
+    title: "Pitch Music & Arts: Far from God, Close to Heaven",
     detail:
       "Grampian Plains, Victoria. Three-hour improvised audiovisual set.",
   },
@@ -63,12 +63,12 @@ export const performances: CVEntry[] = [
     detail: "Visual design and live performance.",
   },
   {
-    year: "—",
+    year: "",
     title: "Thread",
     detail: "Ongoing visual design for the club night.",
   },
   {
-    year: "—",
+    year: "",
     title: "Babie Club",
     detail: "Ongoing visual design for the club night.",
   },
@@ -93,7 +93,7 @@ export const events: string[] = [
 export const awards: CVEntry[] = [
   {
     year: "2026",
-    title: "Grammy Award — Best Rock Song",
+    title: "Grammy Award for Best Rock Song",
     detail:
       "Nine Inch Nails, “As Alive As You Need Me To Be”, 68th Annual Grammy Awards, 1 February 2026. Visual design for the Grammy-winning single's official music video.",
   },
@@ -113,25 +113,25 @@ export const press: CVEntry[] = [
   },
   {
     year: "2025",
-    title: "“2016LYFE — smokedope2016”",
+    title: "“2016LYFE, smokedope2016”",
     detail: "Lyrical Lemonade, 13 September 2025.",
   },
 ];
 
 export const teaching: CVEntry[] = [
   {
-    year: "—",
+    year: "",
     title: "Touch Collective, Co-founder",
     detail:
       "Regular TouchDesigner workshops, artist talks, and live visual events. Naarm / Melbourne.",
   },
   {
     year: "2025",
-    title: "Speaker — Creative Technology Melbourne",
+    title: "Speaker, Creative Technology Melbourne",
     detail: "Talk on real-time visual systems.",
   },
   {
-    year: "—",
+    year: "",
     title: "YouTube (@nicholaspjm)",
     detail:
       "Technical TouchDesigner tutorials and creative coding education.",

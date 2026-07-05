@@ -1,5 +1,5 @@
 /**
- * Tools — released software and TouchDesigner components.
+ * Tools: released software and TouchDesigner components.
  * Verify repo visibility before launch; links assume github.com/nicholaspjm.
  */
 
@@ -23,7 +23,7 @@ export const tools: Tool[] = [
   {
     name: "lumen",
     summary:
-      "Live-coding environment for DMX lighting rigs — write patterns live, lights follow on the next beat.",
+      "Live-coding environment for DMX lighting rigs. Write patterns live and the lights follow on the next beat.",
     stack: "TypeScript · WebSocket · DMX",
     links: [
       { href: "https://github.com/nicholaspjm/dmx-live-code", label: "github" },
@@ -32,35 +32,35 @@ export const tools: Tool[] = [
   {
     name: "live coding",
     summary:
-      "Live-coding environment for real-time visuals — write, hear, and see the patch change while it runs.",
+      "Live-coding environment for real-time visuals. Write, hear, and see the patch change while it runs.",
     stack: "TouchDesigner · Python",
     links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
   },
   {
     name: "wiki visualiser",
     summary:
-      "Turns Wikipedia — articles, link graphs, live edits — into real-time visual maps.",
+      "Turns Wikipedia into real-time visual maps from articles, link graphs, and live edits.",
     stack: "TypeScript · WebGL",
     links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
   },
   {
     name: "datamosh",
     summary:
-      "Datamoshing as an instrument — compression-artifact glitching made controllable and performable.",
+      "Datamoshing as an instrument. Compression-artifact glitching made controllable and performable.",
     stack: "TouchDesigner · GLSL",
     links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
   },
   {
     name: "palette chooser",
     summary:
-      "Real-time palette extraction — k-means colour analysis of any image or live feed into usable swatch palettes.",
+      "Real-time palette extraction using k-means colour analysis, turning any image or live feed into usable swatch palettes.",
     stack: "TouchDesigner · Python",
     links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
   },
   {
     name: "TD-Notes-Tools",
     summary:
-      "Two external .tox note panels for TouchDesigner — a notebook and a sticky canvas that link to and jump to nodes.",
+      "Two external .tox note panels for TouchDesigner: a notebook and a sticky canvas that link to and jump to nodes.",
     stack: "TouchDesigner · Python",
     links: [
       { href: "https://github.com/nicholaspjm/TD-Notes-Tools", label: "github" },

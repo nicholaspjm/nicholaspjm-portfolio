@@ -40,10 +40,10 @@ export default function WorkPage() {
               s: p.detail,
             })}
           >
-            {p.year !== "—" && <em>{p.year}. </em>}
+            {p.year && <em>{p.year}. </em>}
             <i>{editableText[`perf.${i}.title`] ?? p.title}</i>
             {p.detail && (
-              <> &mdash; {editableText[`perf.${i}.detail`] ?? p.detail}</>
+              <>, {editableText[`perf.${i}.detail`] ?? p.detail}</>
             )}
           </li>
         ))}

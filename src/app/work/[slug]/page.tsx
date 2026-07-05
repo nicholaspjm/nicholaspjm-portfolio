@@ -70,7 +70,6 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
           {project.role && (
             <>
               {" "}
-              &mdash;{" "}
               <Editable id={`work.${project.slug}.role`} as="span">
                 {project.role}
               </Editable>
@@ -81,9 +80,10 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
         <Blocks blocks={project.blocks} />
       </div>
 
-      {project.images && project.images.length > 0 && (
+      {/* Photo gallery only; video embeds live in the blocks flow above. */}
+      {project.images && project.images.some((im) => !im.youtube) && (
         <ImageRow
-          images={project.images}
+          images={project.images.filter((im) => !im.youtube)}
           sizeClass={imageSizeClass(project.imageSize)}
           title={project.title}
           resizeId={project.slug}

@@ -52,7 +52,6 @@ export function ProjectEntry({
       {role && (
         <>
           {" "}
-          &mdash;{" "}
           <Editable id={`work.${slug}.role`} as="span">
             {role}
           </Editable>

@@ -104,8 +104,15 @@ export interface Project {
   link?: { href: string; label: string };
   /** Cluster of related external links — rendered as pill buttons on the index. */
   links?: { href: string; label: string }[];
-  /** Images shown as an image-row under the project entry on the index. */
-  images?: { src: string; caption?: string; alt?: string }[];
+  /** Images shown as an image-row under the project entry on the index. An
+   *  item may instead carry a `youtube` id to render a muted autoplay embed. */
+  images?: {
+    src?: string;
+    youtube?: string;
+    start?: number;
+    caption?: string;
+    alt?: string;
+  }[];
   /** Image-row thumbnail size on the index. Defaults to "S" (small). */
   imageSize?: "S" | "M" | "L";
   /** Relative scale of the work (0–1), used to weight the timeline rail.

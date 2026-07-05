@@ -31,7 +31,7 @@ export const project: Project = {
     {
       kind: "embed",
       url: "https://www.youtube.com/embed/EnOhNIyQtSk",
-      caption: "Forgotten, Once Remembered — interactive TouchDesigner dance piece",
+      caption: "Forgotten, Once Remembered, an interactive TouchDesigner dance piece",
     },
     {
       kind: "video",

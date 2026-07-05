@@ -27,7 +27,7 @@ export default function CVPage() {
             ? "Sketch"
             : "Project",
       title: p.title,
-      detail: [p.summary, p.role].filter(Boolean).join(" — "),
+      detail: [p.summary, p.role].filter(Boolean).join(" "),
     })),
     ...performances.map((p) => ({
       year: p.year,
@@ -75,7 +75,7 @@ export default function CVPage() {
 
       <p>
         <Editable id="label.cv" as="span" className="extra">
-          Nicholas Marriott — CV
+          Nicholas Marriott CV
         </Editable>
       </p>
 

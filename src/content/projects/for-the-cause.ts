@@ -19,7 +19,7 @@ export const project: Project = {
       kind: "text",
       lead: true,
       paragraphs: [
-        "For The Cause (FTC) is an intimate festival held on Boonwurrung Country. I curated the main-stage visuals across the entirety of the event, 28–30 March 2025.",
+        "For The Cause (FTC) is an intimate festival held on Boonwurrung Country. I curated the main-stage visuals across the entirety of the event, 28 to 30 March 2025.",
       ],
     },
     {

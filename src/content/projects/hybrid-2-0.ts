@@ -1,6 +1,6 @@
 import type { Project } from "@/types/content";
 
-// Stub built from CV facts — add media / fuller text when ready, then remove
+// Stub built from CV facts. Add media / fuller text when ready, then remove
 // `unlisted` to surface it in the installation & performance list as well.
 export const project: Project = {
   slug: "hybrid-2-0",
@@ -19,7 +19,7 @@ export const project: Project = {
       kind: "text",
       lead: true,
       paragraphs: [
-        "Hybrid 2.0 — a live audiovisual installation, presented as part of the Platform Presents group exhibition in Naarm / Melbourne.",
+        "Hybrid 2.0 is a live audiovisual installation, presented as part of the Platform Presents group exhibition in Naarm / Melbourne.",
       ],
     },
     {

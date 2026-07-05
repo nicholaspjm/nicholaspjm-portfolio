@@ -39,7 +39,7 @@ export default function InfoPage() {
         <Editable id="info.about.p2" as="p" style={{ marginTop: "0.6em" }}>
           I hold a Bachelor of Arts in Computer Science from the University of
           Auckland, and worked as a software developer before moving into visual
-          design — an engineering background that shapes how I build shows:
+          design, an engineering background that shapes how I build shows:
           versioned, tested, and performed live. I work primarily in
           TouchDesigner, GLSL, Python, and depth-sensing hardware.
         </Editable>

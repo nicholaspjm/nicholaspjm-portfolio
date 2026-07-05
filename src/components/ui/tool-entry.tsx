@@ -43,8 +43,7 @@ export function ToolEntry({
         style={{ fontSize: 14 }}
       >
         {name}
-      </Editable>{" "}
-      &mdash;{" "}
+      </Editable>{". "}
       <Editable id={`tool.${idx}.summary`} as="span">
         {summary}
       </Editable>{" "}

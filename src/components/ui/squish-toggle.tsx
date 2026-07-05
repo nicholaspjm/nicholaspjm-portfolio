@@ -1,32 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+import {
+  getSquish,
+  getServerSquish,
+  setSquish,
+  subscribeSquish,
+  isSquishFrame,
+} from "@/lib/squish-store";
 
 /**
- * Toggles a compact, narrow-column "squished" layout — the page content is
- * constrained to a centered narrow frame (like viewing in a slim window) while
- * the point-cloud background stays full-bleed. Choice persists in localStorage.
+ * Toggles the "squish" preview: the whole site renders inside a real half-size
+ * window (an iframe), reflowed to that smaller resolution and fully
+ * interactive, with the rest of the screen left empty. Choice persists.
  */
 export function SquishToggle() {
-  const [squish, setSquish] = useState(false);
+  const squish = useSyncExternalStore(
+    subscribeSquish,
+    getSquish,
+    getServerSquish,
+  );
 
-  useEffect(() => {
-    setSquish(localStorage.getItem("npjm-squish") === "1");
-  }, []);
-
-  const toggle = () => {
-    const next = !squish;
-    setSquish(next);
-    if (next) document.documentElement.dataset.squish = "1";
-    else delete document.documentElement.dataset.squish;
-    localStorage.setItem("npjm-squish", next ? "1" : "0");
-  };
+  // No toggle inside the preview iframe itself.
+  if (isSquishFrame) return null;
 
   return (
     <button
       className="squish-toggle"
-      onClick={toggle}
-      aria-label={squish ? "Full-width layout" : "Squished column layout"}
+      onClick={() => setSquish(!squish)}
+      aria-label={squish ? "Full-window layout" : "Half-window preview"}
     >
       {squish ? "wide" : "squish"}
     </button>

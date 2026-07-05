@@ -49,10 +49,10 @@ export function EditBar() {
       } else if (data.changed === 0) {
         setStatus("no changes to save");
       } else {
-        setStatus(`saved locally (${data.changed}) — pushes next update`);
+        setStatus(`saved locally (${data.changed}), pushes next update`);
       }
     } catch {
-      setStatus("studio offline — run: npm run studio");
+      setStatus("studio offline. run: npm run studio");
     }
   };
 

@@ -1,15 +1,16 @@
 import type { Project } from "@/types/content";
 
 /* ===========================================================================
-   TEMPLATE — how to add a project's images, videos, and text.
+   TEMPLATE: how to add a project's images, videos, and text.
 
    1. Drop media into this project's folders:
         public/images/projects/the-xx-festival-tour/   (jpg / png / webp)
         public/videos/projects/the-xx-festival-tour/   (mp4 / webm)
 
    2. Reference them below. The `blocks` array is the page body, top to
-      bottom — mix text, images, and video in any order. The `images` array
+      bottom, mixing text, images, and video in any order. The `images` array
       (further down) renders as a simple gallery row under the entry.
+      Video embeds use { youtube: "<id>", start?: <seconds> } in `images`.
 
    Block kinds you can use:
      { kind: "text", paragraphs: ["…", "…"], lead?: true }
@@ -21,7 +22,7 @@ import type { Project } from "@/types/content";
 
 export const project: Project = {
   slug: "the-xx-festival-tour",
-  title: "The xx — Festival Tour",
+  title: "The xx Festival Tour",
   year: "2026",
   weight: 1,
   summary:
@@ -30,7 +31,7 @@ export const project: Project = {
   categories: ["Live Visuals", "Touring"],
   tags: ["TouchDesigner", "Audio-reactive"],
 
-  // Page body — write text and drop media here, in order.
+  // Page body: write text and drop media here, in order.
   blocks: [
     {
       kind: "text",
@@ -39,7 +40,7 @@ export const project: Project = {
         "Audio-reactive TouchDesigner visual design for The xx's 2026 festival run, including Coachella Main Stage. Built in collaboration with MTLA Studio, Axonbody and Forms.",
       ],
     },
-    // Add media once files are in the folders — e.g.:
+    // Add media once files are in the folders, e.g.:
     // {
     //   kind: "video",
     //   src: "/videos/projects/the-xx-festival-tour/coachella.mp4",

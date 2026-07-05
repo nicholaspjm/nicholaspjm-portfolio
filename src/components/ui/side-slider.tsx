@@ -52,7 +52,7 @@ export function SideSlider() {
         href: `/work/${p.slug}`,
       })),
       ...performances
-        .filter((p) => p.year !== "—")
+        .filter((p) => p.year)
         .map((p) => ({
           year: parseInt(p.year, 10) || 2025,
           title: p.title,

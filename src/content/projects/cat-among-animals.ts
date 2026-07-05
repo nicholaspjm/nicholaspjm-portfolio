@@ -15,7 +15,7 @@ export const project: Project = {
     { href: "https://youtu.be/tdmt2EjIpME", label: "watch" },
   ],
   images: [
-    { src: "/images/projects/cat-among-animals/video.jpg", caption: "Cat Among Animals — full performance" },
+    { youtube: "tdmt2EjIpME", caption: "Cat Among Animals, full performance" },
     { src: "/images/projects/cat-among-animals/01.jpg", caption: "Oddany Gallery" },
     { src: "/images/projects/cat-among-animals/03.jpg", caption: "Live performance" },
     { src: "/images/projects/cat-among-animals/04.jpg", caption: "With Steve Pan" },
@@ -28,19 +28,19 @@ export const project: Project = {
       kind: "text",
       lead: true,
       paragraphs: [
-        "Cat Among Animals — a collaborative audiovisual performance with Steve Pan, curated by Chloé at Oddany Gallery, Naarm / Melbourne. The third collaboration between Steve and me, and a further step into live coding: letting the process and improvisation of live code guide the piece.",
+        "Cat Among Animals is a collaborative audiovisual performance with Steve Pan, curated by Chloé at Oddany Gallery, Naarm / Melbourne. It is the third collaboration between Steve and me, and a further step into live coding: letting the process and improvisation of live code guide the piece.",
       ],
     },
     {
       kind: "text",
       paragraphs: [
-        "I've been increasingly drawn to narrative structure in new media — exploring how story can surface through live coding's inherent movement and shifting forms, rather than through technical display. The entire performance is edited and available to watch online.",
+        "I've been increasingly drawn to narrative structure in new media, exploring how story can surface through live coding's inherent movement and shifting forms, rather than through technical display. The entire performance is edited and available to watch online.",
       ],
     },
     {
       kind: "embed",
       url: "https://www.youtube.com/embed/tdmt2EjIpME",
-      caption: "Cat Among Animals — live TouchDesigner AV performance with Steve Pan",
+      caption: "Cat Among Animals, live TouchDesigner AV performance with Steve Pan",
     },
     {
       kind: "video",
