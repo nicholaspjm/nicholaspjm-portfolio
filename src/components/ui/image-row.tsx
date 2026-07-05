@@ -11,6 +11,8 @@ export interface RowImage {
   src?: string;
   /** YouTube video id. Renders a muted, autoplaying, looping embed instead. */
   youtube?: string;
+  /** Local video path. Renders a muted, autoplaying (in-view) looping clip. */
+  video?: string;
   /** Optional start time (seconds) for the embed. */
   start?: number;
   caption?: string;
@@ -100,13 +102,40 @@ export function ImageRow({
     imgs.forEach((im) => {
       if (!im.complete) im.addEventListener("load", measure);
     });
+    const vids = [...el.querySelectorAll("video")];
+    vids.forEach((v) => v.addEventListener("loadedmetadata", measure));
     window.addEventListener("resize", measure);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", measure);
       imgs.forEach((im) => im.removeEventListener("load", measure));
+      vids.forEach((v) => v.removeEventListener("loadedmetadata", measure));
     };
   }, [images, size]);
+
+  // Play gallery videos only while they are actually on screen (and not the
+  // ones hidden past the row edge), so a page with many clips stays light.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const vids = [...el.querySelectorAll<HTMLVideoElement>("video.vid")];
+    if (vids.length === 0) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const v = e.target as HTMLVideoElement;
+          const shown =
+            e.isIntersecting &&
+            getComputedStyle(v).visibility !== "hidden";
+          if (shown) void v.play?.().catch(() => {});
+          else v.pause?.();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    vids.forEach((v) => io.observe(v));
+    return () => io.disconnect();
+  }, [images, size, firstHidden]);
 
   if (images.length === 0) return null;
 
@@ -154,10 +183,20 @@ export function ImageRow({
               loading="lazy"
               allow="autoplay; encrypted-media; picture-in-picture"
             />
-          ) : (
+          ) : img.video ? (
+            <video
+              className="vid"
+              src={asset(img.video)}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label={alt}
+            />
+          ) : img.src ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={asset(img.src!)} alt={alt} />
-          );
+            <img src={asset(img.src)} alt={alt} />
+          ) : null;
           return (
             <figure
               key={key}

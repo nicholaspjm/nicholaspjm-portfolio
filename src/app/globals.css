@@ -194,6 +194,17 @@ button {
 /* The embed is a silent preview; the link layered over it opens the work. */
 .yt-link { display: block; line-height: 0; }
 .yt-link .yt { pointer-events: none; }
+.yt-link video.vid { pointer-events: none; }
+
+/* Local muted autoplay clip, sized like an image (aspect follows the file). */
+.image-module video.vid {
+  display: block;
+  height: 118px;
+  width: auto;
+  background: #000;
+}
+.image-row.size-m .image-module video.vid { height: 210px; }
+.image-row.size-l .image-module video.vid { height: 340px; }
 
 .image-module {
   display: inline-flex;
@@ -230,6 +241,9 @@ button {
   .image-module .yt,
   .image-row.size-m .image-module .yt,
   .image-row.size-l .image-module .yt { width: 100%; height: auto; }
+  .image-module video.vid,
+  .image-row.size-m .image-module video.vid,
+  .image-row.size-l .image-module video.vid { width: 100%; height: auto; }
   /* one image per work on mobile — hide the rest of a work's strip */
   .image-row.one-mobile .image-module:not(:first-child) { display: none; }
 }

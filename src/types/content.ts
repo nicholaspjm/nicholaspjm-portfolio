@@ -105,10 +105,12 @@ export interface Project {
   /** Cluster of related external links — rendered as pill buttons on the index. */
   links?: { href: string; label: string }[];
   /** Images shown as an image-row under the project entry on the index. An
-   *  item may instead carry a `youtube` id to render a muted autoplay embed. */
+   *  item may instead carry a `youtube` id (muted autoplay embed) or a `video`
+   *  path (muted autoplay local clip). */
   images?: {
     src?: string;
     youtube?: string;
+    video?: string;
     start?: number;
     caption?: string;
     alt?: string;

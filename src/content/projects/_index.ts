@@ -18,6 +18,7 @@ import { project as abstractedOrganica } from "./abstracted-organica";
 import { project as cheahdxPurespace } from "./cheahdx-purespace";
 import { project as pitchFarFromGod } from "./pitch-far-from-god";
 import { project as atmosNorlaDome } from "./atmos-norla-dome";
+import { project as threadCongeeClub } from "./thread-congee-club";
 
 export const projects: Project[] = [
   theXxFestivalTour,
@@ -38,4 +39,5 @@ export const projects: Project[] = [
   cheahdxPurespace,
   pitchFarFromGod,
   atmosNorlaDome,
+  threadCongeeClub,
 ];

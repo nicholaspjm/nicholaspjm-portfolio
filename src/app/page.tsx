@@ -80,6 +80,7 @@ function categoryImages(projects: Project[]): RowImage[] {
       return {
         src: first.src,
         youtube: first.youtube,
+        video: first.video,
         start: first.start,
         slug: p.slug,
         prev: prev(p),

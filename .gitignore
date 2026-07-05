@@ -40,17 +40,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Held imports: media recovered from the old Cargo site (nicholaspjm.com) for
-# projects that don't have pages yet. Downloaded locally and documented in
-# docs/cargo-import.md. Un-ignore an image folder here when you promote it.
-# Promoted: pitch-far-from-god, atmos-norla-dome (their images now commit).
-/public/videos/projects/pitch-far-from-god/
-/public/videos/projects/atmos-norla-dome/
-/public/videos/projects/thread-congee-club/
-/public/images/projects/thread-congee-club/
+# Held imports from the old Cargo site (nicholaspjm.com), documented in
+# docs/cargo-import.md. All three held projects are now promoted to pages
+# (pitch-far-from-god, atmos-norla-dome, thread-congee-club); their committed
+# media is the web-ready images + .mp4 clips.
 
-# Videos dropped into image folders don't play in-browser. Keep them local
-# until converted to web-friendly mp4/webm and referenced as a video block.
+# Source videos dropped into image folders don't play in-browser. They are
+# transcoded to public/videos/ by scripts/convert-videos.mjs; only the web .mp4
+# outputs are committed. Keep the heavy originals local.
 /public/images/projects/**/*.[mM][oO][vV]
 /public/images/projects/**/*.[mM][pP]4
 /public/images/projects/**/*.[wW][eE][bB][mM]
