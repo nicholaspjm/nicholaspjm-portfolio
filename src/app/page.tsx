@@ -283,7 +283,7 @@ export default function Home() {
 
       {/* PARTIES & EVENTS ------------------------------------------------- */}
       <p style={{ marginTop: "1em" }}>
-        <Editable id="label.events" as="span" className="extra">
+        <Editable id="label.events" as="span" className="static-label">
           parties &amp; events
         </Editable>{" "}
         <span className="pathnote">~/practice/dancefloors</span>
@@ -297,7 +297,7 @@ export default function Home() {
 
       {/* SKETCHES --------------------------------------------------------- */}
       <p>
-        <Editable id="label.sketches" as="span" className="extra">
+        <Editable id="label.sketches" as="span" className="static-label">
           sketches
         </Editable>{" "}
         <span className="pathnote">~/practice/fun</span>
@@ -337,7 +337,7 @@ export default function Home() {
 
       {/* TEACHING ---------------------------------------------------------- */}
       <p>
-        <Editable id="label.teaching" as="span" className="extra">
+        <Editable id="label.teaching" as="span" className="static-label">
           teaching
         </Editable>{" "}
         <span className="pathnote">~/practice/teaching</span>
@@ -385,7 +385,7 @@ export default function Home() {
 
       {/* AWARDS ------------------------------------------------------------ */}
       <p>
-        <Editable id="label.awards" as="span" className="extra">
+        <Editable id="label.awards" as="span" className="static-label">
           awards
         </Editable>
       </p>
@@ -424,7 +424,7 @@ export default function Home() {
 
       {/* PRESS -------------------------------------------------------------- */}
       <p>
-        <Editable id="label.press" as="span" className="extra">
+        <Editable id="label.press" as="span" className="static-label">
           selected press
         </Editable>
       </p>
@@ -455,7 +455,7 @@ export default function Home() {
 
       {/* EDUCATION ----------------------------------------------------------- */}
       <p>
-        <Editable id="label.education" as="span" className="extra">
+        <Editable id="label.education" as="span" className="static-label">
           education
         </Editable>
       </p>

@@ -113,6 +113,17 @@ a.extra:hover, .extra:hover {
   color: var(--bg) !important;
 }
 
+/* Non-interactive section labels (teaching, awards, press, education, events):
+   a quiet uppercase marker. The yellow highlight above is reserved for
+   sections whose rows you can actually click into. */
+.static-label {
+  background: none !important;
+  color: var(--soft) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 12px;
+}
+
 /* Project titles — blue highlighter swipe */
 a.ptitle, .ptitle {
   background-color: var(--hl-a-bg) !important;
@@ -302,7 +313,7 @@ html::-webkit-scrollbar {
 }
 
 /* Light/dark toggle — top-right, clear of the rail */
-/* Top-right toggle cluster (squish + dark). */
+/* Top-right toggle cluster (dark mode). */
 .top-toggles {
   position: fixed;
   top: 8px;
@@ -314,27 +325,6 @@ html::-webkit-scrollbar {
 
 .page-frame {
   width: 100%;
-}
-
-/* Squish preview. The real app is hidden and a fresh copy of the whole site is
-   loaded inside .squish-frame (an iframe) at half the screen width, so it
-   reflows to that smaller resolution and stays fully interactive, like the site
-   opened in a half-size window. The rest of the screen is left empty.
-   data-sq-frame is the copy inside the iframe: it renders normally. */
-html[data-squish]:not([data-sq-frame]) .app-root { display: none; }
-html[data-squish]:not([data-sq-frame]) .editbar { display: none; }
-
-.squish-frame {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 50vw;
-  height: 100vh;
-  border: 0;
-  border-right: 1px solid var(--soft);
-  background: var(--bg);
-  z-index: 60;
-  display: block;
 }
 
 /* Mouse trail — pen-plotter line following the cursor */

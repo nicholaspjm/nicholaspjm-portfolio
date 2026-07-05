@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { asset } from "@/lib/asset";
 
 /**
@@ -11,8 +12,12 @@ import { asset } from "@/lib/asset";
  */
 export function PointCloud() {
   const ref = useRef<HTMLCanvasElement>(null);
+  // The /cv page is a dense data sheet; the point cloud makes it hard to read.
+  const pathname = usePathname();
+  const hide = pathname === "/cv" || pathname === "/cv/";
 
   useEffect(() => {
+    if (hide) return;
     const canvas = ref.current;
     if (!canvas) return;
 
@@ -213,7 +218,8 @@ export function PointCloud() {
       window.removeEventListener("npjm:preview", onPreview);
       mo.disconnect();
     };
-  }, []);
+  }, [hide]);
 
+  if (hide) return null;
   return <canvas ref={ref} className="ptcloud" aria-hidden />;
 }
