@@ -40,15 +40,20 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Held imports — media recovered from the old Cargo site (nicholaspjm.com) for
+# Held imports: media recovered from the old Cargo site (nicholaspjm.com) for
 # projects that don't have pages yet. Downloaded locally and documented in
-# docs/cargo-import.md. Un-ignore a folder here when you promote it to a page.
+# docs/cargo-import.md. Un-ignore an image folder here when you promote it.
+# Promoted: pitch-far-from-god, atmos-norla-dome (their images now commit).
 /public/videos/projects/pitch-far-from-god/
 /public/videos/projects/atmos-norla-dome/
 /public/videos/projects/thread-congee-club/
-/public/images/projects/pitch-far-from-god/
-/public/images/projects/atmos-norla-dome/
 /public/images/projects/thread-congee-club/
+
+# Videos dropped into image folders don't play in-browser. Keep them local
+# until converted to web-friendly mp4/webm and referenced as a video block.
+/public/images/projects/**/*.[mM][oO][vV]
+/public/images/projects/**/*.[mM][pP]4
+/public/images/projects/**/*.[wW][eE][bB][mM]
 # For The Cause is promoted, but only the clips used on the page are committed;
 # the rest stay downloaded locally (add them here to a block/gallery to publish).
 /public/videos/projects/for-the-cause/03.mov

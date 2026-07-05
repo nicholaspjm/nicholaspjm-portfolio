@@ -10,7 +10,6 @@ export const project: Project = {
     "A recent series spanning multiple practices, where Australian landscapes meet real-time biomimicry (DLA, Physarum). A term coined by Gabriella Brown for It's Nice That.",
   role: "Featured artist",
   categories: ["Press", "Feature"],
-  unlisted: true,
   links: [
     {
       href: "https://www.itsnicethat.com/articles/the-view-from-naarm-abstracted-organica-graphic-design-160326",

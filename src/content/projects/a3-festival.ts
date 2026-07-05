@@ -13,7 +13,6 @@ export const project: Project = {
   role: "Visual design, live performance",
   categories: ["Festival", "Live Visuals"],
   tags: ["TouchDesigner"],
-  unlisted: true,
   blocks: [
     {
       kind: "text",

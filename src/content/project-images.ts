@@ -4,7 +4,8 @@
 export const projectImages: Record<string, string[]> = {
   "atmos-norla-dome": [
     "/images/projects/atmos-norla-dome/01.jpg",
-    "/images/projects/atmos-norla-dome/02.jpg"
+    "/images/projects/atmos-norla-dome/02.jpg",
+    "/images/projects/atmos-norla-dome/IMG_1115.jpg"
   ],
   "cat-among-animals": [
     "/images/projects/cat-among-animals/01.jpg",
@@ -12,7 +13,9 @@ export const projectImages: Record<string, string[]> = {
     "/images/projects/cat-among-animals/03.jpg",
     "/images/projects/cat-among-animals/04.jpg",
     "/images/projects/cat-among-animals/05.jpg",
-    "/images/projects/cat-among-animals/06.jpg"
+    "/images/projects/cat-among-animals/06.jpg",
+    "/images/projects/cat-among-animals/IMG_5473.jpg",
+    "/images/projects/cat-among-animals/IMG_5484.jpg"
   ],
   "for-the-cause": [
     "/images/projects/for-the-cause/01.jpg"

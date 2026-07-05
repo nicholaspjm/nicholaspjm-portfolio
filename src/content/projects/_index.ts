@@ -16,6 +16,8 @@ import { project as hybrid20 } from "./hybrid-2-0";
 import { project as a3Festival } from "./a3-festival";
 import { project as abstractedOrganica } from "./abstracted-organica";
 import { project as cheahdxPurespace } from "./cheahdx-purespace";
+import { project as pitchFarFromGod } from "./pitch-far-from-god";
+import { project as atmosNorlaDome } from "./atmos-norla-dome";
 
 export const projects: Project[] = [
   theXxFestivalTour,
@@ -34,4 +36,6 @@ export const projects: Project[] = [
   a3Festival,
   abstractedOrganica,
   cheahdxPurespace,
+  pitchFarFromGod,
+  atmosNorlaDome,
 ];

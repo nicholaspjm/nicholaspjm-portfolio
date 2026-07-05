@@ -13,7 +13,6 @@ export const project: Project = {
   role: "Concept, visual design",
   categories: ["Installation", "Exhibition"],
   tags: ["TouchDesigner"],
-  unlisted: true,
   blocks: [
     {
       kind: "text",
