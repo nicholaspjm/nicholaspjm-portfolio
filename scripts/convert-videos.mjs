@@ -22,6 +22,18 @@ const imagesRoot = resolve(root, "public/images/projects");
 const videosRoot = resolve(root, "public/videos/projects");
 const FFMPEG = process.env.FFMPEG || "ffmpeg";
 
+// Preflight: make sure ffmpeg is callable before we start.
+try {
+  execFileSync(FFMPEG, ["-version"], { stdio: "ignore" });
+} catch {
+  console.error(
+    `ffmpeg not found (tried "${FFMPEG}"). Install it with\n` +
+      `  winget install Gyan.FFmpeg\n` +
+      `then restart your terminal, or set FFMPEG=/path/to/ffmpeg.`,
+  );
+  process.exit(1);
+}
+
 const SRC_RE = /\.(mov|mp4|webm|m4v)$/i;
 
 function clean(name) {

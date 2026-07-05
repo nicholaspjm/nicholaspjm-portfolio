@@ -52,14 +52,28 @@ just those files.
 
 ## Video
 
-Two options:
+Videos auto-associate like images, but browsers can't play the `.mov` files
+that TouchDesigner and phones export, so they need a one-time convert first.
 
-- A YouTube video, embedded and playing muted on the page: add it to the file's
-  `images` array as `{ youtube: "VIDEO_ID" }` (optionally `start: 90` for a
-  start time in seconds). It renders sized like an image.
-- A local video file: drop an `.mp4`/`.mov`/`.webm` into
-  `public/videos/projects/<slug>/` and reference it in the file's `blocks` as
-  `{ kind: "video", src: "/videos/projects/<slug>/clip.mp4" }`.
+1. Drop your clips (`.mov`, `.mp4`, `.webm`) into the page's image folder,
+   `public/images/projects/<slug>/`, the same place as photos.
+2. Convert them (needs ffmpeg: `winget install Gyan.FFmpeg`, then restart the
+   terminal):
+
+   ```
+   npm run convert-videos
+   ```
+
+   This transcodes each clip to a web-friendly, muted, size-capped `.mp4` in
+   `public/videos/projects/<slug>/`. It skips clips already done, and the heavy
+   originals stay local (only the `.mp4` outputs are committed).
+3. Refresh: `npm run scan-images` (or restart dev). The clips now show in the
+   gallery as muted autoplay video, sized like the photos, playing only while
+   on screen.
+
+To reorder, rename the clips (they sort by filename). Prefer a YouTube embed
+for a specific work? Add `{ youtube: "VIDEO_ID" }` (optionally `start: 90`) to
+the file's `images` array instead.
 
 ## Making a whole new page
 

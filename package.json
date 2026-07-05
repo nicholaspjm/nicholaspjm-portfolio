@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "scan-images": "node scripts/scan-images.mjs",
+    "convert-videos": "node scripts/convert-videos.mjs",
     "new-project": "node scripts/new-project.mjs",
     "studio": "node scripts/studio-server.mjs"
   },
