@@ -10,6 +10,13 @@ export const project: Project = {
   role: "Visual design",
   categories: ["Live Visuals", "Touring"],
   tags: ["TouchDesigner"],
+  links: [{ href: "https://youtu.be/SLvYbaZUn-Y?t=3885", label: "watch" }],
+  images: [
+    {
+      src: "/images/projects/its-murph-weightless-tour/video.jpg",
+      caption: "Weightless Tour — live set",
+    },
+  ],
   blocks: [
     {
       kind: "text",
@@ -17,6 +24,11 @@ export const project: Project = {
       paragraphs: [
         "Tour visual design for Its Murph's 2026 Weightless Tour across North America.",
       ],
+    },
+    {
+      kind: "embed",
+      url: "https://www.youtube.com/embed/SLvYbaZUn-Y?start=3885",
+      caption: "Weightless Tour — live set",
     },
   ],
 };

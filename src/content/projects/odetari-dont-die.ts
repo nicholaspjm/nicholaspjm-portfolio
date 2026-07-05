@@ -10,6 +10,13 @@ export const project: Project = {
   role: "VFX",
   categories: ["Music Video", "VFX"],
   tags: ["TouchDesigner"],
+  links: [{ href: "https://youtu.be/h3FZlwFDwy4", label: "official video" }],
+  images: [
+    {
+      src: "/images/projects/odetari-dont-die/video.jpg",
+      caption: "DON'T DIE — official music video",
+    },
+  ],
   blocks: [
     {
       kind: "text",
@@ -17,6 +24,11 @@ export const project: Project = {
       paragraphs: [
         "Visual effects for Odetari's official music video for “DON'T DIE”, featuring SOYEON of (G)I-DLE.",
       ],
+    },
+    {
+      kind: "embed",
+      url: "https://www.youtube.com/embed/h3FZlwFDwy4",
+      caption: "DON'T DIE — official music video",
     },
   ],
 };

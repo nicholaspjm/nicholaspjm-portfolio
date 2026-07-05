@@ -13,6 +13,12 @@ export const project: Project = {
   links: [
     { href: "https://www.youtube.com/watch?v=PXHm-sQCzko", label: "official video" },
   ],
+  images: [
+    {
+      src: "/images/projects/smokedope2016-2016lyfe/video.jpg",
+      caption: "2016LYFE — official music video",
+    },
+  ],
   blocks: [
     {
       kind: "text",

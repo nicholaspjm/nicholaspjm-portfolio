@@ -295,19 +295,22 @@ html::-webkit-scrollbar {
   gap: 4px;
 }
 
-/* Page content frame — full width normally; a narrow centred column in the
-   "squished" layout (the point-cloud background stays full-bleed). */
+/* Page content frame — full-height normally; in the "squished" layout the
+   full-width desktop view is confined to a band across the top of the screen
+   (scrollable) with the bottom left empty, showing the point-cloud through. */
 .page-frame {
   width: 100%;
 }
 html[data-squish] .page-frame {
-  max-width: 860px;
-  margin: 0 auto;
+  height: 58vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-bottom: 1px solid var(--soft);
 }
 @media (min-width: 901px) {
   html[data-squish] .preview-zone {
-    left: calc(50% - 430px + 56ch + 3vw);
-    right: calc(50% - 430px);
+    bottom: auto;
+    height: 52vh;
   }
 }
 

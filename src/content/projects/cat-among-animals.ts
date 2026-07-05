@@ -15,6 +15,7 @@ export const project: Project = {
     { href: "https://youtu.be/tdmt2EjIpME", label: "watch" },
   ],
   images: [
+    { src: "/images/projects/cat-among-animals/video.jpg", caption: "Cat Among Animals — full performance" },
     { src: "/images/projects/cat-among-animals/01.jpg", caption: "Oddany Gallery" },
     { src: "/images/projects/cat-among-animals/03.jpg", caption: "Live performance" },
     { src: "/images/projects/cat-among-animals/04.jpg", caption: "With Steve Pan" },

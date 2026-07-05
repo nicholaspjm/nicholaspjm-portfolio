@@ -15,6 +15,7 @@ export const project: Project = {
     { href: "https://www.instagram.com/p/DJdm9BCypp7/", label: "instagram" },
   ],
   images: [
+    { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/video.jpg", caption: "As Alive As You Need Me To Be — official video" },
     { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/01.jpg", caption: "Particle field render" },
     { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/03.jpg", caption: "Depth-augmented footage" },
     { src: "/images/projects/nin-as-alive-as-you-need-me-to-be/04.jpg", caption: "Layered video feedback" },
