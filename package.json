@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/scan-images.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/scan-images.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "scan-images": "node scripts/scan-images.mjs",
     "new-project": "node scripts/new-project.mjs",
     "studio": "node scripts/studio-server.mjs"
   },

@@ -38,38 +38,32 @@ export const project: Project = {
   title: "${titleArg.replace(/"/g, '\\"')}",
   year: "${year}",
   summary: "One-line summary.",
-  role: "Role · Credit",
+  role: "Role, credit",
   categories: ["Category"],
   tags: ["Tag"],
-  cover: {
-    src: "/images/projects/${slug}/cover.jpg",
-    alt: "Hero image alt.",
-    ratio: "3/2",
-  },
+  // Images: just drop files into public/images/projects/${slug}/ and they are
+  // auto-associated with this page (see scripts/scan-images.mjs). Only add an
+  // explicit \`images\` array here if you want captions or a specific order.
   blocks: [
     {
       kind: "text",
       lead: true,
       paragraphs: [
-        "Lead paragraph — what is this project, in one breath.",
+        "Lead paragraph. What is this project, in one breath.",
       ],
-    },
-    {
-      kind: "image",
-      src: "/images/projects/${slug}/01.jpg",
-      alt: "Image 01.",
-      ratio: "3/2",
-      layout: "center",
     },
   ],
 };
 `;
 
 writeFileSync(filePath, tpl);
+const camel = slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 console.log(`Created ${filePath}`);
-console.log(`\nNext: add this line to src/content/projects/_index.ts`);
+console.log(`\nNext: register it in src/content/projects/_index.ts`);
+console.log(`   import { project as ${camel} } from "./${slug}";`);
+console.log(`   ...then add ${camel} to the projects array.`);
 console.log(
-  `   import { project as ${slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase())} } from "./${slug}";`,
+  `\nDrop images into: public/images/projects/${slug}/  (they auto-appear;`,
 );
-console.log(`\nDrop images into: public/images/projects/${slug}/`);
-console.log(`Drop video into: public/videos/projects/${slug}/`);
+console.log(`   run \`npm run scan-images\` or restart the dev server to refresh)`);
+console.log(`Drop video into:  public/videos/projects/${slug}/`);
