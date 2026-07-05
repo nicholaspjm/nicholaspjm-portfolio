@@ -285,11 +285,30 @@ html::-webkit-scrollbar {
 }
 
 /* Light/dark toggle — top-right, clear of the rail */
-.dark-toggle {
+/* Top-right toggle cluster (squish + dark). */
+.top-toggles {
   position: fixed;
   top: 8px;
   right: 26px;
   z-index: 85;
+  display: flex;
+  gap: 4px;
+}
+
+/* Page content frame — full width normally; a narrow centred column in the
+   "squished" layout (the point-cloud background stays full-bleed). */
+.page-frame {
+  width: 100%;
+}
+html[data-squish] .page-frame {
+  max-width: 860px;
+  margin: 0 auto;
+}
+@media (min-width: 901px) {
+  html[data-squish] .preview-zone {
+    left: calc(50% - 430px + 56ch + 3vw);
+    right: calc(50% - 430px);
+  }
 }
 
 /* Mouse trail — pen-plotter line following the cursor */

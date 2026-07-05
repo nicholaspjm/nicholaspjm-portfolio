@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { site } from "@/content/site";
 import {
   getListedProjects,
@@ -122,11 +121,6 @@ export default function Home() {
             I&rsquo;m available for commissions, art direction, teaching, and
             speaking.
           </Editable>
-          <p className="foot" style={{ marginTop: "0.6em" }}>
-            Extended biography at <Link href="/info">/info</Link>. The
-            background is a point-cloud scan; the rail at right maps the
-            structure of the page.
-          </p>
         </InfoSheet>
       </div>
 

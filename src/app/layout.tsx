@@ -6,11 +6,12 @@ import { PointCloud } from "@/components/ui/point-cloud";
 import { PreviewZone } from "@/components/ui/preview-zone";
 import { SideSlider } from "@/components/ui/side-slider";
 import { DarkToggle } from "@/components/ui/dark-toggle";
+import { SquishToggle } from "@/components/ui/squish-toggle";
 import { EditBar } from "@/components/ui/edit-bar";
 import "./globals.css";
 
-// Apply saved dark mode before first paint to avoid a flash of light.
-const themeInit = `try{if(localStorage.getItem('npjm-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}`;
+// Apply saved dark mode + squished layout before first paint to avoid a flash.
+const themeInit = `try{var d=document.documentElement;if(localStorage.getItem('npjm-theme')==='dark')d.dataset.theme='dark';if(localStorage.getItem('npjm-squish')==='1')d.dataset.squish='1'}catch(e){}`;
 
 export const metadata: Metadata = {
   title: { default: site.name, template: `%s — ${site.name}` },
@@ -37,7 +38,10 @@ export default function RootLayout({
         <SideSlider />
         <Readout />
         <PreviewZone />
-        <DarkToggle />
+        <div className="top-toggles">
+          <SquishToggle />
+          <DarkToggle />
+        </div>
         <EditBar />
       </body>
     </html>

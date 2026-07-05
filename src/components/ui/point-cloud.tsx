@@ -32,14 +32,16 @@ export function PointCloud() {
     // CSS-resolution canvas. Each point is drawn as a dpr-sized block below so
     // the dot reads at a consistent ~1 CSS-pixel size and stays solid, not grey.
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let dot = Math.max(1, Math.round(dpr));
+    // Every point is a single device pixel — the finest possible grain, so the
+    // dots stay as tiny crisp rectangles on high-DPI / fractional-ratio screens
+    // instead of thickening into larger blocks.
+    const dot = 1;
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
     const resize = () => {
       // re-read each resize so the correct device pixel ratio is used even if
       // the component mounted on a different screen / before rotation
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      dot = Math.max(1, Math.round(dpr));
       const w = Math.max(1, Math.floor(window.innerWidth * dpr));
       const h = Math.max(1, Math.floor(window.innerHeight * dpr));
       if (canvas.width === w && canvas.height === h && img) return;

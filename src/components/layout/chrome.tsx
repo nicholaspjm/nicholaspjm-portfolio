@@ -1,3 +1,3 @@
 export function Chrome({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <div className="page-frame">{children}</div>;
 }
