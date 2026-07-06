@@ -269,6 +269,21 @@ button {
 .gallery-item.size-s img, .gallery-item.size-s video { height: 150px; }
 .gallery-item.size-m img, .gallery-item.size-m video { height: 240px; }
 .gallery-item.size-l img, .gallery-item.size-l video { height: 380px; }
+
+/* Optional per-image subtext, off by default (renders only when set). */
+.gallery-cap {
+  display: block;
+  line-height: 1.35;
+  font-size: 11px;
+  color: var(--soft);
+  margin-top: 4px;
+  max-width: 380px;
+  white-space: normal;
+}
+.gallery-cap.editable-on:empty::before {
+  content: "+ subtext";
+  opacity: 0.5;
+}
 @media (max-width: 700px) {
   .gallery-item,
   .gallery-item.size-s img, .gallery-item.size-s video,
@@ -279,7 +294,7 @@ button {
 .gallery-ctl {
   position: absolute;
   left: 0;
-  bottom: 0;
+  top: 0;
   display: flex;
   gap: 2px;
   padding: 2px;

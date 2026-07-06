@@ -140,9 +140,24 @@ export function ProjectGallery({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={asset(img.src)} alt={alt} />
         ) : null;
+        const capId = `imgcap.${slug}.${it.key}`;
+        const cap = editableText[capId];
         return (
           <figure key={it.key} className={`gallery-item size-${it.size.toLowerCase()}`}>
             {media}
+            {editing ? (
+              <figcaption
+                className="gallery-cap editable-on"
+                data-edit-id={capId}
+                data-edit-default=""
+                contentEditable
+                suppressContentEditableWarning
+              >
+                {cap ?? ""}
+              </figcaption>
+            ) : cap ? (
+              <figcaption className="gallery-cap">{cap}</figcaption>
+            ) : null}
             {editing && (
               <div className="gallery-ctl">
                 <button onClick={() => move(i, -1)} disabled={i === 0} title="Move left">

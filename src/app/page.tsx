@@ -5,7 +5,7 @@ import {
   imageSizeClass,
 } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
-import { performances, events, awards, press, education } from "@/content/cv";
+import { performances, awards, press, education } from "@/content/cv";
 import { tools } from "@/content/tools";
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
@@ -284,18 +284,6 @@ export default function Home() {
         sizeClass=""
         title="installation and performance"
       />
-
-      {/* PARTIES & EVENTS ------------------------------------------------- */}
-      <p style={{ marginTop: "1em" }}>
-        <Editable id="label.events" as="span" className="static-label">
-          parties &amp; events
-        </Editable>{" "}
-        <span className="pathnote">~/practice/dancefloors</span>
-        <br />
-        <Editable id="events.list" as="span">
-          {`${events.join(" · ")} …`}
-        </Editable>
-      </p>
 
       <NoiseRule char="/" />
 

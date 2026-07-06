@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getListedProjects, getCategories } from "@/lib/projects";
-import { performances, events } from "@/content/cv";
+import { performances } from "@/content/cv";
 import { NoiseRule } from "@/components/ui/noise";
 import { Editable } from "@/components/ui/editable";
 import { editableText } from "@/content/editable-text";
@@ -49,15 +49,6 @@ export default function WorkPage() {
         ))}
       </ul>
 
-      {/* PARTIES & EVENTS ---------------------------------------------------- */}
-      <p style={{ marginTop: "1em" }}>
-        <Editable id="label.events" as="span" className="extra">
-          parties &amp; events
-        </Editable>{" "}
-        <span className="pathnote">~/practice/dancefloors</span>
-        <br />
-        {editableText["events.list"] ?? `${events.join(" · ")} …`}
-      </p>
     </>
   );
 }
