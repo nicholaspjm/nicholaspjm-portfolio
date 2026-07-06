@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 export function GalleryBlock({ block }: { block: Block }) {
   const cols = block.columns ?? 2;
   return (
-    <section className="mx-auto w-full max-w-[1400px] px-6 py-6 md:px-10">
+    <section className="w-full py-4">
       <div
         className={cn(
           "grid gap-3",
@@ -30,9 +30,6 @@ export function GalleryBlock({ block }: { block: Block }) {
           </figure>
         ))}
       </div>
-      {block.caption && (
-        <p className="caption mt-3 text-ink-soft">{block.caption}</p>
-      )}
     </section>
   );
 }

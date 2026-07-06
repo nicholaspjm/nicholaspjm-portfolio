@@ -4,11 +4,10 @@ import {
   getAllProjectSlugs,
   getProjectBySlug,
   getProjectNeighbors,
-  imageSizeClass,
 } from "@/lib/projects";
 import { Blocks } from "@/components/content/block-renderer";
 import { NavButton } from "@/components/ui/nav-button";
-import { ImageRow } from "@/components/ui/image-row";
+import { ProjectGallery } from "@/components/ui/project-gallery";
 import { Editable } from "@/components/ui/editable";
 
 export function generateStaticParams() {
@@ -77,16 +76,16 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
             </>
           )}
         </p>
-        <Blocks blocks={project.blocks} />
       </div>
 
-      {/* Photo gallery only; video embeds live in the blocks flow above. */}
+      <Blocks blocks={project.blocks} />
+
+      {/* Photos + clips; a YouTube embed (if any) lives in the blocks above. */}
       {project.images && project.images.some((im) => !im.youtube) && (
-        <ImageRow
+        <ProjectGallery
+          slug={project.slug}
           images={project.images.filter((im) => !im.youtube)}
-          sizeClass={imageSizeClass(project.imageSize)}
           title={project.title}
-          resizeId={project.slug}
         />
       )}
 

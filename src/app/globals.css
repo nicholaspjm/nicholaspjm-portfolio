@@ -249,6 +249,56 @@ button {
 }
 
 /* ---------------------------------------------------------------------------
+   PROJECT GALLERY — full-width, wrapping, all images; editor reorder + resize
+   ------------------------------------------------------------------------ */
+.project-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin: 1.2em 0 1.6em;
+}
+.gallery-item {
+  position: relative;
+  margin: 0;
+  line-height: 0;
+}
+.gallery-item img,
+.gallery-item video { display: block; width: auto; background: #000; }
+.gallery-item.size-s img, .gallery-item.size-s video { height: 150px; }
+.gallery-item.size-m img, .gallery-item.size-m video { height: 240px; }
+.gallery-item.size-l img, .gallery-item.size-l video { height: 380px; }
+@media (max-width: 700px) {
+  .gallery-item,
+  .gallery-item.size-s img, .gallery-item.size-s video,
+  .gallery-item.size-m img, .gallery-item.size-m video,
+  .gallery-item.size-l img, .gallery-item.size-l video { width: 100%; height: auto; }
+}
+/* dev editor: per-image reorder + size, overlaid bottom-left */
+.gallery-ctl {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  line-height: 1;
+  background: rgba(0, 0, 0, 0.72);
+}
+.gallery-ctl button {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 1px 5px;
+  border: 0;
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+}
+.gallery-ctl button.on { background: var(--hl-b-bg); }
+.gallery-ctl button:disabled { opacity: 0.3; cursor: default; }
+
+/* ---------------------------------------------------------------------------
    DATA / IKEDA layer
    ------------------------------------------------------------------------ */
 /* Side rail — a temporal histogram of the work (see side-slider.tsx). */

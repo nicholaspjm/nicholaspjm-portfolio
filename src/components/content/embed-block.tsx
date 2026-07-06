@@ -3,7 +3,7 @@ import type { EmbedBlock as Block } from "@/types/content";
 export function EmbedBlock({ block }: { block: Block }) {
   const ratio = block.ratio ?? "16/9";
   return (
-    <figure className="mx-auto w-full max-w-[1100px] px-6 py-6 md:px-10">
+    <figure className="w-full py-4">
       <div
         className="relative w-full overflow-hidden border border-rule bg-black"
         style={{ aspectRatio: ratio }}
@@ -15,11 +15,6 @@ export function EmbedBlock({ block }: { block: Block }) {
           allowFullScreen
         />
       </div>
-      {block.caption && (
-        <figcaption className="caption mt-2 text-ink-soft">
-          {block.caption}
-        </figcaption>
-      )}
     </figure>
   );
 }
