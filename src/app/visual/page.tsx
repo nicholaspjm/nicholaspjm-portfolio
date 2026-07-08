@@ -12,9 +12,11 @@ export const metadata: Metadata = {
 export default function VisualPage() {
   const items: VisualItem[] = getListedProjects().flatMap((p) =>
     (p.images ?? [])
-      .filter((img) => img.src) // skip video-embed items with no still to scatter
+      .filter((img) => img.src || img.youtube) // photos + YouTube embeds
       .map((img) => ({
-        src: img.src!,
+        src: img.src,
+        youtube: img.youtube,
+        start: img.start,
         slug: p.slug,
         title: p.title,
         year: p.year,

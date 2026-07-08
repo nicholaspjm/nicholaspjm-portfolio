@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
+import { ytEmbed } from "@/lib/yt";
 import { editableText } from "@/content/editable-text";
 import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 
@@ -26,25 +27,10 @@ export interface RowImage {
 type Size = "S" | "M" | "L";
 const SIZE_CLASS: Record<Size, string> = { S: "", M: " size-m", L: " size-l" };
 
-/** Muted, autoplaying, looping, chromeless YouTube embed URL. */
-function ytEmbed(id: string, start?: number) {
-  const q = new URLSearchParams({
-    autoplay: "1",
-    mute: "1",
-    controls: "0",
-    loop: "1",
-    playlist: id,
-    playsinline: "1",
-    modestbranding: "1",
-    rel: "0",
-  });
-  if (start) q.set("start", String(start));
-  return `https://www.youtube.com/embed/${id}?${q.toString()}`;
-}
-
 /**
- * Single-row image strip. Images that don't fully fit within the row width are
- * hidden entirely (kept in layout but invisible) rather than clipped in half.
+ * Single-row image strip. The row wraps in CSS and clips everything past the
+ * first line with max-height, so an image either shows whole or not at all —
+ * never cut mid-image (no measuring, works before/after any media loads).
  * When `resizeId` is set, the dev editor shows S/M/L size presets above the row
  * whose choice saves (keyed imgsize.<resizeId>) and applies everywhere.
  */
@@ -68,7 +54,6 @@ export function ImageRow({
   rowPrev?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [firstHidden, setFirstHidden] = useState<number | null>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
 
   const initial: Size = sizeClass.includes("size-l")
@@ -82,39 +67,8 @@ export function ImageRow({
   const [size, setSize] = useState<Size>(override ?? initial);
   const cls = SIZE_CLASS[size];
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const measure = () => {
-      const figs = [...el.querySelectorAll<HTMLElement>(".image-module")];
-      const cRight = el.getBoundingClientRect().right;
-      let fh: number | null = null;
-      for (let i = 0; i < figs.length; i++) {
-        if (figs[i].getBoundingClientRect().right > cRight + 1) {
-          fh = i;
-          break;
-        }
-      }
-      setFirstHidden(fh);
-    };
-    const raf = requestAnimationFrame(measure);
-    const imgs = [...el.querySelectorAll("img")];
-    imgs.forEach((im) => {
-      if (!im.complete) im.addEventListener("load", measure);
-    });
-    const vids = [...el.querySelectorAll("video")];
-    vids.forEach((v) => v.addEventListener("loadedmetadata", measure));
-    window.addEventListener("resize", measure);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", measure);
-      imgs.forEach((im) => im.removeEventListener("load", measure));
-      vids.forEach((v) => v.removeEventListener("loadedmetadata", measure));
-    };
-  }, [images, size]);
-
-  // Play gallery videos only while they are actually on screen (and not the
-  // ones hidden past the row edge), so a page with many clips stays light.
+  // Play gallery videos only while actually visible on screen. Clips clipped
+  // away below the row's max-height never intersect, so they stay paused.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -124,10 +78,7 @@ export function ImageRow({
       (entries) => {
         for (const e of entries) {
           const v = e.target as HTMLVideoElement;
-          const shown =
-            e.isIntersecting &&
-            getComputedStyle(v).visibility !== "hidden";
-          if (shown) void v.play?.().catch(() => {});
+          if (e.isIntersecting) void v.play?.().catch(() => {});
           else v.pause?.();
         }
       },
@@ -135,7 +86,7 @@ export function ImageRow({
     );
     vids.forEach((v) => io.observe(v));
     return () => io.disconnect();
-  }, [images, size, firstHidden]);
+  }, [images, size]);
 
   if (images.length === 0) return null;
 
@@ -168,9 +119,10 @@ export function ImageRow({
         className={`image-row${cls}${oneOnMobile ? " one-mobile" : ""}`}
       >
         {images.map((img, i) => {
-          const hidden = firstHidden !== null && i >= firstHidden;
           const alt = img.alt ?? img.caption ?? title;
-          const key = img.src ?? img.youtube ?? String(i);
+          // Index-qualified: two works can share a file (e.g. a feature that
+          // reuses another project's photos), so the path alone can collide.
+          const key = `${img.src ?? img.video ?? img.youtube ?? ""}-${i}`;
           // Per-image slug/preview win; otherwise fall back to the row's work
           // (Selected Works rows carry rowSlug/rowPrev for all their images).
           const slug = img.slug ?? rowSlug;
@@ -198,11 +150,7 @@ export function ImageRow({
             <img src={asset(img.src)} alt={alt} />
           ) : null;
           return (
-            <figure
-              key={key}
-              className="image-module"
-              style={hidden ? { visibility: "hidden" } : undefined}
-            >
+            <figure key={key} className="image-module">
               {slug ? (
                 <Link
                   href={`/work/${slug}`}

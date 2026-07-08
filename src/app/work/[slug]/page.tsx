@@ -29,6 +29,15 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   if (!project) notFound();
   const { prev, next } = getProjectNeighbors(slug);
 
+  // YouTube videos render inside the gallery (resizable, reorderable, like any
+  // image), so drop embed blocks that would show the same video twice.
+  const galleryYt = (project.images ?? [])
+    .map((im) => im.youtube)
+    .filter((id): id is string => Boolean(id));
+  const blocks = project.blocks.filter(
+    (b) => !(b.kind === "embed" && galleryYt.some((id) => b.url.includes(id))),
+  );
+
   return (
     <div className="bluepage">
       <p>
@@ -78,13 +87,13 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
         </p>
       </div>
 
-      <Blocks blocks={project.blocks} />
+      <Blocks blocks={blocks} />
 
-      {/* Photos + clips; a YouTube embed (if any) lives in the blocks above. */}
-      {project.images && project.images.some((im) => !im.youtube) && (
+      {/* Photos, clips, and YouTube embeds, all resizable in the editor. */}
+      {project.images && project.images.length > 0 && (
         <ProjectGallery
           slug={project.slug}
-          images={project.images.filter((im) => !im.youtube)}
+          images={project.images}
           title={project.title}
         />
       )}

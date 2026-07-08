@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { asset } from "@/lib/asset";
+import { ytEmbed } from "@/lib/yt";
 import { editableText } from "@/content/editable-text";
 import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 import type { RowImage } from "./image-row";
@@ -126,7 +127,15 @@ export function ProjectGallery({
       {items.map((it, i) => {
         const img = it.img;
         const alt = img.alt ?? title;
-        const media = img.video ? (
+        const media = img.youtube ? (
+          <iframe
+            className="yt"
+            src={ytEmbed(img.youtube, img.start)}
+            title={alt}
+            loading="lazy"
+            allow="autoplay; encrypted-media; picture-in-picture"
+          />
+        ) : img.video ? (
           <video
             className="vid"
             src={asset(img.video)}

@@ -162,14 +162,18 @@ button {
    ------------------------------------------------------------------------ */
 .image-row {
   display: flex;
-  flex-wrap: nowrap;
-  overflow: hidden; /* one row only — clip anything past the row width */
+  flex-wrap: wrap; /* extra items wrap to a second line... */
+  overflow: hidden; /* ...which max-height clips away ENTIRELY, so an image
+                       either shows whole or not at all, never cut partway */
   align-items: flex-start;
   gap: 0.5em;
   width: 100%;
+  max-height: 118px; /* = item height per size class below */
   margin: 0.5em 0 1.4em;
   padding: 0;
 }
+.image-row.size-m { max-height: 210px; }
+.image-row.size-l { max-height: 340px; }
 /* Break the strip out of the reading column so it can spread ~2/3 across. */
 @media (min-width: 901px) {
   .image-row { width: 66vw; max-width: 92vw; }
@@ -233,7 +237,8 @@ button {
 
 @media (max-width: 560px) {
   .image-row,
-  .image-row.size-l { flex-direction: column; gap: 1em; width: 100%; overflow: visible; }
+  .image-row.size-m,
+  .image-row.size-l { flex-direction: column; gap: 1em; width: 100%; overflow: visible; max-height: none; }
   .image-module { width: 100%; flex-shrink: 1; }
   .image-module img,
   .image-row.size-m img,
@@ -269,6 +274,11 @@ button {
 .gallery-item.size-s img, .gallery-item.size-s video { height: 150px; }
 .gallery-item.size-m img, .gallery-item.size-m video { height: 240px; }
 .gallery-item.size-l img, .gallery-item.size-l video { height: 380px; }
+/* YouTube embeds size along with everything else (16:9). */
+.gallery-item .yt { display: block; border: 0; aspect-ratio: 16 / 9; background: #000; }
+.gallery-item.size-s .yt { height: 150px; }
+.gallery-item.size-m .yt { height: 240px; }
+.gallery-item.size-l .yt { height: 380px; }
 
 /* Optional per-image subtext, off by default (renders only when set). */
 .gallery-cap {
@@ -286,9 +296,9 @@ button {
 }
 @media (max-width: 700px) {
   .gallery-item,
-  .gallery-item.size-s img, .gallery-item.size-s video,
-  .gallery-item.size-m img, .gallery-item.size-m video,
-  .gallery-item.size-l img, .gallery-item.size-l video { width: 100%; height: auto; }
+  .gallery-item.size-s img, .gallery-item.size-s video, .gallery-item.size-s .yt,
+  .gallery-item.size-m img, .gallery-item.size-m video, .gallery-item.size-m .yt,
+  .gallery-item.size-l img, .gallery-item.size-l video, .gallery-item.size-l .yt { width: 100%; height: auto; }
 }
 /* dev editor: per-image reorder + size, overlaid bottom-left */
 .gallery-ctl {
@@ -755,6 +765,16 @@ html[data-preview] .scatter-field { opacity: 0; }
   display: block;
   width: 100%;
   height: auto;
+}
+/* YouTube embeds scatter like any other detection; the frame link handles
+   the click-through, so the embed itself is a silent preview. */
+.vblob .yt {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: #000;
+  pointer-events: none;
 }
 .vblob:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
