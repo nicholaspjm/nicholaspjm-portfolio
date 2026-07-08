@@ -45,12 +45,13 @@ next-env.d.ts
 # (pitch-far-from-god, atmos-norla-dome, thread-congee-club); their committed
 # media is the web-ready images + .mp4 clips.
 
-# Source videos dropped into image folders don't play in-browser. They are
-# transcoded to public/videos/ by scripts/convert-videos.mjs; only the web .mp4
-# outputs are committed. Keep the heavy originals local.
+# Source videos don't play in-browser. They are transcoded to web .mp4 by
+# scripts/convert-videos.mjs; only those .mp4 outputs are committed. The heavy
+# originals (.mov, and unconverted .mp4 dumped into image folders) stay local.
 /public/images/projects/**/*.[mM][oO][vV]
 /public/images/projects/**/*.[mM][pP]4
 /public/images/projects/**/*.[wW][eE][bB][mM]
+/public/videos/projects/**/*.[mM][oO][vV]
 # For The Cause is promoted, but only the clips used on the page are committed;
 # the rest stay downloaded locally (add them here to a block/gallery to publish).
 /public/videos/projects/for-the-cause/03.mov
