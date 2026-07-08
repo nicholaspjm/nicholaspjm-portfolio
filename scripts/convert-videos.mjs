@@ -2,23 +2,23 @@
 /**
  * Convert source videos into web-friendly, muted, size-capped .mp4 clips.
  *
- * Finds every .mov/.mp4/.webm dropped into public/images/projects/<slug>/ and
- * transcodes it to public/videos/projects/<slug>/<clean-name>.mp4 (H.264,
- * no audio, capped to 960px, faststart) so it can autoplay in the browser.
- * Idempotent: skips a clip whose output already exists.
+ * Finds every .mov/.mp4/.webm dropped into a content/<section>/<project>/
+ * folder and transcodes it to public/videos/projects/<slug>/<clean-name>.mp4
+ * (H.264, no audio, capped to 960px, faststart) so it can autoplay in the
+ * browser. Idempotent: skips a clip whose output already exists.
  *
  *   FFMPEG=/path/to/ffmpeg node scripts/convert-videos.mjs
  *
  * The originals stay put (git-ignored); only the .mp4 outputs are committed.
  */
 import { readdirSync, existsSync, mkdirSync, statSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { resolve, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
-const imagesRoot = resolve(root, "public/images/projects");
+const contentRoot = resolve(root, "content");
 const videosRoot = resolve(root, "public/videos/projects");
 const FFMPEG = process.env.FFMPEG || "ffmpeg";
 
@@ -47,14 +47,27 @@ function clean(name) {
   return base;
 }
 
-let slugs = [];
-try {
-  slugs = readdirSync(imagesRoot, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name)
-    .sort();
-} catch {
-  console.log("no image folders to scan");
+// Project folders live at content/<section>/<projDir>; a "01 " style number
+// prefix on the folder name is for ordering and not part of the slug.
+const dirs = (p) => {
+  try {
+    return readdirSync(p, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name)
+      .sort();
+  } catch {
+    return [];
+  }
+};
+const projects = [];
+for (const section of dirs(contentRoot)) {
+  for (const projDir of dirs(join(contentRoot, section))) {
+    const slug = projDir.replace(/^\d+[\s._-]+/, "").trim();
+    if (slug) projects.push({ slug, srcDir: join(contentRoot, section, projDir) });
+  }
+}
+if (projects.length === 0) {
+  console.log("no content folders to scan");
   process.exit(0);
 }
 
@@ -62,8 +75,7 @@ let converted = 0;
 let skipped = 0;
 let failed = 0;
 
-for (const slug of slugs) {
-  const srcDir = resolve(imagesRoot, slug);
+for (const { slug, srcDir } of projects) {
   let files;
   try {
     files = readdirSync(srcDir).filter((f) => SRC_RE.test(f));

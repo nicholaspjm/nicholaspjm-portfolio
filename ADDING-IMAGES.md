@@ -1,88 +1,93 @@
-# Adding images (and video)
+# The content folder: how the site is organized
 
-Every project page has its own folder. Drop images in and they show up on that
-page. No code editing required.
+The `content/` folder at the repo root mirrors the site. Its layout IS the
+site's layout:
 
-## Add images to a page
-
-1. Find the page's folder. It is `public/images/projects/<slug>/`, where
-   `<slug>` is the last part of the page's URL. For example the page at
-   `/work/cat-among-animals` uses
-   `public/images/projects/cat-among-animals/`.
-
-2. Drop image files into that folder. Supported: `.jpg`, `.jpeg`, `.png`,
-   `.webp`, `.gif`, `.avif`.
-
-3. Name them so they sort the way you want them shown, e.g. `01.jpg`, `02.jpg`,
-   `03.jpg`. They appear left to right in that order. (Numbers sort naturally,
-   so `10.jpg` comes after `9.jpg`, not before.)
-
-4. Refresh:
-   - If the dev server is running, run `npm run scan-images` in a second
-     terminal (the page hot-reloads), or just restart the dev server.
-   - On the live site, a normal push rebuilds and picks them up automatically.
-
-That is it. The new images join whatever is already on the page.
-
-## Ordering and what shows
-
-- Images sort by filename. Rename files to reorder (a leading number is the
-  easy way).
-- The home page shows the row across one line and hides anything past the edge,
-  so put the images you most want seen first (lowest numbers).
-- The full set always shows on the project's own page at `/work/<slug>`.
-
-## Curating instead of auto (optional)
-
-Auto-association is the default. If you want captions or a hand-picked order
-for a page, open its file at `src/content/projects/<slug>.ts` and add an
-`images` array:
-
-```ts
-images: [
-  { src: "/images/projects/<slug>/hero.jpg", caption: "Opening night" },
-  { src: "/images/projects/<slug>/02.jpg" },
-],
+```
+content/
+  selected works/
+    01 the-xx-festival-tour/     <- number prefix sets the order
+    02 hybrid-2-0/
+    ...
+  commissions/
+    odetari-dont-die/
+    ...
+  installation & performance/
+    cat-among-animals/
+    ...
+  hidden/                        <- pages that exist but are off every index
 ```
 
-Anything you list there comes first, in that order. Any other file in the
-folder is still appended after it, so a listed page keeps auto-picking up new
-drops too. To show only your listed images and nothing else, keep the folder to
-just those files.
+Each project folder holds that page's media and text. The folder name (minus
+any leading number) is the page's URL slug: `/work/<slug>`.
+
+After changing anything below, refresh with:
+
+```
+npm run scan-images
+```
+
+(or just restart the dev server; deploys pick everything up automatically).
+
+## Moving things around
+
+- **Move a folder between sections** and the project moves on the site:
+  drag `cat-among-animals` from `installation & performance` into
+  `commissions` and it lists as a commission.
+- **Selected works** is the highlight reel at the top of the homepage. Put a
+  project's folder in there to feature it; the `01`, `02` number prefixes on
+  the folder names set the order, so rename to reorder. Projects there keep
+  their original section listing too.
+- **Hide a project**: move its folder into `content/hidden/`. The page stays
+  reachable by URL but disappears from all lists.
+- **Remove a folder entirely** and the project disappears from the site's
+  indexes (its media is dropped too, so prefer `hidden/` if unsure).
+
+## Images
+
+Drop image files (`.jpg .png .webp .gif .avif`) straight into a project's
+folder. They appear on that page in filename order, so name them `01.jpg`,
+`02.jpg`, ... to control order. Fine-tuning (per-image size, reorder,
+subtext, hiding from /visual) lives in the local editor: `npm run studio` +
+the ✎ edit button.
+
+## Text
+
+Add a `text.md` to a project folder and its paragraphs (separated by blank
+lines) become the page's body text, replacing what the code defines. The
+first paragraph renders as the lead.
 
 ## Video
 
-Videos auto-associate like images, but browsers can't play the `.mov` files
-that TouchDesigner and phones export, so they need a one-time convert first.
-
-1. Drop your clips (`.mov`, `.mp4`, `.webm`) into the page's image folder,
-   `public/images/projects/<slug>/`, the same place as photos.
-2. Convert them (needs ffmpeg: `winget install Gyan.FFmpeg`, then restart the
-   terminal):
-
-   ```
-   npm run convert-videos
-   ```
-
-   This transcodes each clip to a web-friendly, muted, size-capped `.mp4` in
-   `public/videos/projects/<slug>/`. It skips clips already done, and the heavy
-   originals stay local (only the `.mp4` outputs are committed).
-3. Refresh: `npm run scan-images` (or restart dev). The clips now show in the
-   gallery as muted autoplay video, sized like the photos, playing only while
-   on screen.
-
-To reorder, rename the clips (they sort by filename). Prefer a YouTube embed
-for a specific work? Add `{ youtube: "VIDEO_ID" }` (optionally `start: 90`) to
-the file's `images` array instead.
-
-## Making a whole new page
-
-A new page needs a title and a few details, so scaffold it:
+Drop clips (`.mov .mp4 .webm`) into the project folder, then:
 
 ```
-npm run new-project my-new-slug "My New Title" 2026
+npm run convert-videos
 ```
 
-That creates `src/content/projects/my-new-slug.ts` and the image/video folders.
-Register it by adding the two lines it prints to
-`src/content/projects/_index.ts`, then drop images into its folder as above.
+That transcodes them to web-friendly muted `.mp4` (the heavy originals stay
+local and never commit) and they join the page's gallery, autoplaying only
+while on screen. YouTube: add `{ youtube: "VIDEO_ID" }` to the project's
+`images` array in `src/content/projects/<slug>.ts`.
+
+## A brand new page
+
+Just add a folder:
+
+```
+npm run new-project my-new-work commissions
+```
+
+That creates `content/commissions/my-new-work/` with a `text.md` template.
+Drop images in and the page exists with a title taken from the folder name.
+For a proper year, links, categories, or custom layout blocks, also add
+`src/content/projects/my-new-work.ts` (copy an existing file) and register it
+in `src/content/projects/_index.ts`; the folder still controls where it
+appears.
+
+## Under the hood
+
+`scripts/scan-images.mjs` runs before every dev/build. It syncs the tree into
+`public/images/projects/` (generated, git-ignored) and writes the structure
+(order, sections, hidden, text) to `src/content/structure.ts`. Commit the
+`content/` folder; never edit the generated files by hand.
