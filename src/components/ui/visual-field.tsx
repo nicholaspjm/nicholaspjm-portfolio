@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { ytEmbed } from "@/lib/yt";
+import { editableText } from "@/content/editable-text";
+import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 
 export interface VisualItem {
   /** Image path under /public. Omit when `youtube` is set. */
@@ -16,14 +18,34 @@ export interface VisualItem {
   year: string;
 }
 
+/** Stable identity for an item: the image path or the video id. */
+const keyOf = (it: VisualItem) => it.src ?? it.youtube ?? "";
+
+/** Parse the saved comma-separated hidden list. */
+function initialHidden(): Set<string> {
+  return new Set(
+    (editableText["visual.hidden"] ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+  );
+}
+
 /**
  * Every work image laid out as a clean, non-overlapping masonry in the
  * blob-tracker frame (bounding box, corner ticks, track label). Images sit
  * straight; the order is reshuffled on each visit. Each detection links to
  * its work, with a hover CTA prompting the click-through.
+ *
+ * Items can be hidden from this page: in the dev editor each frame has a
+ * hide/show toggle, saved to editable-text.json under visual.hidden. On
+ * localhost a hidden item stays visible but dimmed with a "hidden on live"
+ * mark; the production build drops it entirely.
  */
 export function VisualField({ items }: { items: VisualItem[] }) {
   const [order, setOrder] = useState<number[] | null>(null);
+  const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
+  const [hidden, setHidden] = useState<Set<string>>(initialHidden);
 
   useEffect(() => {
     // Reshuffle client-side so the arrangement is random each visit. Runs
@@ -39,19 +61,32 @@ export function VisualField({ items }: { items: VisualItem[] }) {
 
   if (!order) return null;
 
+  const editing = isEditorEnabled && editMode;
+  const toggle = (k: string) =>
+    setHidden((prev) => {
+      const next = new Set(prev);
+      if (next.has(k)) next.delete(k);
+      else next.add(k);
+      return next;
+    });
+
   return (
     <div className="visual-field">
       {order.map((idx, n) => {
         const it = items[idx];
-        return (
-          <Link
-            key={`${it.src ?? it.youtube}-${idx}`}
-            href={`/work/${it.slug}`}
-            className="vblob"
-          >
+        const k = keyOf(it);
+        const isHidden = hidden.has(k);
+        // The live build drops hidden items entirely; localhost keeps them
+        // visible (dimmed + marked) so you can see and change what's hidden.
+        if (isHidden && !isEditorEnabled) return null;
+
+        const cls = `vblob${isHidden ? " vblob-hidden" : ""}`;
+        const inner = (
+          <>
             <span className="blob-label">
               trk_{String(n + 1).padStart(2, "0")} · {it.slug}
             </span>
+            {isHidden && <span className="vblob-hiddenmark">hidden on live</span>}
             {it.youtube ? (
               <iframe
                 className="yt"
@@ -67,10 +102,36 @@ export function VisualField({ items }: { items: VisualItem[] }) {
             <span className="blob-meta">
               {it.title} · {it.year}
             </span>
+          </>
+        );
+
+        // Edit mode: frames become plain divs (no navigation) with the toggle.
+        if (editing) {
+          return (
+            <div key={`${k}-${idx}`} className={cls}>
+              {inner}
+              <button className="vblob-hide" onClick={() => toggle(k)}>
+                {isHidden ? "show" : "hide"}
+              </button>
+            </div>
+          );
+        }
+
+        return (
+          <Link key={`${k}-${idx}`} href={`/work/${it.slug}`} className={cls}>
+            {inner}
             <span className="vblob-cta">open work ↗</span>
           </Link>
         );
       })}
+      {editing && (
+        <span
+          data-edit-id="visual.hidden"
+          data-edit-default=""
+          data-edit-value={[...hidden].sort().join(",")}
+          hidden
+        />
+      )}
     </div>
   );
 }

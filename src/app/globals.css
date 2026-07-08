@@ -776,6 +776,37 @@ html[data-preview] .scatter-field { opacity: 0; }
   background: #000;
   pointer-events: none;
 }
+
+/* Hidden-from-live items: dropped by the production build; on localhost they
+   stay in place, dimmed and marked, so what's hidden is always visible. */
+.vblob-hidden { opacity: 0.35; border-style: dashed; }
+.vblob-hiddenmark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  padding: 1px 6px;
+  background: #c00;
+  color: #fff;
+  text-transform: uppercase;
+}
+/* dev editor: per-frame hide/show toggle */
+.vblob-hide {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+  border: 0;
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+}
 .vblob:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
