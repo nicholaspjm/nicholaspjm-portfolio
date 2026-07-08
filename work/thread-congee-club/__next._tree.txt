@@ -1,2 +1,2 @@
-:HL["/nicholaspjm-portfolio/_next/static/chunks/113x3dmfz_vzz.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"work","param":null,"prefetchHints":8,"slots":{"children":{"name":"slug","param":{"type":"d","key":"thread-congee-club","siblings":null},"prefetchHints":4,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"xhgHyUT4l4tXIkHh90ZiI"}
+:HL["/nicholaspjm-portfolio/_next/static/chunks/0cmtfefdgozl1.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"work","param":null,"prefetchHints":8,"slots":{"children":{"name":"slug","param":{"type":"d","key":"thread-congee-club","siblings":null},"prefetchHints":4,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"X3VcgrzE-JzjvtQTC1tz_"}
