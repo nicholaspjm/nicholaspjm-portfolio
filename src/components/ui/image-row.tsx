@@ -27,6 +27,10 @@ export interface RowImage {
 type Size = "S" | "M" | "L";
 const SIZE_CLASS: Record<Size, string> = { S: "", M: " size-m", L: " size-l" };
 
+/** Stable identity for a row item: its filename or video id. */
+const itemKey = (img: RowImage) =>
+  (img.src ?? img.video ?? img.youtube ?? "").split("/").pop() ?? "";
+
 /**
  * Single-row image strip. The row wraps in CSS and clips everything past the
  * first line with max-height, so an image either shows whole or not at all —
@@ -66,6 +70,25 @@ export function ImageRow({
     : undefined;
   const [size, setSize] = useState<Size>(override ?? initial);
   const cls = SIZE_CLASS[size];
+
+  // Per-image hiding, saved as rowhide.<resizeId>. Hidden items are dropped
+  // on the live build; localhost keeps them dimmed and marked.
+  const [hidden, setHidden] = useState<Set<string>>(
+    () =>
+      new Set(
+        (resizeId ? (editableText[`rowhide.${resizeId}`] ?? "") : "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+      ),
+  );
+  const toggleHide = (k: string) =>
+    setHidden((prev) => {
+      const next = new Set(prev);
+      if (next.has(k)) next.delete(k);
+      else next.add(k);
+      return next;
+    });
 
   // Play gallery videos only while actually visible on screen. Clips clipped
   // away below the row's max-height never intersect, so they stay paused.
@@ -112,6 +135,12 @@ export function ImageRow({
             data-edit-value={size}
             hidden
           />
+          <span
+            data-edit-id={`rowhide.${resizeId}`}
+            data-edit-default=""
+            data-edit-value={[...hidden].sort().join(",")}
+            hidden
+          />
         </div>
       )}
       <div
@@ -120,6 +149,11 @@ export function ImageRow({
       >
         {images.map((img, i) => {
           const alt = img.alt ?? img.caption ?? title;
+          const ik = itemKey(img);
+          const isHidden = hidden.has(ik);
+          // Live build drops hidden items; localhost keeps them visible
+          // (dimmed + marked) so what's hidden stays obvious while working.
+          if (isHidden && !isEditorEnabled) return null;
           // Index-qualified: two works can share a file (e.g. a feature that
           // reuses another project's photos), so the path alone can collide.
           const key = `${img.src ?? img.video ?? img.youtube ?? ""}-${i}`;
@@ -149,8 +183,22 @@ export function ImageRow({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={asset(img.src)} alt={alt} />
           ) : null;
+          const figCls = `image-module${isHidden ? " im-hidden" : ""}`;
+          // Edit mode: unlinked, with a per-image hide/show toggle.
+          if (resizable) {
+            return (
+              <figure key={key} className={figCls}>
+                {media}
+                {isHidden && <span className="im-hiddenmark">hidden on live</span>}
+                <button className="img-hide" onClick={() => toggleHide(ik)}>
+                  {isHidden ? "show" : "hide"}
+                </button>
+              </figure>
+            );
+          }
           return (
-            <figure key={key} className="image-module">
+            <figure key={key} className={figCls}>
+              {isHidden && <span className="im-hiddenmark">hidden on live</span>}
               {slug ? (
                 <Link
                   href={`/work/${slug}`}

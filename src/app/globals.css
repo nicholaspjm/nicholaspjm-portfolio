@@ -112,6 +112,23 @@ a.extra, .extra {
   color: var(--hl-b-fg) !important;
 }
 
+/* Tools list: airier rows with the tool name prominent on its own line. */
+.tool-list li { margin: 1.1em 0; }
+.tool-name {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: var(--hl-a-bg);
+  color: var(--hl-a-fg);
+  padding: 0 3px;
+}
+.tool-sum { display: inline-block; margin-top: 0.25em; }
+.entry:hover .tool-name,
+.entry.work-hover .tool-name {
+  background: transparent;
+  color: var(--hl-a-fg);
+}
+
 /* Non-interactive section labels (teaching, awards, press, education, events):
    a quiet uppercase marker. The yellow highlight above is reserved for
    sections whose rows you can actually click into. */
@@ -184,6 +201,37 @@ button {
 .image-row.size-m img { height: 210px; }
 .image-row.size-l { gap: 4px; }
 .image-row.size-l img { height: 340px; }
+
+/* Per-image hiding in a row: dropped on the live build; on localhost the
+   item stays, dimmed and marked, and the editor shows a hide/show toggle. */
+.image-module { position: relative; }
+.image-module.im-hidden { opacity: 0.35; }
+.im-hiddenmark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  padding: 1px 6px;
+  background: #c00;
+  color: #fff;
+  text-transform: uppercase;
+}
+.img-hide {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 1px 8px;
+  border: 0;
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+}
 
 /* Muted autoplay video embed, sized like an image in the row. */
 .image-module .yt {

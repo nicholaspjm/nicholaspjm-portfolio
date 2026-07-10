@@ -11,7 +11,7 @@ import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
-import { ImageRow, type RowImage } from "@/components/ui/image-row";
+import { ImageRow } from "@/components/ui/image-row";
 import { Editable } from "@/components/ui/editable";
 import { ProjectEntry } from "@/components/ui/project-entry";
 import { ToolEntry } from "@/components/ui/tool-entry";
@@ -68,25 +68,6 @@ function ProjectBlock({
       )}
     </>
   );
-}
-
-/** One representative image (or video embed) per work in a category, each
- *  linking to its work. */
-function categoryImages(projects: Project[]): RowImage[] {
-  return projects
-    .filter((p) => p.images && p.images.length > 0)
-    .map((p) => {
-      const first = p.images![0];
-      return {
-        src: first.src,
-        youtube: first.youtube,
-        video: first.video,
-        start: first.start,
-        slug: p.slug,
-        prev: prev(p),
-        alt: p.title,
-      };
-    });
 }
 
 export default function Home() {
@@ -211,12 +192,12 @@ export default function Home() {
 
       <NoiseRule />
 
-      {/* COMMISSIONED ---------------------------------------------------- */}
+      {/* VISUAL (commissioned work) --------------------------------------- */}
       <p style={{ marginTop: "1.4em" }}>
         <Editable id="label.commissions" as="span" className="extra">
-          commissions
+          visual
         </Editable>{" "}
-        <span className="pathnote">~/practice/commissions</span>
+        <span className="pathnote">~/practice/visual</span>
       </p>
       {commissioned.map((p, i) => (
         <ProjectBlock
@@ -224,14 +205,8 @@ export default function Home() {
           p={p}
           num={i + 1}
           total={commissioned.length}
-          showImages={false}
         />
       ))}
-      <ImageRow
-        images={categoryImages(commissioned)}
-        sizeClass=""
-        title="commissions"
-      />
 
       <NoiseRule />
 
@@ -248,7 +223,6 @@ export default function Home() {
           p={p}
           num={i + 1}
           total={installations.length}
-          showImages={false}
         />
       ))}
       <ul>
@@ -279,11 +253,6 @@ export default function Home() {
           </li>
         ))}
       </ul>
-      <ImageRow
-        images={categoryImages(installations)}
-        sizeClass=""
-        title="installation and performance"
-      />
 
       <NoiseRule char="/" />
 
@@ -304,7 +273,7 @@ export default function Home() {
         </Editable>{" "}
         <span className="pathnote">~/practice/released</span>
       </p>
-      <ul>
+      <ul className="tool-list">
         {tools.map((t, i) => (
           <li key={t.name}>
             <ToolEntry

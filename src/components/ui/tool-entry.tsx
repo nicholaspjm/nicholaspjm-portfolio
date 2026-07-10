@@ -36,18 +36,14 @@ export function ToolEntry({
       <span className="entry-num">
         {String(num).padStart(2, "0")}/{String(total).padStart(2, "0")}
       </span>
-      <Editable
-        id={`tool.${idx}.name`}
-        as="span"
-        className="data"
-        style={{ fontSize: 14 }}
-      >
+      <Editable id={`tool.${idx}.name`} as="span" className="tool-name">
         {name}
-      </Editable>{". "}
-      <Editable id={`tool.${idx}.summary`} as="span">
-        {summary}
       </Editable>{" "}
       <span className="foot">({stack}) ↗</span>
+      <br />
+      <Editable id={`tool.${idx}.summary`} as="span" className="tool-sum">
+        {summary}
+      </Editable>
     </>
   );
 

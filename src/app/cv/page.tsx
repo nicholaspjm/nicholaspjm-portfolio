@@ -79,7 +79,22 @@ export default function CVPage() {
         </Editable>
       </p>
 
-      <CVSheet rows={rows} />
+      {/* The CV sheet is held back from the live site for now; localhost
+          still shows it so it can keep being worked on. */}
+      {process.env.NODE_ENV === "development" ? (
+        <>
+          <p className="foot" style={{ color: "#c00" }}>
+            [localhost only: the live site shows "coming soon" here]
+          </p>
+          <CVSheet rows={rows} />
+        </>
+      ) : (
+        <p style={{ marginTop: "1.2em" }}>
+          <Editable id="cv.comingSoon" as="span">
+            Coming soon.
+          </Editable>
+        </p>
+      )}
 
       <p className="foot">
         b. 1999, Aotearoa New Zealand · Naarm / Melbourne, Australia ·{" "}
