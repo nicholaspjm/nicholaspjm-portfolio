@@ -99,11 +99,13 @@ export default function Home() {
   const rich = (
     <div className="leftcol">
       {/* PROMINENT VIEWS: above the nav (the spot you liked) ------------- */}
-      <p style={{ margin: "0.4em 0 1em 0" }}>
-        <NavButton href="/work">list view</NavButton>
+      <p style={{ margin: "0.4em 0 0.5em 0" }}>
         <NavButton href="/visual" className="btn-hot">
           visual view
         </NavButton>
+      </p>
+      <p style={{ margin: "0 0 1em 0" }}>
+        <NavButton href="/work">list view</NavButton>
       </p>
 
       {/* TOP NAV --------------------------------------------------------- */}

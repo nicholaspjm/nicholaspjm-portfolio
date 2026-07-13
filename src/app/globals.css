@@ -112,16 +112,31 @@ a.extra, .extra {
   color: var(--hl-b-fg) !important;
 }
 
-/* Highlighted call-to-action button: the yellow swipe the section labels
-   use, applied to a native button so it pops out of the plain nav row. */
+/* Highlighted call-to-action button: full-width on its own line, with the
+   yellow swipe animating in on load like a highlighter dragged across it. */
 button.btn-hot {
-  background-color: var(--hl-b-bg);
-  color: var(--hl-b-fg);
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 5px 10px;
   font-weight: bold;
+  color: var(--hl-b-fg);
+  background-color: transparent;
+  background-image: linear-gradient(var(--hl-b-bg), var(--hl-b-bg));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation: swipe-in 650ms cubic-bezier(0.7, 0, 0.3, 1) 300ms both;
+}
+@keyframes swipe-in {
+  from { background-size: 0% 100%; }
+  to { background-size: 100% 100%; }
 }
 button.btn-hot:hover {
-  background-color: var(--ink);
+  background-image: linear-gradient(var(--ink), var(--ink));
   color: var(--bg);
+}
+@media (prefers-reduced-motion: reduce) {
+  button.btn-hot { animation: none; }
 }
 
 /* Quiet closing line under a section: extra credits + pointer to the CV. */
