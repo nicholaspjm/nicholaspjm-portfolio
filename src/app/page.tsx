@@ -295,7 +295,7 @@ export default function Home() {
       {/* TOOLS: each row clickable to its repo --------------------------- */}
       <p id="tools">
         <Editable id="label.tools" as="span" className="extra">
-          tools
+          public tools
         </Editable>{" "}
         <span className="pathnote">~/practice/released</span>
       </p>

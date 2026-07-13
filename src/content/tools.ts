@@ -1,6 +1,7 @@
 /**
- * Tools: released software and TouchDesigner components.
- * Verify repo visibility before launch; links assume github.com/nicholaspjm.
+ * Public tools: released software and TouchDesigner components.
+ * Ordered by release date, newest first (repo creation dates where public;
+ * tools without a public repo follow, oldest-known last).
  */
 
 export interface Tool {
@@ -12,29 +13,53 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
-    name: "blob tracker",
+    // weaving-type-touchdesigner, July 2026
+    name: "Woven Touch",
     summary:
-      "TouchDesigner-native blob tracking component for interactive floors and walls.",
-    stack: "TouchDesigner · .tox",
+      "A TouchDesigner instrument that weaves text, images, and 3D geometry into drooping woven thread. Real time, with gravity and click-drag interaction.",
+    stack: "TouchDesigner · GLSL",
     links: [
-      { href: "https://github.com/nicholaspjm/td-blob-tracker", label: "github" },
+      {
+        href: "https://github.com/nicholaspjm/weaving-type-touchdesigner",
+        label: "github",
+      },
     ],
   },
   {
+    // lumen-dmx-live-code, April 2026
     name: "lumen",
     summary:
       "Live-coding environment for DMX lighting rigs. Write patterns live and the lights follow on the next beat.",
-    stack: "TypeScript · WebSocket · DMX",
+    stack: "TypeScript · Art-Net · DMX",
     links: [
-      { href: "https://github.com/nicholaspjm/dmx-live-code", label: "github" },
+      {
+        href: "https://github.com/nicholaspjm/lumen-dmx-live-code",
+        label: "github",
+      },
     ],
   },
   {
-    name: "live coding",
+    // blobtracker, January 2026
+    name: "blob tracker",
     summary:
-      "Live-coding environment for real-time visuals. Write, hear, and see the patch change while it runs.",
-    stack: "TouchDesigner · Python",
-    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+      "TouchDesigner-native blob tracking component for interactive floors and walls.",
+    stack: "TouchDesigner · OpenCV",
+    links: [
+      { href: "https://github.com/nicholaspjm/blobtracker", label: "github" },
+    ],
+  },
+  {
+    // web-blob-tracker, January 2026
+    name: "web blob tracker",
+    summary:
+      "The blob-tracker detection look running natively in the browser, no TouchDesigner required.",
+    stack: "JavaScript · Web",
+    links: [
+      {
+        href: "https://github.com/nicholaspjm/web-blob-tracker",
+        label: "github",
+      },
+    ],
   },
   {
     name: "wiki visualiser",
@@ -62,28 +87,6 @@ export const tools: Tool[] = [
     summary:
       "Two external .tox note panels for TouchDesigner: a notebook and a sticky canvas that link to and jump to nodes.",
     stack: "TouchDesigner · Python",
-    links: [
-      { href: "https://github.com/nicholaspjm/TD-Notes-Tools", label: "github" },
-    ],
-  },
-  {
-    name: "td-ascii-patterns",
-    summary: "ASCII pattern generators for TouchDesigner compositions.",
-    stack: "TouchDesigner · GLSL",
-    links: [
-      { href: "https://github.com/nicholaspjm/td-ascii-patterns", label: "github" },
-    ],
-  },
-  {
-    name: "claude-ableton-visualizer",
-    summary:
-      "Ableton Live session data piped into AI-assisted real-time visuals.",
-    stack: "Python · Max for Live",
-    links: [
-      {
-        href: "https://github.com/nicholaspjm/claude-ableton-visualizer",
-        label: "github",
-      },
-    ],
+    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
   },
 ];
