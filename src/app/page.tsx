@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { site } from "@/content/site";
 import {
   getListedProjects,
@@ -26,6 +27,19 @@ function prev(p: Project) {
     img: p.images?.find((im) => im.src)?.src,
     href: `/work/${p.slug}`,
   });
+}
+
+/** Quiet closing line under a section: an editable credit sentence (edit the
+ *  names in the studio) followed by a pointer to the full CV. */
+function SectionFoot({ id, children }: { id: string; children: string }) {
+  return (
+    <p className="section-foot">
+      <Editable id={id} as="span">
+        {children}
+      </Editable>{" "}
+      The complete list is available in the <Link href="/cv">CV</Link>.
+    </p>
+  );
 }
 
 /** A project entry — the whole block is a link to the project. */
@@ -207,6 +221,10 @@ export default function Home() {
           total={commissioned.length}
         />
       ))}
+      <SectionFoot id="foot.visual">
+        Further commissions and collaborations include work with MTLA Studio,
+        1080p Studios, Phase 3 Concepts, and Lyrical Lemonade.
+      </SectionFoot>
 
       <NoiseRule />
 
@@ -253,6 +271,10 @@ export default function Home() {
           </li>
         ))}
       </ul>
+      <SectionFoot id="foot.installation">
+        Work has also been presented at Concordia, Pythia, Atmos, Thread, Step
+        Count, Mach1, 1800Play, TOPIA, Ode, and Order Up.
+      </SectionFoot>
 
       <NoiseRule char="/" />
 
@@ -378,6 +400,9 @@ export default function Home() {
           </li>
         ))}
       </ul>
+      <SectionFoot id="foot.awards">
+        Selected recognition shown here.
+      </SectionFoot>
 
       <p>
         <br />
@@ -409,6 +434,10 @@ export default function Home() {
           </li>
         ))}
       </ul>
+      <SectionFoot id="foot.press">
+        Selected coverage shown here; further features and interviews are
+        catalogued alongside the practice history.
+      </SectionFoot>
 
       <p>
         <br />

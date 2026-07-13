@@ -24,7 +24,8 @@ export const structure: {
     "a3-festival",
     "nike-air-liquid-max",
     "abstracted-organica",
-    "for-the-cause"
+    "for-the-cause",
+    "through-the-looking-glass-chadstone"
   ],
   "entries": {
     "cheahdx-purespace": {
@@ -139,6 +140,12 @@ export const structure: {
       "section": null,
       "hidden": false,
       "title": "For The Cause",
+      "text": null
+    },
+    "through-the-looking-glass-chadstone": {
+      "section": null,
+      "hidden": false,
+      "title": "Through The Looking Glass Chadstone",
       "text": null
     }
   }

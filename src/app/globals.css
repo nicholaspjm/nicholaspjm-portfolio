@@ -112,6 +112,16 @@ a.extra, .extra {
   color: var(--hl-b-fg) !important;
 }
 
+/* Quiet closing line under a section: extra credits + pointer to the CV. */
+.section-foot {
+  margin: 1em 0 0.4em;
+  max-width: 58ch;
+  font-size: 12px;
+  color: var(--soft);
+  line-height: 1.6;
+}
+.section-foot a { color: var(--link); }
+
 /* Tools list: airier rows with the tool name prominent on its own line. */
 .tool-list li { margin: 1.1em 0; }
 .tool-name {
