@@ -112,6 +112,18 @@ a.extra, .extra {
   color: var(--hl-b-fg) !important;
 }
 
+/* Highlighted call-to-action button: the yellow swipe the section labels
+   use, applied to a native button so it pops out of the plain nav row. */
+button.btn-hot {
+  background-color: var(--hl-b-bg);
+  color: var(--hl-b-fg);
+  font-weight: bold;
+}
+button.btn-hot:hover {
+  background-color: var(--ink);
+  color: var(--bg);
+}
+
 /* Quiet closing line under a section: extra credits + pointer to the CV. */
 .section-foot {
   margin: 1em 0 0.4em;

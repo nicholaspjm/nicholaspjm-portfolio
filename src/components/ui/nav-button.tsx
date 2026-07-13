@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 interface Props {
   href: string;
   external?: boolean;
+  className?: string;
   children: ReactNode;
 }
 
@@ -14,12 +15,13 @@ interface Props {
  * button styling, exactly like mindyseu.com), and routes via Next.js for
  * internal links or opens in a new tab for external.
  */
-export function NavButton({ href, external, children }: Props) {
+export function NavButton({ href, external, className, children }: Props) {
   const router = useRouter();
   const isExternal =
     external ?? /^(https?:|mailto:|tel:)/.test(href);
   return (
     <button
+      className={className}
       onClick={() => {
         if (isExternal) {
           window.open(href, "_blank");

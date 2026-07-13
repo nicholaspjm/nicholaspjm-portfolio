@@ -101,7 +101,9 @@ export default function Home() {
       {/* PROMINENT VIEWS: above the nav (the spot you liked) ------------- */}
       <p style={{ margin: "0.4em 0 1em 0" }}>
         <NavButton href="/work">list view</NavButton>
-        <NavButton href="/visual">view all my visual work</NavButton>
+        <NavButton href="/visual" className="btn-hot">
+          visual view
+        </NavButton>
       </p>
 
       {/* TOP NAV --------------------------------------------------------- */}
