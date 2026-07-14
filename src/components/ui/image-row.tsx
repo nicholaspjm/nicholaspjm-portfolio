@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { ytEmbed } from "@/lib/yt";
@@ -39,6 +39,25 @@ const thumbOf = (src: string) =>
     : src;
 
 /**
+ * Shared per-work row config. A project can be listed twice on the homepage
+ * (selected works + its section), rendering twin rows for the same work. Both
+ * twins read and write this one store entry, so edits made in either copy stay
+ * in sync visually AND serialize identically at save time; without this, the
+ * untouched twin's stale state could win the save and wipe the edit.
+ */
+interface RowCfg {
+  size: Size;
+  hidden: string[];
+  order: string[];
+}
+const rowCfgs = new Map<string, RowCfg>();
+const rowSubs = new Map<string, Set<() => void>>();
+function writeCfg(key: string, cfg: RowCfg) {
+  rowCfgs.set(key, cfg);
+  rowSubs.get(key)?.forEach((f) => f());
+}
+
+/**
  * Single-row image strip. The row wraps in CSS and clips everything past the
  * first line with max-height, so an image either shows whole or not at all —
  * never cut mid-image (no measuring, works before/after any media loads).
@@ -67,6 +86,30 @@ export function ImageRow({
   const ref = useRef<HTMLDivElement>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
 
+  // Twin rows of the same work share one config entry (see rowCfgs above).
+  const storeKey = resizeId ?? `row:${title}`;
+  const cfg = useSyncExternalStore(
+    useCallback(
+      (cb: () => void) => {
+        let subs = rowSubs.get(storeKey);
+        if (!subs) {
+          subs = new Set();
+          rowSubs.set(storeKey, subs);
+        }
+        subs.add(cb);
+        return () => {
+          subs.delete(cb);
+        };
+      },
+      [storeKey],
+    ),
+    () => rowCfgs.get(storeKey),
+    () => undefined,
+  );
+
+  // Baselines come from the saved overrides, recomputed each render so the
+  // post-save refresh always agrees with what was just written. The shared
+  // cfg (set on first interaction) wins once the user starts editing.
   const initial: Size = sizeClass.includes("size-l")
     ? "L"
     : sizeClass.includes("size-m")
@@ -75,32 +118,23 @@ export function ImageRow({
   const override = resizeId
     ? (editableText[`imgsize.${resizeId}`] as Size | undefined)
     : undefined;
-  const [size, setSize] = useState<Size>(override ?? initial);
+  const size: Size = cfg?.size ?? override ?? initial;
   const cls = SIZE_CLASS[size];
 
   // Per-image hiding, saved as rowhide.<resizeId>. Hidden items are dropped
-  // on the live build; localhost keeps them dimmed and marked.
-  const [hidden, setHidden] = useState<Set<string>>(
-    () =>
-      new Set(
-        (resizeId ? (editableText[`rowhide.${resizeId}`] ?? "") : "")
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-      ),
+  // on the live build; localhost shows them (dimmed) only in edit mode.
+  const hidden = new Set(
+    cfg?.hidden ??
+      (resizeId ? (editableText[`rowhide.${resizeId}`] ?? "") : "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
   );
-  const toggleHide = (k: string) =>
-    setHidden((prev) => {
-      const next = new Set(prev);
-      if (next.has(k)) next.delete(k);
-      else next.add(k);
-      return next;
-    });
 
   // Per-image ordering, saved as roworder.<resizeId>: a comma list of item
   // keys. Saved keys come first; anything new in the folder appends after.
   const naturalOrder = images.map(itemKey).join(",");
-  const [order, setOrder] = useState<string[]>(() => {
+  const baseOrder = () => {
     const saved = (resizeId ? (editableText[`roworder.${resizeId}`] ?? "") : "")
       .split(",")
       .map((s) => s.trim())
@@ -112,16 +146,30 @@ export function ImageRow({
       if (!out.includes(k)) out.push(k);
     }
     return out;
+  };
+  const order = cfg?.order ?? baseOrder();
+
+  const snapshot = (): RowCfg => ({
+    size,
+    hidden: [...hidden],
+    order: [...order],
   });
-  const move = (k: string, d: number) =>
-    setOrder((prev) => {
-      const i = prev.indexOf(k);
-      const j = i + d;
-      if (i < 0 || j < 0 || j >= prev.length) return prev;
-      const next = [...prev];
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
-    });
+  const setSize = (s: Size) => writeCfg(storeKey, { ...snapshot(), size: s });
+  const toggleHide = (k: string) => {
+    const next = new Set(hidden);
+    if (next.has(k)) next.delete(k);
+    else next.add(k);
+    writeCfg(storeKey, { ...snapshot(), hidden: [...next] });
+  };
+  const move = (k: string, d: number) => {
+    const i = order.indexOf(k);
+    const j = i + d;
+    if (i < 0 || j < 0 || j >= order.length) return;
+    const next = [...order];
+    [next[i], next[j]] = [next[j], next[i]];
+    writeCfg(storeKey, { ...snapshot(), order: next });
+  };
+
   const byKey = new Map(images.map((im) => [itemKey(im), im]));
   const ordered = order
     .map((k) => byKey.get(k))
@@ -149,7 +197,8 @@ export function ImageRow({
     // Re-observe whenever the rendered media elements can have been replaced
     // (edit-mode toggles remount them; with preload="none" an unobserved clip
     // never loads a frame and shows as a black box).
-  }, [images, size, editMode, order, hidden]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [images, size, editMode, order.join(","), [...hidden].sort().join(",")]);
 
   if (images.length === 0) return null;
 
