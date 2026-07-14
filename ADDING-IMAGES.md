@@ -47,7 +47,13 @@ npm run scan-images
 
 Drop image files (`.jpg .png .webp .gif .avif`) straight into a project's
 folder. They appear on that page in filename order, so name them `01.jpg`,
-`02.jpg`, ... to control order. Fine-tuning (per-image size, reorder,
+`02.jpg`, ... to control order.
+
+Drop originals at any size; the publish step optimizes automatically. Your
+files in `content/` are never touched, but what the site serves is resized
+and recompressed (max 1920px), photo PNGs become JPEGs, and small thumbnails
+are generated for the homepage rows and the visual page. Everything loads
+lazily, so pages stay fast no matter how much media a project carries. Fine-tuning (per-image size, reorder,
 subtext, hiding from /visual) lives in the local editor: `npm run studio` +
 the ✎ edit button.
 

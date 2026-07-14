@@ -35,7 +35,7 @@ export const project: Project = {
     },
     {
       kind: "video",
-      src: "/videos/projects/forgotten-once-remembered/01.mov",
+      src: "/videos/projects/forgotten-once-remembered/01.mp4",
       ratio: "9/16",
       caption: "Live capture",
     },

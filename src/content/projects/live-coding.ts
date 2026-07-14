@@ -41,7 +41,7 @@ export const project: Project = {
     },
     {
       kind: "video",
-      src: "/videos/projects/live-coding/01.mov",
+      src: "/videos/projects/live-coding/01.mp4",
       ratio: "9/16",
       autoplay: false,
       caption: "Set capture",

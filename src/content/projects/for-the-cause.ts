@@ -30,20 +30,20 @@ export const project: Project = {
     },
     {
       kind: "video",
-      src: "/videos/projects/for-the-cause-25/01.mov",
+      src: "/videos/projects/for-the-cause-25/01.mp4",
       ratio: "16/9",
       caption: "Main-stage visual",
     },
     {
       kind: "video",
-      src: "/videos/projects/for-the-cause-25/02.mov",
+      src: "/videos/projects/for-the-cause-25/02.mp4",
       ratio: "16/9",
       autoplay: false,
       caption: "Evolving GLSL fractal",
     },
     {
       kind: "video",
-      src: "/videos/projects/for-the-cause-25/05.mov",
+      src: "/videos/projects/for-the-cause-25/05.mp4",
       ratio: "16/9",
       autoplay: false,
     },

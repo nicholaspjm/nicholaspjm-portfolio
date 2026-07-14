@@ -44,13 +44,13 @@ export const project: Project = {
     },
     {
       kind: "video",
-      src: "/videos/projects/cat-among-animals/01.mov",
+      src: "/videos/projects/cat-among-animals/01.mp4",
       ratio: "16/9",
       caption: "Live-coded visuals",
     },
     {
       kind: "video",
-      src: "/videos/projects/cat-among-animals/03.mov",
+      src: "/videos/projects/cat-among-animals/03.mp4",
       ratio: "16/9",
       autoplay: false,
       caption: "Performance capture",

@@ -8,20 +8,26 @@
  *       02 hybrid-2-0/
  *     commissions/               <- section: commissioned
  *     installation & performance/<- section: installation
- *     sketches/                  <- section: sketch
- *     hidden/                    <- page exists but is hidden from the index
+ *     personal explorations/     <- section: sketch
+ *     hidden/                    <- page exists but is off the index
+ *     tools/                     <- photos for the public tools list
  *
  * Each project folder holds that page's media (images show in filename order)
  * and optionally a text.md whose paragraphs become the page's body text.
- * Moving a folder between sections moves the project on the site; removing it
- * hides the project; a folder with no matching code file still gets a page.
  *
- * This script syncs the tree into what the site serves:
- *   - images copy to public/images/projects/<slug>/ (generated, git-ignored)
- *   - structure (order, sections, hidden, titles, texts) is written to
- *     src/content/structure.ts, media lists to src/content/project-images.ts
+ * This script syncs the tree into what the site serves, OPTIMIZING as it goes:
+ * originals in content/ stay untouched; the published copies are resized and
+ * recompressed (via sharp), photo PNGs become JPEGs, and every project image
+ * also gets a small thumbnail that rows and the visual page load instead of
+ * the full file.
  *
- * Runs automatically before `npm run dev` and `npm run build`; run
+ *   content image -> public/images/projects/<slug>/<name>   (max 1920px, q80)
+ *                 -> public/images/thumbs/<slug>/<name>     (640px tall, q75)
+ *   tool image    -> public/images/tools/<slug>/<name>      (max 1920px, q80)
+ *
+ * All public/images output is generated and git-ignored. Structure (order,
+ * sections, hidden, titles, texts) goes to src/content/structure.ts, media
+ * lists to src/content/project-images.ts. Runs before every dev/build; run
  * `npm run scan-images` after changing folders while the dev server is up.
  */
 import {
@@ -41,12 +47,31 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
 const contentRoot = resolve(root, "content");
 const imagesOut = resolve(root, "public/images/projects");
+const thumbsOut = resolve(root, "public/images/thumbs");
 const toolImagesOut = resolve(root, "public/images/tools");
 const videosRoot = resolve(root, "public/videos/projects");
 
 const IMAGE_RE = /\.(jpe?g|png|webp|gif|avif)$/i;
+/** Formats sharp recompresses; the rest (animated gif etc.) copy through. */
+const PROCESS_RE = /\.(jpe?g|png)$/i;
 const VIDEO_RE = /\.(mp4|webm)$/i;
 const PREFIX_RE = /^\d+[\s._-]+/; // "01 slug" -> "slug"
+
+const FULL_EDGE = 1920; // max long edge for published images
+const THUMB_H = 640; // thumbnail height (rows render at <=340px, 2x retina)
+const FULL_Q = 80;
+const THUMB_Q = 75;
+
+// sharp is a native dependency; degrade to plain copies if it's unavailable
+// so a fresh checkout can still dev before npm install finishes.
+let sharp = null;
+try {
+  sharp = (await import("sharp")).default;
+} catch {
+  console.warn(
+    "scan-images: sharp not installed; publishing UNOPTIMIZED copies (npm install to fix)",
+  );
+}
 
 /** Section-folder name -> role. Normalized: lowercase, & -> and, one space. */
 function sectionRole(name) {
@@ -86,12 +111,96 @@ const files = (p) => {
 const natural = (a, b) =>
   a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
 
-/** Prettify a slug into a fallback page title. */
 function titleFrom(slug) {
   return slug
     .split("-")
     .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
     .join(" ");
+}
+
+const fresh = (src, dst) => {
+  try {
+    return statSync(dst).mtimeMs >= statSync(src).mtimeMs;
+  } catch {
+    return false;
+  }
+};
+
+let processed = 0;
+
+/** Published name for a source image: photo PNGs become JPEGs. */
+async function outName(srcPath, name) {
+  if (!sharp || !/\.png$/i.test(name)) return name;
+  try {
+    const meta = await sharp(srcPath).metadata();
+    if (!meta.hasAlpha) return name.replace(/\.png$/i, ".jpg");
+  } catch {
+    /* fall through, keep name */
+  }
+  return name;
+}
+
+/** Resize + recompress one image into dst (or plain-copy when sharp can't). */
+async function publishImage(src, dst, { height = null, quality = FULL_Q }) {
+  if (fresh(src, dst)) return;
+  mkdirSync(dirname(dst), { recursive: true });
+  if (!sharp || !PROCESS_RE.test(src)) {
+    copyFileSync(src, dst);
+    processed++;
+    return;
+  }
+  try {
+    let img = sharp(src).rotate(); // bake EXIF orientation
+    img = height
+      ? img.resize({ height, withoutEnlargement: true })
+      : img.resize({
+          width: FULL_EDGE,
+          height: FULL_EDGE,
+          fit: "inside",
+          withoutEnlargement: true,
+        });
+    if (/\.jpg$/i.test(dst) || /\.jpe?g$/i.test(src)) {
+      img = img.jpeg({ quality, progressive: true, mozjpeg: true });
+    } else if (/\.png$/i.test(dst)) {
+      img = img.png({ compressionLevel: 9, palette: true, quality: 90 });
+    }
+    await img.toFile(dst);
+    processed++;
+  } catch (e) {
+    console.warn(`scan-images: failed to optimize ${src} (${e.message}); copying`);
+    copyFileSync(src, dst);
+    processed++;
+  }
+}
+
+/** Sync one folder of images into outDir (+ optional thumbs), delete stale. */
+async function syncImages(srcDir, outDir, thumbDir) {
+  const srcImgs = files(srcDir).filter(
+    (f) => IMAGE_RE.test(f) && !f.startsWith("."),
+  );
+  mkdirSync(outDir, { recursive: true });
+  if (thumbDir) mkdirSync(thumbDir, { recursive: true });
+  const expected = new Set();
+  for (const f of srcImgs) {
+    const src = join(srcDir, f);
+    const name = await outName(src, f);
+    expected.add(name);
+    await publishImage(src, join(outDir, name), {});
+    if (thumbDir) {
+      await publishImage(src, join(thumbDir, name), {
+        height: THUMB_H,
+        quality: THUMB_Q,
+      });
+    }
+  }
+  for (const f of files(outDir)) {
+    if (!expected.has(f)) rmSync(join(outDir, f), { force: true });
+  }
+  if (thumbDir) {
+    for (const f of files(thumbDir)) {
+      if (!expected.has(f)) rmSync(join(thumbDir, f), { force: true });
+    }
+  }
 }
 
 // --- walk the tree ---------------------------------------------------------
@@ -141,38 +250,19 @@ for (const sectionDir of dirs(contentRoot).sort(natural)) {
   }
 }
 
-// --- sync images: content tree -> public/images/projects (generated) --------
-let copied = 0;
+// --- publish project images (optimized full + thumb) -----------------------
 mkdirSync(imagesOut, { recursive: true });
+mkdirSync(thumbsOut, { recursive: true });
 for (const [slug, e] of Object.entries(entries)) {
-  const srcImgs = files(e.dir).filter((f) => IMAGE_RE.test(f) && !f.startsWith("."));
-  const outDir = join(imagesOut, slug);
-  mkdirSync(outDir, { recursive: true });
-  for (const f of srcImgs) {
-    const src = join(e.dir, f);
-    const dst = join(outDir, f);
-    let same = false;
-    try {
-      same = statSync(dst).size === statSync(src).size;
-    } catch {
-      /* missing */
-    }
-    if (!same) {
-      copyFileSync(src, dst);
-      copied++;
-    }
-  }
-  // drop images removed from the folder
-  for (const f of files(outDir)) {
-    if (!srcImgs.includes(f)) rmSync(join(outDir, f), { force: true });
-  }
+  await syncImages(e.dir, join(imagesOut, slug), join(thumbsOut, slug));
 }
-// drop slug dirs whose folder left the tree entirely
-for (const d of dirs(imagesOut)) {
-  if (!entries[d]) rmSync(join(imagesOut, d), { recursive: true, force: true });
+for (const base of [imagesOut, thumbsOut]) {
+  for (const d of dirs(base)) {
+    if (!entries[d]) rmSync(join(base, d), { recursive: true, force: true });
+  }
 }
 
-// --- sync tool photos: content/tools/<tool>/ -> public/images/tools --------
+// --- publish tool photos ----------------------------------------------------
 const toolSlugs = new Set();
 mkdirSync(toolImagesOut, { recursive: true });
 for (const sectionDir of dirs(contentRoot)) {
@@ -181,36 +271,14 @@ for (const sectionDir of dirs(contentRoot)) {
     const slug = tool.replace(PREFIX_RE, "").trim();
     if (!slug) continue;
     toolSlugs.add(slug);
-    const srcDir = join(contentRoot, sectionDir, tool);
-    const srcImgs = files(srcDir).filter(
-      (f) => IMAGE_RE.test(f) && !f.startsWith("."),
-    );
-    const outDir = join(toolImagesOut, slug);
-    mkdirSync(outDir, { recursive: true });
-    for (const f of srcImgs) {
-      const src = join(srcDir, f);
-      const dst = join(outDir, f);
-      let same = false;
-      try {
-        same = statSync(dst).size === statSync(src).size;
-      } catch {
-        /* missing */
-      }
-      if (!same) {
-        copyFileSync(src, dst);
-        copied++;
-      }
-    }
-    for (const f of files(outDir)) {
-      if (!srcImgs.includes(f)) rmSync(join(outDir, f), { force: true });
-    }
+    await syncImages(join(contentRoot, sectionDir, tool), join(toolImagesOut, slug), null);
   }
 }
 for (const d of dirs(toolImagesOut)) {
   if (!toolSlugs.has(d)) rmSync(join(toolImagesOut, d), { recursive: true, force: true });
 }
 
-// --- media manifests (same shape as before) --------------------------------
+// --- media manifests --------------------------------------------------------
 function scanMedia(base, re, urlBase) {
   const out = {};
   for (const slug of dirs(base).sort(natural)) {
@@ -272,5 +340,5 @@ export const structure: {
 const ni = Object.values(images).reduce((s, a) => s + a.length, 0);
 const nv = Object.values(videos).reduce((s, a) => s + a.length, 0);
 console.log(
-  `scan-images: ${Object.keys(entries).length} project folders (${selected.length} selected), ${copied} image${copied === 1 ? "" : "s"} synced, manifests: ${ni} images + ${nv} videos`,
+  `scan-images: ${Object.keys(entries).length} project folders (${selected.length} selected), ${processed} image${processed === 1 ? "" : "s"} published${sharp ? " optimized" : " UNOPTIMIZED"}, manifests: ${ni} images + ${nv} videos`,
 );

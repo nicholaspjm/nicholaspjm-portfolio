@@ -23,6 +23,12 @@ export interface VisualItem {
 /** Stable identity for an item: the media path or the video id. */
 const keyOf = (it: VisualItem) => it.src ?? it.video ?? it.youtube ?? "";
 
+/** The scatter renders small; serve the generated thumbnail tier. */
+const thumbOf = (src: string) =>
+  src.startsWith("/images/projects/")
+    ? src.replace("/images/projects/", "/images/thumbs/")
+    : src;
+
 /** Parse the saved comma-separated hidden list. */
 function initialHidden(): Set<string> {
   return new Set(
@@ -125,12 +131,17 @@ export function VisualField({ items }: { items: VisualItem[] }) {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 aria-label={it.title}
               />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={asset(it.src!)} alt={it.title} />
+              <img
+                src={asset(thumbOf(it.src!))}
+                alt={it.title}
+                loading="lazy"
+                decoding="async"
+              />
             )}
             <span className="blob-meta">
               {it.title} · {it.year}

@@ -142,12 +142,12 @@ export function ProjectGallery({
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             aria-label={alt}
           />
         ) : img.src ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={asset(img.src)} alt={alt} />
+          <img src={asset(img.src)} alt={alt} loading="lazy" decoding="async" />
         ) : null;
         const capId = `imgcap.${slug}.${it.key}`;
         const cap = editableText[capId];

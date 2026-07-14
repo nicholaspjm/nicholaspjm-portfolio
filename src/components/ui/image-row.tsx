@@ -31,6 +31,13 @@ const SIZE_CLASS: Record<Size, string> = { S: "", M: " size-m", L: " size-l" };
 const itemKey = (img: RowImage) =>
   (img.src ?? img.video ?? img.youtube ?? "").split("/").pop() ?? "";
 
+/** Rows render small, so serve the generated thumbnail tier when one exists
+ *  (every project image gets one; other paths fall through unchanged). */
+const thumbOf = (src: string) =>
+  src.startsWith("/images/projects/")
+    ? src.replace("/images/projects/", "/images/thumbs/")
+    : src;
+
 /**
  * Single-row image strip. The row wraps in CSS and clips everything past the
  * first line with max-height, so an image either shows whole or not at all —
@@ -212,12 +219,17 @@ export function ImageRow({
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
               aria-label={alt}
             />
           ) : img.src ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={asset(img.src)} alt={alt} />
+            <img
+              src={asset(thumbOf(img.src))}
+              alt={alt}
+              loading="lazy"
+              decoding="async"
+            />
           ) : null;
           const figCls = `image-module${isHidden ? " im-hidden" : ""}`;
           // Edit mode: unlinked, with reorder arrows + a hide/show toggle.

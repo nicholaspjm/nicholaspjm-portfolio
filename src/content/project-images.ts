@@ -59,8 +59,8 @@ export const projectImages: Record<string, string[]> = {
     "/images/projects/mach1-festival/01.jpg",
     "/images/projects/mach1-festival/02.jpg",
     "/images/projects/mach1-festival/03.jpg",
-    "/images/projects/mach1-festival/DSCF0525.png",
-    "/images/projects/mach1-festival/DSCF0719.png"
+    "/images/projects/mach1-festival/DSCF0525.jpg",
+    "/images/projects/mach1-festival/DSCF0719.jpg"
   ],
   "nike-air-liquid-max": [
     "/images/projects/nike-air-liquid-max/IMG_0125.JPEG"
@@ -107,6 +107,8 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/atmos-norla-dome/img-1141.mp4"
   ],
   "cat-among-animals": [
+    "/videos/projects/cat-among-animals/01.mp4",
+    "/videos/projects/cat-among-animals/03.mp4",
     "/videos/projects/cat-among-animals/tdmovieout-4-1.mp4",
     "/videos/projects/cat-among-animals/tdmovieout-7-1.mp4",
     "/videos/projects/cat-among-animals/visual1-render-1-1.mp4",
@@ -117,6 +119,9 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/cheahdx-purespace/tdmovieout-92.mp4"
   ],
   "for-the-cause-25": [
+    "/videos/projects/for-the-cause-25/01.mp4",
+    "/videos/projects/for-the-cause-25/02.mp4",
+    "/videos/projects/for-the-cause-25/05.mp4",
     "/videos/projects/for-the-cause-25/tdmovieout-37-2.mp4",
     "/videos/projects/for-the-cause-25/tdmovieout-41-1.mp4",
     "/videos/projects/for-the-cause-25/tdmovieout-42-1.mp4",
@@ -135,6 +140,9 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/for-the-cause-2026/img-9653.mp4",
     "/videos/projects/for-the-cause-2026/img-9654.mp4"
   ],
+  "forgotten-once-remembered": [
+    "/videos/projects/forgotten-once-remembered/01.mp4"
+  ],
   "hybrid-2-0": [
     "/videos/projects/hybrid-2-0/c8200.mp4",
     "/videos/projects/hybrid-2-0/img-6185.mp4",
@@ -149,6 +157,9 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/its-murph-weightless-tour/tdmovieout-10-mov.mp4"
   ],
   "live-coding": [
+    "/videos/projects/live-coding/01.mp4",
+    "/videos/projects/live-coding/02.mp4",
+    "/videos/projects/live-coding/03.mp4",
     "/videos/projects/live-coding/04.mp4",
     "/videos/projects/live-coding/aqoeznfi2cwlstvwbeq-ppvs5kurfvjzh9lwosijsjo2.mp4",
     "/videos/projects/live-coding/img-2225-2.mp4",
@@ -176,6 +187,13 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/pitch-far-from-god/img-3357.mp4",
     "/videos/projects/pitch-far-from-god/tdmovieout-57.mp4",
     "/videos/projects/pitch-far-from-god/trimmed-stars-2.mp4"
+  ],
+  "smokedope2016-2016lyfe": [
+    "/videos/projects/smokedope2016-2016lyfe/01.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/02.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/03.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/04.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/05.mp4"
   ],
   "the-xx-festival-tour": [
     "/videos/projects/the-xx-festival-tour/coachella-weekend-1-full-show.mp4",

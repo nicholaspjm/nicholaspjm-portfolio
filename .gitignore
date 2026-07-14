@@ -49,6 +49,7 @@ next-env.d.ts
 # fills them from the content/ tree before every dev/build. The tree is the
 # committed source.
 /public/images/projects/
+/public/images/thumbs/
 /public/images/tools/
 
 # Source videos don't play in-browser. They are transcoded to web .mp4 by
