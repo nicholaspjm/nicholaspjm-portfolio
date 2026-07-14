@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import { editableText } from "@/content/editable-text";
 import {
   isEditorEnabled,
   getEditMode,
@@ -26,14 +27,20 @@ export function EditBar() {
     const edits: Record<string, { value: string; default: string }> = {};
     document.querySelectorAll<HTMLElement>("[data-edit-id]").forEach((el) => {
       const key = el.getAttribute("data-edit-id");
-      if (key) {
-        // Text regions carry their value as innerText; non-text controls (e.g.
-        // the image-size picker) expose it via data-edit-value.
-        const raw = el.getAttribute("data-edit-value");
-        edits[key] = {
-          value: (raw !== null ? raw : el.innerText).trim(),
-          default: el.getAttribute("data-edit-default") ?? "",
-        };
+      if (!key) return;
+      // Text regions carry their value as innerText; non-text controls (e.g.
+      // the image-size picker) expose it via data-edit-value.
+      const raw = el.getAttribute("data-edit-value");
+      const value = (raw !== null ? raw : el.innerText).trim();
+      const dflt = el.getAttribute("data-edit-default") ?? "";
+      // Some regions exist twice on a page (a project listed under selected
+      // works AND its section carries twin editables/rows). When duplicates
+      // disagree, keep the copy that CHANGED from the saved state, so editing
+      // either twin wins over the untouched one.
+      const current = (editableText[key] ?? dflt).trim();
+      const prev = edits[key];
+      if (!prev || value !== current) {
+        edits[key] = { value, default: dflt };
       }
     });
     setStatus("saving…");
