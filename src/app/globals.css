@@ -215,6 +215,17 @@ button {
 }
 .image-row.size-m { max-height: 210px; }
 .image-row.size-l { max-height: 340px; }
+/* Edit mode: no clipping, every photo wraps into view so the whole row can
+   be reordered, resized, and hidden without anything being out of reach. */
+.image-row.row-editing,
+.image-row.row-editing.size-m,
+.image-row.row-editing.size-l {
+  max-height: none;
+  overflow: visible;
+  row-gap: 1em;
+  outline: 1px dashed var(--soft);
+  outline-offset: 4px;
+}
 /* Break the strip out of the reading column so it can spread ~2/3 across. */
 @media (min-width: 901px) {
   .image-row { width: 66vw; max-width: 92vw; }

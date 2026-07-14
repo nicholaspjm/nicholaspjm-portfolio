@@ -181,7 +181,7 @@ export function ImageRow({
       )}
       <div
         ref={ref}
-        className={`image-row${cls}${oneOnMobile ? " one-mobile" : ""}`}
+        className={`image-row${cls}${oneOnMobile ? " one-mobile" : ""}${resizable ? " row-editing" : ""}`}
       >
         {ordered.map((img, i) => {
           const alt = img.alt ?? img.caption ?? title;
