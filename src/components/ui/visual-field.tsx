@@ -99,9 +99,9 @@ export function VisualField({ items }: { items: VisualItem[] }) {
         const it = items[idx];
         const k = keyOf(it);
         const isHidden = hidden.has(k);
-        // The live build drops hidden items entirely; localhost keeps them
-        // visible (dimmed + marked) so you can see and change what's hidden.
-        if (isHidden && !isEditorEnabled) return null;
+        // Hidden items only render while edit mode is on (dimmed + marked,
+        // with the toggle). Otherwise the page shows exactly what live shows.
+        if (isHidden && !editing) return null;
 
         const cls = `vblob${isHidden ? " vblob-hidden" : ""}`;
         const inner = (

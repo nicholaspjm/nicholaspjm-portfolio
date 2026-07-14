@@ -187,9 +187,9 @@ export function ImageRow({
           const alt = img.alt ?? img.caption ?? title;
           const ik = itemKey(img);
           const isHidden = hidden.has(ik);
-          // Live build drops hidden items; localhost keeps them visible
-          // (dimmed + marked) so what's hidden stays obvious while working.
-          if (isHidden && !isEditorEnabled) return null;
+          // Hidden items only render while edit mode is on (dimmed + marked,
+          // with the toggle). Otherwise the page shows exactly what live shows.
+          if (isHidden && !resizable) return null;
           // Index-qualified: two works can share a file (e.g. a feature that
           // reuses another project's photos), so the path alone can collide.
           const key = `${img.src ?? img.video ?? img.youtube ?? ""}-${i}`;
@@ -246,7 +246,6 @@ export function ImageRow({
           }
           return (
             <figure key={key} className={figCls}>
-              {isHidden && <span className="im-hiddenmark">hidden on live</span>}
               {slug ? (
                 <Link
                   href={`/work/${slug}`}
