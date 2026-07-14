@@ -182,6 +182,7 @@ button.btn-hot:hover {
   text-transform: uppercase;
   letter-spacing: 0.09em;
   font-size: 12px;
+  font-weight: bold;
 }
 
 /* Project titles — blue highlighter swipe */

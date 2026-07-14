@@ -342,10 +342,8 @@ export default function Home() {
         ))}
       </ul>
 
-      <NoiseRule char="/" />
-
-      {/* TEACHING ---------------------------------------------------------- */}
-      <p>
+      {/* TEACHING (no dividers from here down; bold headings separate) ---- */}
+      <p style={{ marginTop: "2.2em" }}>
         <Editable id="label.teaching" as="span" className="static-label">
           teaching and talks
         </Editable>{" "}
@@ -387,10 +385,8 @@ export default function Home() {
       </ul>
       <SeeMore href="/cv" />
 
-      <NoiseRule />
-
       {/* AWARDS ------------------------------------------------------------ */}
-      <p>
+      <p style={{ marginTop: "2.2em" }}>
         <Editable id="label.awards" as="span" className="static-label">
           awards
         </Editable>

@@ -64,29 +64,46 @@ export const tools: Tool[] = [
   {
     name: "wiki visualiser",
     summary:
-      "Turns Wikipedia into real-time visual maps from articles, link graphs, and live edits.",
+      "Turns Wikipedia into real-time visual maps from articles, link graphs, and live edits. Co-developed with Steven Croker; download via their Patreon.",
     stack: "TypeScript · WebGL",
-    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+    links: [
+      { href: "https://www.patreon.com/stevencokerfan", label: "patreon" },
+    ],
   },
   {
     name: "datamosh",
     summary:
       "Datamoshing as an instrument. Compression-artifact glitching made controllable and performable.",
     stack: "TouchDesigner · GLSL",
-    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+    links: [
+      {
+        href: "https://www.patreon.com/PJCreations/posts/free-datamosh-150619699",
+        label: "patreon",
+      },
+    ],
   },
   {
     name: "palette chooser",
     summary:
       "Real-time palette extraction using k-means colour analysis, turning any image or live feed into usable swatch palettes.",
     stack: "TouchDesigner · Python",
-    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+    links: [
+      {
+        href: "https://www.patreon.com/PJCreations/posts/touchdesigner-161131590",
+        label: "patreon",
+      },
+    ],
   },
   {
     name: "TD-Notes-Tools",
     summary:
       "Two external .tox note panels for TouchDesigner: a notebook and a sticky canvas that link to and jump to nodes.",
     stack: "TouchDesigner · Python",
-    links: [{ href: "https://github.com/nicholaspjm", label: "github" }],
+    links: [
+      {
+        href: "https://www.patreon.com/PJCreations/posts/free-notes-tool-160785727",
+        label: "patreon",
+      },
+    ],
   },
 ];
