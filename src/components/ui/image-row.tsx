@@ -146,7 +146,10 @@ export function ImageRow({
     );
     vids.forEach((v) => io.observe(v));
     return () => io.disconnect();
-  }, [images, size]);
+    // Re-observe whenever the rendered media elements can have been replaced
+    // (edit-mode toggles remount them; with preload="none" an unobserved clip
+    // never loads a frame and shows as a black box).
+  }, [images, size, editMode, order, hidden]);
 
   if (images.length === 0) return null;
 

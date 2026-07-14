@@ -100,7 +100,8 @@ export function ProjectGallery({
     );
     vids.forEach((v) => io.observe(v));
     return () => io.disconnect();
-  }, [items]);
+    // Re-observe when edit mode toggles in case media elements remount.
+  }, [items, editMode]);
 
   if (items.length === 0) return null;
 

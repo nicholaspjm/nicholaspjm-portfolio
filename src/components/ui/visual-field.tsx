@@ -86,7 +86,9 @@ export function VisualField({ items }: { items: VisualItem[] }) {
     );
     vids.forEach((v) => io.observe(v));
     return () => io.disconnect();
-  }, [order, hidden]);
+    // editMode swaps frames between links and editable divs, remounting the
+    // clips; re-observe so preload="none" videos still get played.
+  }, [order, hidden, editMode]);
 
   if (!order) return null;
 
