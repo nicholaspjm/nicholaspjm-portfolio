@@ -178,7 +178,7 @@ button.btn-hot:hover {
    sections whose rows you can actually click into. */
 .static-label {
   background: none !important;
-  color: var(--soft) !important;
+  color: var(--ink) !important;
   text-transform: uppercase;
   letter-spacing: 0.09em;
   font-size: 12px;
@@ -264,19 +264,27 @@ button {
   color: #fff;
   text-transform: uppercase;
 }
-.img-hide {
+.img-ctl {
   position: absolute;
   left: 0;
   bottom: 0;
   z-index: 2;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  line-height: 1;
+  background: rgba(0, 0, 0, 0.72);
+}
+.img-ctl button {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  padding: 1px 8px;
+  padding: 1px 6px;
   border: 0;
-  background: var(--ink);
-  color: var(--bg);
+  background: #fff;
+  color: #000;
   cursor: pointer;
 }
+.img-ctl button:disabled { opacity: 0.3; cursor: default; }
 
 /* Muted autoplay video embed, sized like an image in the row. */
 .image-module .yt {

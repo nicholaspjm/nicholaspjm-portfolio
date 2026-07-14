@@ -90,6 +90,36 @@ export function ImageRow({
       return next;
     });
 
+  // Per-image ordering, saved as roworder.<resizeId>: a comma list of item
+  // keys. Saved keys come first; anything new in the folder appends after.
+  const naturalOrder = images.map(itemKey).join(",");
+  const [order, setOrder] = useState<string[]>(() => {
+    const saved = (resizeId ? (editableText[`roworder.${resizeId}`] ?? "") : "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const known = new Set(images.map(itemKey));
+    const out = saved.filter((k) => known.has(k));
+    for (const im of images) {
+      const k = itemKey(im);
+      if (!out.includes(k)) out.push(k);
+    }
+    return out;
+  });
+  const move = (k: string, d: number) =>
+    setOrder((prev) => {
+      const i = prev.indexOf(k);
+      const j = i + d;
+      if (i < 0 || j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+  const byKey = new Map(images.map((im) => [itemKey(im), im]));
+  const ordered = order
+    .map((k) => byKey.get(k))
+    .filter((im): im is RowImage => Boolean(im));
+
   // Play gallery videos only while actually visible on screen. Clips clipped
   // away below the row's max-height never intersect, so they stay paused.
   useEffect(() => {
@@ -141,13 +171,19 @@ export function ImageRow({
             data-edit-value={[...hidden].sort().join(",")}
             hidden
           />
+          <span
+            data-edit-id={`roworder.${resizeId}`}
+            data-edit-default={naturalOrder}
+            data-edit-value={order.join(",")}
+            hidden
+          />
         </div>
       )}
       <div
         ref={ref}
         className={`image-row${cls}${oneOnMobile ? " one-mobile" : ""}`}
       >
-        {images.map((img, i) => {
+        {ordered.map((img, i) => {
           const alt = img.alt ?? img.caption ?? title;
           const ik = itemKey(img);
           const isHidden = hidden.has(ik);
@@ -184,15 +220,27 @@ export function ImageRow({
             <img src={asset(img.src)} alt={alt} />
           ) : null;
           const figCls = `image-module${isHidden ? " im-hidden" : ""}`;
-          // Edit mode: unlinked, with a per-image hide/show toggle.
+          // Edit mode: unlinked, with reorder arrows + a hide/show toggle.
           if (resizable) {
             return (
               <figure key={key} className={figCls}>
                 {media}
                 {isHidden && <span className="im-hiddenmark">hidden on live</span>}
-                <button className="img-hide" onClick={() => toggleHide(ik)}>
-                  {isHidden ? "show" : "hide"}
-                </button>
+                <div className="img-ctl">
+                  <button onClick={() => move(ik, -1)} disabled={i === 0} title="Move left">
+                    ◀
+                  </button>
+                  <button onClick={() => toggleHide(ik)}>
+                    {isHidden ? "show" : "hide"}
+                  </button>
+                  <button
+                    onClick={() => move(ik, 1)}
+                    disabled={i === ordered.length - 1}
+                    title="Move right"
+                  >
+                    ▶
+                  </button>
+                </div>
               </figure>
             );
           }
