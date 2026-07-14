@@ -34,10 +34,10 @@ export const structure: {
       "title": "Cheahdx Purespace",
       "text": null
     },
-    "for-the-cause": {
+    "for-the-cause-25": {
       "section": "commissioned",
       "hidden": false,
-      "title": "For The Cause",
+      "title": "For The Cause 25",
       "text": null
     },
     "odetari-dont-die": {

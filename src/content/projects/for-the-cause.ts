@@ -1,8 +1,8 @@
 import type { Project } from "@/types/content";
 
 export const project: Project = {
-  slug: "for-the-cause",
-  title: "For The Cause",
+  slug: "for-the-cause-25",
+  title: "For The Cause 2025",
   section: "installation",
   year: "2025",
   weight: 0.75,
@@ -12,7 +12,7 @@ export const project: Project = {
   categories: ["Festival", "Live Visuals"],
   tags: ["TouchDesigner", "GLSL"],
   images: [
-    { src: "/images/projects/for-the-cause/01.jpg", caption: "For The Cause, Boonwurrung Country" },
+    { src: "/images/projects/for-the-cause-25/01.jpg", caption: "For The Cause, Boonwurrung Country" },
   ],
   blocks: [
     {
@@ -30,20 +30,20 @@ export const project: Project = {
     },
     {
       kind: "video",
-      src: "/videos/projects/for-the-cause/01.mov",
+      src: "/videos/projects/for-the-cause-25/01.mov",
       ratio: "16/9",
       caption: "Main-stage visual",
     },
     {
       kind: "video",
-      src: "/videos/projects/for-the-cause/02.mov",
+      src: "/videos/projects/for-the-cause-25/02.mov",
       ratio: "16/9",
       autoplay: false,
       caption: "Evolving GLSL fractal",
     },
     {
       kind: "video",
-      src: "/videos/projects/for-the-cause/05.mov",
+      src: "/videos/projects/for-the-cause-25/05.mov",
       ratio: "16/9",
       autoplay: false,
     },
