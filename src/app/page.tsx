@@ -8,7 +8,13 @@ import {
 import { selectedWorks } from "@/content/selected";
 import { performances, awards, press, education } from "@/content/cv";
 import { tools } from "@/content/tools";
-import { toolImages } from "@/content/project-images";
+import * as media from "@/content/project-images";
+
+// Tolerant read: project-images.ts is generated, and during a git pull with
+// the dev server running it can momentarily be an older version without this
+// export. Degrade to "no tool photos" instead of crashing the page.
+const toolImages: Record<string, string[]> =
+  (media as { toolImages?: Record<string, string[]> }).toolImages ?? {};
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
