@@ -42,6 +42,15 @@ function SectionFoot({ id, children }: { id: string; children: string }) {
   );
 }
 
+/** "see more" pointer at the end of a section, to the full list view. */
+function SeeMore({ href = "/work" }: { href?: string }) {
+  return (
+    <p className="see-more">
+      <Link href={href}>see more →</Link>
+    </p>
+  );
+}
+
 /** A project entry — the whole block is a link to the project. */
 function ProjectBlock({
   p,
@@ -207,6 +216,7 @@ export default function Home() {
           total={selected.length}
         />
       ))}
+      <SeeMore />
 
       <NoiseRule />
 
@@ -229,6 +239,7 @@ export default function Home() {
         Further commissions and collaborations include work with MTLA Studio,
         1080p Studios, Phase 3 Concepts, and Lyrical Lemonade.
       </SectionFoot>
+      <SeeMore />
 
       <NoiseRule />
 
@@ -279,15 +290,22 @@ export default function Home() {
         Work has also been presented at Concordia, Pythia, Atmos, Thread, Step
         Count, Mach1, 1800Play, TOPIA, Ode, and Order Up.
       </SectionFoot>
+      <SeeMore />
 
       <NoiseRule char="/" />
 
-      {/* SKETCHES --------------------------------------------------------- */}
+      {/* PERSONAL EXPLORATIONS -------------------------------------------- */}
       <p>
         <Editable id="label.sketches" as="span" className="static-label">
-          sketches
+          personal explorations
         </Editable>{" "}
         <span className="pathnote">~/practice/fun</span>
+      </p>
+      <p style={{ marginTop: "0.4em" }}>
+        <Editable id="explorations.list" as="span">
+          Autumn Contemplations, Woven Touch, Hybrid 2.0 …
+        </Editable>{" "}
+        <Link href="/sketches">see all →</Link>
       </p>
 
       <NoiseRule />
@@ -325,48 +343,45 @@ export default function Home() {
       {/* TEACHING ---------------------------------------------------------- */}
       <p>
         <Editable id="label.teaching" as="span" className="static-label">
-          teaching
+          teaching and talks
         </Editable>{" "}
         <span className="pathnote">~/practice/teaching</span>
         <NavButton href="https://youtube.com/@nicholaspjm" external>
           youtube
         </NavButton>
       </p>
+      <p style={{ marginTop: "0.4em", maxWidth: "56ch" }}>
+        <Editable id="teaching.intro" as="span">
+          Sharing real-time techniques openly is part of the practice: I try to
+          keep teaching accessible and not-for-profit, and I am always keen to
+          speak and teach more.
+        </Editable>{" "}
+        <a href={`mailto:${site.email}`}>Get in touch</a>.
+      </p>
       <ul>
         <li>
-          <Editable id="teaching.b1" as="span">
-            Co-founded Touch Collective, running TouchDesigner workshops, artist
-            talks, and live visual events in Naarm / Melbourne.
+          <Editable id="teaching.b2" as="span">
+            Technical TouchDesigner tutorials published on YouTube.
           </Editable>
         </li>
         <li>
-          <Editable id="teaching.b2" as="span">
-            Technical tutorials published on YouTube.
+          <Editable id="teaching.b1" as="span">
+            Touch Collective, co-founder: workshops, artist talks, and live
+            visual events in Naarm / Melbourne.
           </Editable>
         </li>
         <li>
           <Editable id="teaching.b3" as="span">
-            Recent speaking includes Creative Technology Melbourne.
+            Speaker, Creative Technology Melbourne.
           </Editable>
         </li>
         <li>
-          <Editable id="teaching.b4" as="span">
-            I try to keep this not-for-profit, and would love to speak and teach
-            more.
+          <Editable id="teaching.b7" as="span">
+            Workshop, Melbourne Fringe Festival (2025).
           </Editable>
-        </li>
-        <li>
-          <Editable id="teaching.b5" as="span">
-            Private tutoring and consultation also available.
-          </Editable>
-        </li>
-        <li>
-          <Editable id="teaching.b6" as="span">
-            Available for workshops and talks,
-          </Editable>{" "}
-          <a href={`mailto:${site.email}`}>get in touch</a>.
         </li>
       </ul>
+      <SeeMore href="/cv" />
 
       <NoiseRule />
 

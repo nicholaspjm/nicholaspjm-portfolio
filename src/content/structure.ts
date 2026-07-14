@@ -24,7 +24,7 @@ export const structure: {
     "a3-festival",
     "nike-air-liquid-max",
     "abstracted-organica",
-    "for-the-cause",
+    "for-the-cause-2026",
     "through-the-looking-glass-chadstone"
   ],
   "entries": {
@@ -32,6 +32,12 @@ export const structure: {
       "section": "commissioned",
       "hidden": false,
       "title": "Cheahdx Purespace",
+      "text": null
+    },
+    "for-the-cause": {
+      "section": "commissioned",
+      "hidden": false,
+      "title": "For The Cause",
       "text": null
     },
     "odetari-dont-die": {
@@ -136,10 +142,10 @@ export const structure: {
       "title": "Abstracted Organica",
       "text": null
     },
-    "for-the-cause": {
+    "for-the-cause-2026": {
       "section": null,
       "hidden": false,
-      "title": "For The Cause",
+      "title": "For The Cause 2026",
       "text": null
     },
     "through-the-looking-glass-chadstone": {

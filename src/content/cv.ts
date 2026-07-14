@@ -131,6 +131,11 @@ export const teaching: CVEntry[] = [
     detail: "Talk on real-time visual systems.",
   },
   {
+    year: "2025",
+    title: "Workshop, Melbourne Fringe Festival",
+    detail: "TouchDesigner workshop.",
+  },
+  {
     year: "",
     title: "YouTube (@nicholaspjm)",
     detail:

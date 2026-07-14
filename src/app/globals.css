@@ -139,6 +139,13 @@ button.btn-hot:hover {
   button.btn-hot { animation: none; }
 }
 
+/* "see more" pointer at the end of a section. */
+.see-more {
+  margin: 0.5em 0 0.2em;
+  font-size: 12px;
+}
+.see-more a { color: var(--link); }
+
 /* Quiet closing line under a section: extra credits + pointer to the CV. */
 .section-foot {
   margin: 1em 0 0.4em;
@@ -633,6 +640,13 @@ html::-webkit-scrollbar {
 /* ---------------------------------------------------------------------------
    CORECORE noise
    ------------------------------------------------------------------------ */
+/* Simple hairline section divider (replaced the corecore noise strips). */
+.rule-line {
+  border: 0;
+  border-top: 1px solid var(--soft);
+  margin: 1.8em 0 1.2em 0;
+}
+
 .noise {
   overflow: hidden;
   white-space: nowrap;

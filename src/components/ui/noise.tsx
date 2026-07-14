@@ -1,11 +1,12 @@
 /**
- * Corecore noise furniture — server components, zero JS.
- * NoiseRule: a &&&&& divider line, like the book's section breaks.
+ * Section furniture — server components, zero JS.
+ * NoiseRule: a plain hairline divider (the char prop is kept for call-site
+ * compatibility but no longer rendered).
  * BinaryLine: a faint binary string; pass text to encode it for real.
  */
 
-export function NoiseRule({ char = "&" }: { char?: string }) {
-  return <div className="noise">{char.repeat(400)}</div>;
+export function NoiseRule({ char: _char = "&" }: { char?: string }) {
+  return <hr className="rule-line" />;
 }
 
 export function BinaryLine({ text }: { text: string }) {
