@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { ytEmbed } from "@/lib/yt";
@@ -8,8 +8,10 @@ import { editableText } from "@/content/editable-text";
 import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 
 export interface VisualItem {
-  /** Image path under /public. Omit when `youtube` is set. */
+  /** Image path under /public. Omit when `video` or `youtube` is set. */
   src?: string;
+  /** Local clip path; renders a muted, in-view autoplay video in the frame. */
+  video?: string;
   /** YouTube video id; renders a muted autoplay embed in the frame instead. */
   youtube?: string;
   start?: number;
@@ -18,8 +20,8 @@ export interface VisualItem {
   year: string;
 }
 
-/** Stable identity for an item: the image path or the video id. */
-const keyOf = (it: VisualItem) => it.src ?? it.youtube ?? "";
+/** Stable identity for an item: the media path or the video id. */
+const keyOf = (it: VisualItem) => it.src ?? it.video ?? it.youtube ?? "";
 
 /** Parse the saved comma-separated hidden list. */
 function initialHidden(): Set<string> {
@@ -43,6 +45,7 @@ function initialHidden(): Set<string> {
  * mark; the production build drops it entirely.
  */
 export function VisualField({ items }: { items: VisualItem[] }) {
+  const fieldRef = useRef<HTMLDivElement>(null);
   const [order, setOrder] = useState<number[] | null>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
   const [hidden, setHidden] = useState<Set<string>>(initialHidden);
@@ -59,6 +62,26 @@ export function VisualField({ items }: { items: VisualItem[] }) {
     setOrder(idx);
   }, [items]);
 
+  // With every clip on one page, play only what is actually on screen.
+  useEffect(() => {
+    const el = fieldRef.current;
+    if (!el) return;
+    const vids = [...el.querySelectorAll<HTMLVideoElement>("video.vid")];
+    if (vids.length === 0) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) void v.play?.().catch(() => {});
+          else v.pause?.();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    vids.forEach((v) => io.observe(v));
+    return () => io.disconnect();
+  }, [order, hidden]);
+
   if (!order) return null;
 
   const editing = isEditorEnabled && editMode;
@@ -71,7 +94,7 @@ export function VisualField({ items }: { items: VisualItem[] }) {
     });
 
   return (
-    <div className="visual-field">
+    <div className="visual-field" ref={fieldRef}>
       {order.map((idx, n) => {
         const it = items[idx];
         const k = keyOf(it);
@@ -94,6 +117,16 @@ export function VisualField({ items }: { items: VisualItem[] }) {
                 title={it.title}
                 loading="lazy"
                 allow="autoplay; encrypted-media; picture-in-picture"
+              />
+            ) : it.video ? (
+              <video
+                className="vid"
+                src={asset(it.video)}
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label={it.title}
               />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element

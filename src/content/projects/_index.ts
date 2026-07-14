@@ -20,6 +20,9 @@ import { project as cheahdxPurespace } from "./cheahdx-purespace";
 import { project as pitchFarFromGod } from "./pitch-far-from-god";
 import { project as atmosNorlaDome } from "./atmos-norla-dome";
 import { project as threadCongeeClub } from "./thread-congee-club";
+import { project as autumnContemplations } from "./autumn-contemplations";
+import { project as wovenTouch } from "./woven-touch";
+import { project as throughTheLookingGlassChadstone } from "./through-the-looking-glass-chadstone";
 
 export const projects: Project[] = [
   theXxFestivalTour,
@@ -42,4 +45,7 @@ export const projects: Project[] = [
   pitchFarFromGod,
   atmosNorlaDome,
   threadCongeeClub,
+  autumnContemplations,
+  wovenTouch,
+  throughTheLookingGlassChadstone,
 ];

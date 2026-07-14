@@ -99,6 +99,7 @@ export default function Home() {
     (p) => (p.section ?? "commissioned") === "commissioned",
   );
   const installations = all.filter((p) => p.section === "installation");
+  const explorations = all.filter((p) => p.section === "sketch");
 
   // Curated highlight reel, hand-ordered in src/content/selected.ts.
   const selected = selectedWorks
@@ -296,17 +297,20 @@ export default function Home() {
 
       {/* PERSONAL EXPLORATIONS -------------------------------------------- */}
       <p>
-        <Editable id="label.sketches" as="span" className="static-label">
+        <Editable id="label.sketches" as="span" className="extra">
           personal explorations
         </Editable>{" "}
         <span className="pathnote">~/practice/fun</span>
       </p>
-      <p style={{ marginTop: "0.4em" }}>
-        <Editable id="explorations.list" as="span">
-          Autumn Contemplations, Woven Touch, Hybrid 2.0 …
-        </Editable>{" "}
-        <Link href="/sketches">see all →</Link>
-      </p>
+      {explorations.map((p, i) => (
+        <ProjectBlock
+          key={p.slug}
+          p={p}
+          num={i + 1}
+          total={explorations.length}
+        />
+      ))}
+      <SeeMore />
 
       <NoiseRule />
 

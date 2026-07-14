@@ -57,7 +57,8 @@ function sectionRole(name) {
   if (n === "selected works" || n === "selected") return "selected";
   if (n === "commissions" || n === "commissioned") return "commissioned";
   if (n.startsWith("installation")) return "installation";
-  if (n === "sketches" || n === "sketch") return "sketch";
+  if (n === "sketches" || n === "sketch" || n === "personal explorations")
+    return "sketch";
   if (n === "hidden" || n === "unlisted") return "hidden";
   return null;
 }

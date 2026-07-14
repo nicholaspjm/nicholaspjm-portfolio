@@ -5,7 +5,7 @@ import type { Project } from "@/types/content";
 export const project: Project = {
   slug: "hybrid-2-0",
   title: "Hybrid 2.0",
-  section: "installation",
+  section: "sketch",
   year: "2025",
   weight: 0.75,
   summary:

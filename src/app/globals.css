@@ -875,6 +875,14 @@ html[data-preview] .scatter-field { opacity: 0; }
   background: #000;
   pointer-events: none;
 }
+/* Local clips scatter too, muted, playing only while on screen. */
+.vblob video.vid {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+  pointer-events: none;
+}
 
 /* Hidden-from-live items: dropped by the production build; on localhost they
    stay in place, dimmed and marked, so what's hidden is always visible. */

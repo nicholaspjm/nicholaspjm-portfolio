@@ -100,6 +100,18 @@ export const structure: {
       "title": "Thread Congee Club",
       "text": null
     },
+    "autumn-contemplations": {
+      "section": "sketch",
+      "hidden": false,
+      "title": "Autumn Contemplations",
+      "text": null
+    },
+    "woven-touch": {
+      "section": "sketch",
+      "hidden": false,
+      "title": "Woven Touch",
+      "text": null
+    },
     "the-xx-festival-tour": {
       "section": null,
       "hidden": false,

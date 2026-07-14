@@ -10,11 +10,13 @@ export const metadata: Metadata = {
 };
 
 export default function VisualPage() {
+  // Everything a work carries: photos, gifs, local clips, YouTube embeds.
   const items: VisualItem[] = getListedProjects().flatMap((p) =>
     (p.images ?? [])
-      .filter((img) => img.src || img.youtube) // photos + YouTube embeds
+      .filter((img) => img.src || img.video || img.youtube)
       .map((img) => ({
         src: img.src,
+        video: img.video,
         youtube: img.youtube,
         start: img.start,
         slug: p.slug,
