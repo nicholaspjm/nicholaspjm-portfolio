@@ -63,6 +63,21 @@ Add a `text.md` to a project folder and its paragraphs (separated by blank
 lines) become the page's body text, replacing what the code defines. The
 first paragraph renders as the lead.
 
+## The CV
+
+The CV lives at `content/cv.csv`, a plain spreadsheet. Open it in Excel,
+Numbers, or Google Sheets, edit the rows, and save it back to the same
+place (if you export from Google Sheets, download as CSV and replace the
+file). Then `npm run scan-images` (or restart dev / push) and the site
+updates.
+
+Columns: `section` (performance, award, press, teaching, education),
+`year` (blank for ongoing items), `title`, `detail`, and optionally
+`link_href` + `link_label` for an external link. Rows keep their file
+order on the site. Add rows, delete rows, reorder freely; project rows on
+the /cv sheet come from the work pages automatically and are not in this
+file.
+
 ## Tool photos
 
 The public tools each have a folder too, under `content/tools/` (for example

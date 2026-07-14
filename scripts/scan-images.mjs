@@ -278,6 +278,108 @@ for (const d of dirs(toolImagesOut)) {
   if (!toolSlugs.has(d)) rmSync(join(toolImagesOut, d), { recursive: true, force: true });
 }
 
+// --- CV: content/cv.csv -> src/content/cv-data.ts ---------------------------
+// The CV is edited as a spreadsheet: open content/cv.csv in Excel / Numbers /
+// Sheets, change rows, save it back. Columns:
+//   section (performance|award|press|teaching|education), year, title,
+//   detail, link_href, link_label
+// Rows keep their file order on the site.
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQ = false;
+  const s = text.replace(/^﻿/, ""); // strip Excel's UTF-8 BOM
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (inQ) {
+      if (c === '"') {
+        if (s[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else inQ = false;
+      } else field += c;
+    } else if (c === '"') {
+      inQ = true;
+    } else if (c === ",") {
+      row.push(field);
+      field = "";
+    } else if (c === "\n" || c === "\r") {
+      if (c === "\r" && s[i + 1] === "\n") i++;
+      row.push(field);
+      if (row.some((f) => f.trim() !== "")) rows.push(row);
+      row = [];
+      field = "";
+    } else field += c;
+  }
+  row.push(field);
+  if (row.some((f) => f.trim() !== "")) rows.push(row);
+  return rows;
+}
+
+const cvCsvPath = resolve(root, "content/cv.csv");
+let cvRows = 0;
+if (existsSync(cvCsvPath)) {
+  const rows = parseCsv(readFileSync(cvCsvPath, "utf8"));
+  const header = rows.shift()?.map((h) => h.trim().toLowerCase()) ?? [];
+  const col = (name) => header.indexOf(name);
+  const iSection = col("section");
+  const iYear = col("year");
+  const iTitle = col("title");
+  const iDetail = col("detail");
+  const iHref = col("link_href");
+  const iLabel = col("link_label");
+  const buckets = {
+    performance: [],
+    award: [],
+    press: [],
+    teaching: [],
+    education: [],
+  };
+  for (const r of rows) {
+    const raw = (r[iSection] ?? "").trim().toLowerCase();
+    // accept plural forms ("performances") but keep "press" intact
+    const section = buckets[raw] ? raw : raw.replace(/s$/, "");
+    const bucket = buckets[section];
+    if (!bucket) {
+      console.warn(`scan-images: cv.csv row with unknown section "${r[iSection]}" skipped`);
+      continue;
+    }
+    const title = (r[iTitle] ?? "").trim();
+    if (!title) continue;
+    const entry = { year: (r[iYear] ?? "").trim(), title };
+    const detail = (r[iDetail] ?? "").trim();
+    if (detail) entry.detail = detail;
+    const href = (r[iHref] ?? "").trim();
+    if (href) entry.link = { href, label: (r[iLabel] ?? "link").trim() || "link" };
+    bucket.push(entry);
+    cvRows++;
+  }
+  writeFileSync(
+    resolve(root, "src/content/cv-data.ts"),
+    `// AUTO-GENERATED from content/cv.csv by scripts/scan-images.mjs — edit the CSV.
+export interface CVEntry {
+  year: string;
+  title: string;
+  detail?: string;
+  link?: { href: string; label: string };
+}
+
+export const performances: CVEntry[] = ${JSON.stringify(buckets.performance, null, 2)};
+
+export const awards: CVEntry[] = ${JSON.stringify(buckets.award, null, 2)};
+
+export const press: CVEntry[] = ${JSON.stringify(buckets.press, null, 2)};
+
+export const teaching: CVEntry[] = ${JSON.stringify(buckets.teaching, null, 2)};
+
+export const education: CVEntry[] = ${JSON.stringify(buckets.education, null, 2)};
+`,
+  );
+} else {
+  console.warn("scan-images: content/cv.csv missing; keeping existing cv data");
+}
+
 // --- media manifests --------------------------------------------------------
 function scanMedia(base, re, urlBase) {
   const out = {};
