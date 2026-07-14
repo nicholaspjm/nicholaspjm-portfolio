@@ -57,6 +57,13 @@ Add a `text.md` to a project folder and its paragraphs (separated by blank
 lines) become the page's body text, replacing what the code defines. The
 first paragraph renders as the lead.
 
+## Tool photos
+
+The public tools each have a folder too, under `content/tools/` (for example
+`content/tools/woven-touch/`). Drop images in and they show as a row under
+that tool on the homepage, with the same size / reorder / hide controls as
+project rows.
+
 ## Video
 
 Drop clips (`.mov .mp4 .webm`) into the project folder, then:

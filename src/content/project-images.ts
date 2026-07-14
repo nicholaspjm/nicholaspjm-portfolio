@@ -101,3 +101,5 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/thread-congee-club/tdmovieout-82-1.mp4"
   ]
 };
+
+export const toolImages: Record<string, string[]> = {};

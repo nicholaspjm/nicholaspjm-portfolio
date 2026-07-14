@@ -41,6 +41,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
 const contentRoot = resolve(root, "content");
 const imagesOut = resolve(root, "public/images/projects");
+const toolImagesOut = resolve(root, "public/images/tools");
 const videosRoot = resolve(root, "public/videos/projects");
 
 const IMAGE_RE = /\.(jpe?g|png|webp|gif|avif)$/i;
@@ -60,6 +61,7 @@ function sectionRole(name) {
   if (n === "sketches" || n === "sketch" || n === "personal explorations")
     return "sketch";
   if (n === "hidden" || n === "unlisted") return "hidden";
+  if (n === "tools") return "tools"; // handled separately, not a project section
   return null;
 }
 
@@ -103,6 +105,7 @@ for (const sectionDir of dirs(contentRoot).sort(natural)) {
     console.warn(`scan-images: skipping unknown section folder "${sectionDir}"`);
     continue;
   }
+  if (role === "tools") continue; // tool photos, synced separately below
   for (const projDir of dirs(join(contentRoot, sectionDir)).sort(natural)) {
     const slug = projDir.replace(PREFIX_RE, "").trim();
     if (!slug) continue;
@@ -169,6 +172,44 @@ for (const d of dirs(imagesOut)) {
   if (!entries[d]) rmSync(join(imagesOut, d), { recursive: true, force: true });
 }
 
+// --- sync tool photos: content/tools/<tool>/ -> public/images/tools --------
+const toolSlugs = new Set();
+mkdirSync(toolImagesOut, { recursive: true });
+for (const sectionDir of dirs(contentRoot)) {
+  if (sectionRole(sectionDir) !== "tools") continue;
+  for (const tool of dirs(join(contentRoot, sectionDir)).sort(natural)) {
+    const slug = tool.replace(PREFIX_RE, "").trim();
+    if (!slug) continue;
+    toolSlugs.add(slug);
+    const srcDir = join(contentRoot, sectionDir, tool);
+    const srcImgs = files(srcDir).filter(
+      (f) => IMAGE_RE.test(f) && !f.startsWith("."),
+    );
+    const outDir = join(toolImagesOut, slug);
+    mkdirSync(outDir, { recursive: true });
+    for (const f of srcImgs) {
+      const src = join(srcDir, f);
+      const dst = join(outDir, f);
+      let same = false;
+      try {
+        same = statSync(dst).size === statSync(src).size;
+      } catch {
+        /* missing */
+      }
+      if (!same) {
+        copyFileSync(src, dst);
+        copied++;
+      }
+    }
+    for (const f of files(outDir)) {
+      if (!srcImgs.includes(f)) rmSync(join(outDir, f), { force: true });
+    }
+  }
+}
+for (const d of dirs(toolImagesOut)) {
+  if (!toolSlugs.has(d)) rmSync(join(toolImagesOut, d), { recursive: true, force: true });
+}
+
 // --- media manifests (same shape as before) --------------------------------
 function scanMedia(base, re, urlBase) {
   const out = {};
@@ -182,6 +223,7 @@ function scanMedia(base, re, urlBase) {
 }
 const images = scanMedia(imagesOut, IMAGE_RE, "/images/projects");
 const videos = scanMedia(videosRoot, VIDEO_RE, "/videos/projects");
+const toolImages = scanMedia(toolImagesOut, IMAGE_RE, "/images/tools");
 
 // --- emit ---------------------------------------------------------------
 writeFileSync(
@@ -190,6 +232,8 @@ writeFileSync(
 export const projectImages: Record<string, string[]> = ${JSON.stringify(images, null, 2)};
 
 export const projectVideos: Record<string, string[]> = ${JSON.stringify(videos, null, 2)};
+
+export const toolImages: Record<string, string[]> = ${JSON.stringify(toolImages, null, 2)};
 `,
 );
 

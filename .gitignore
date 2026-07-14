@@ -45,9 +45,11 @@ next-env.d.ts
 # (pitch-far-from-god, atmos-norla-dome, thread-congee-club); their committed
 # media is the web-ready images + .mp4 clips.
 
-# public/images/projects is GENERATED: scripts/scan-images.mjs fills it from
-# the content/ tree before every dev/build. The tree is the committed source.
+# public/images/projects and /tools are GENERATED: scripts/scan-images.mjs
+# fills them from the content/ tree before every dev/build. The tree is the
+# committed source.
 /public/images/projects/
+/public/images/tools/
 
 # Source videos don't play in-browser. They are transcoded to web .mp4 by
 # scripts/convert-videos.mjs; only those .mp4 outputs (in public/videos) are

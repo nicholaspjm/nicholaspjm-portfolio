@@ -61,6 +61,7 @@ const dirs = (p) => {
 };
 const projects = [];
 for (const section of dirs(contentRoot)) {
+  if (section.toLowerCase() === "tools") continue; // photos only there
   for (const projDir of dirs(join(contentRoot, section))) {
     const slug = projDir.replace(/^\d+[\s._-]+/, "").trim();
     if (slug) projects.push({ slug, srcDir: join(contentRoot, section, projDir) });

@@ -8,6 +8,7 @@ import {
 import { selectedWorks } from "@/content/selected";
 import { performances, awards, press, education } from "@/content/cv";
 import { tools } from "@/content/tools";
+import { toolImages } from "@/content/project-images";
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
@@ -108,18 +109,10 @@ export default function Home() {
 
   const rich = (
     <div className="leftcol">
-      {/* PROMINENT VIEWS: above the nav (the spot you liked) ------------- */}
-      <p style={{ margin: "0.4em 0 0.5em 0" }}>
-        <NavButton href="/visual" className="btn-hot">
-          visual view
-        </NavButton>
-      </p>
-      <p style={{ margin: "0 0 1em 0" }}>
+      {/* TOP NAV: everything in one row of plain buttons ------------------ */}
+      <div style={{ margin: "0.4em 0 1.4em 0" }}>
         <NavButton href="/work">list view</NavButton>
-      </p>
-
-      {/* TOP NAV --------------------------------------------------------- */}
-      <div style={{ margin: "0 0 1.4em 0" }}>
+        <NavButton href="/visual">visual view</NavButton>
         <NavButton href="/cv">CV</NavButton>
         <NavButton href="#tools">tools</NavButton>{" "}
         <InfoSheet>
@@ -322,24 +315,38 @@ export default function Home() {
         <span className="pathnote">~/practice/released</span>
       </p>
       <ul className="tool-list">
-        {tools.map((t, i) => (
-          <li key={t.name}>
-            <ToolEntry
-              href={t.links[0]?.href ?? "#"}
-              prev={JSON.stringify({
-                t: t.name,
-                k: "tool",
-                s: `${t.summary} (${t.stack})`,
-              })}
-              num={i + 1}
-              total={tools.length}
-              name={t.name}
-              summary={t.summary}
-              stack={t.stack}
-              idx={i}
-            />
-          </li>
-        ))}
+        {tools.map((t, i) => {
+          // Photos dropped into content/tools/<slug>/ show under the entry.
+          const tSlug = t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+          const photos = toolImages[tSlug] ?? [];
+          return (
+            <li key={t.name}>
+              <ToolEntry
+                href={t.links[0]?.href ?? "#"}
+                prev={JSON.stringify({
+                  t: t.name,
+                  k: "tool",
+                  s: `${t.summary} (${t.stack})`,
+                })}
+                num={i + 1}
+                total={tools.length}
+                name={t.name}
+                summary={t.summary}
+                stack={t.stack}
+                idx={i}
+              />
+              {photos.length > 0 && (
+                <ImageRow
+                  images={photos.map((src) => ({ src }))}
+                  sizeClass=""
+                  title={t.name}
+                  oneOnMobile
+                  resizeId={`tool-${tSlug}`}
+                />
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       {/* TEACHING (no dividers from here down; bold headings separate) ---- */}
@@ -348,9 +355,6 @@ export default function Home() {
           teaching and talks
         </Editable>{" "}
         <span className="pathnote">~/practice/teaching</span>
-        <NavButton href="https://youtube.com/@nicholaspjm" external>
-          youtube
-        </NavButton>
       </p>
       <p style={{ marginTop: "0.4em", maxWidth: "56ch" }}>
         <Editable id="teaching.intro" as="span">
@@ -360,7 +364,7 @@ export default function Home() {
         </Editable>{" "}
         <a href={`mailto:${site.email}`}>Get in touch</a>.
       </p>
-      <ul>
+      <ul className="info-list">
         <li>
           <Editable id="teaching.b2" as="span">
             Technical TouchDesigner tutorials published on YouTube.
@@ -384,6 +388,11 @@ export default function Home() {
         </li>
       </ul>
       <SeeMore href="/cv" />
+      <p style={{ marginTop: "0.5em" }}>
+        <NavButton href="https://youtube.com/@nicholaspjm" external>
+          youtube
+        </NavButton>
+      </p>
 
       {/* AWARDS ------------------------------------------------------------ */}
       <p style={{ marginTop: "2.2em" }}>
@@ -391,7 +400,7 @@ export default function Home() {
           awards
         </Editable>
       </p>
-      <ul>
+      <ul className="info-list">
         {awards.map((a, i) => (
           <li
             key={`award-${i}`}
@@ -433,7 +442,7 @@ export default function Home() {
           selected press
         </Editable>
       </p>
-      <ul>
+      <ul className="info-list">
         {press.map((p, i) => (
           <li key={`press-${i}`}>
             {p.year && <em>{p.year}. </em>}
@@ -468,7 +477,7 @@ export default function Home() {
           education
         </Editable>
       </p>
-      <ul>
+      <ul className="info-list">
         {education.map((e, i) => (
           <li key={`edu-${i}`}>
             <em>{e.year}.</em>{" "}
