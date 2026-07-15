@@ -81,6 +81,8 @@ export function ProjectGallery({
   }, [slug, images]);
 
   const [items, setItems] = useState<Item[]>(initial);
+  // Only saved when the user actually rearranged or resized something here.
+  const [dirty, setDirty] = useState(false);
 
   // Play clips only while on screen so a page full of video stays light.
   useEffect(() => {
@@ -107,7 +109,8 @@ export function ProjectGallery({
 
   const editing = isEditorEnabled && editMode;
 
-  const move = (i: number, d: number) =>
+  const move = (i: number, d: number) => {
+    setDirty(true);
     setItems((prev) => {
       const j = i + d;
       if (j < 0 || j >= prev.length) return prev;
@@ -115,8 +118,13 @@ export function ProjectGallery({
       [next[i], next[j]] = [next[j], next[i]];
       return next;
     });
-  const resize = (i: number, s: Size) =>
-    setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, size: s } : it)));
+  };
+  const resize = (i: number, s: Size) => {
+    setDirty(true);
+    setItems((prev) =>
+      prev.map((it, idx) => (idx === i ? { ...it, size: s } : it)),
+    );
+  };
 
   const serialized = items.map((it) => `${it.key}:${it.size}`).join(",");
   const defaultSerialized = images
@@ -162,6 +170,12 @@ export function ProjectGallery({
                 data-edit-default=""
                 contentEditable
                 suppressContentEditableWarning
+                onInput={(e) =>
+                  (e.currentTarget as HTMLElement).setAttribute(
+                    "data-edit-dirty",
+                    "1",
+                  )
+                }
               >
                 {cap ?? ""}
               </figcaption>
@@ -199,6 +213,7 @@ export function ProjectGallery({
           data-edit-id={`gallery.${slug}`}
           data-edit-default={defaultSerialized}
           data-edit-value={serialized}
+          data-edit-dirty={dirty ? "1" : undefined}
           hidden
         />
       )}

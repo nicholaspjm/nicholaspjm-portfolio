@@ -218,22 +218,27 @@ export function ImageRow({
               {s}
             </button>
           ))}
+          {/* cfg only exists once the user interacts, so it doubles as the
+              dirty flag: untouched rows are never collected at save time. */}
           <span
             data-edit-id={`imgsize.${resizeId}`}
             data-edit-default={initial}
             data-edit-value={size}
+            data-edit-dirty={cfg ? "1" : undefined}
             hidden
           />
           <span
             data-edit-id={`rowhide.${resizeId}`}
             data-edit-default=""
             data-edit-value={[...hidden].sort().join(",")}
+            data-edit-dirty={cfg ? "1" : undefined}
             hidden
           />
           <span
             data-edit-id={`roworder.${resizeId}`}
             data-edit-default={naturalOrder}
             data-edit-value={order.join(",")}
+            data-edit-dirty={cfg ? "1" : undefined}
             hidden
           />
         </div>

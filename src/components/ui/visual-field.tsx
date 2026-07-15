@@ -55,6 +55,8 @@ export function VisualField({ items }: { items: VisualItem[] }) {
   const [order, setOrder] = useState<number[] | null>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
   const [hidden, setHidden] = useState<Set<string>>(initialHidden);
+  // Only saved when the user actually toggled something on this page.
+  const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     // Reshuffle client-side so the arrangement is random each visit. Runs
@@ -93,13 +95,15 @@ export function VisualField({ items }: { items: VisualItem[] }) {
   if (!order) return null;
 
   const editing = isEditorEnabled && editMode;
-  const toggle = (k: string) =>
+  const toggle = (k: string) => {
+    setDirty(true);
     setHidden((prev) => {
       const next = new Set(prev);
       if (next.has(k)) next.delete(k);
       else next.add(k);
       return next;
     });
+  };
 
   return (
     <div className="visual-field" ref={fieldRef}>
@@ -175,6 +179,7 @@ export function VisualField({ items }: { items: VisualItem[] }) {
           data-edit-id="visual.hidden"
           data-edit-default=""
           data-edit-value={[...hidden].sort().join(",")}
+          data-edit-dirty={dirty ? "1" : undefined}
           hidden
         />
       )}
