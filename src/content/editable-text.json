@@ -1,8 +1,8 @@
 {
-  "intro.line1": "I’m a creative technologist working across audio-reactive visuals, interactive installation, and real-time systems, based in Naarm / Melbourne.",
+  "intro.line1": "I'm an artist based in Naarm / Melbourne, sculpting real-time systems into visual art, interactive art, Audio Visual Performance, Lighting and more. Primarily working, and teaching in Touchdesigner.",
   "about.p1": "Nicholas Marriott is a creative technologist based in Naarm / Melbourne, b. 1999 in Aotearoa New Zealand. He works in real-time systems as a visual designer, performer, and exhibiting artist, across of variety of mediums.",
   "about.p2": "His visuals have featured on major stages and screens, including The xx's 2026 festival tour and a Grammy winning music video for Nine Inch Nails, alongside commercial work for Nike and live performances at festivals including Pitch Music & Arts. His installation work extends these systems into physical space, most recently a large scale reactive light environment for Chadstone. His practice has been profiled in It's Nice That and Rolling Stone.",
-  "now.statement": "Seeking experimentation and collaborative artistic exploration through the use of real-time technology. Please don't hesitate to reach out if this is relevant to you!",
+  "now.statement": "Seeking experimentation and collaborative artistic exploration through the use of real-time technology, especially in performance Please don't hesitate to reach out if this is relevant to you!",
   "label.awards": "AWARDS",
   "label.press": "SELECTED PRESS",
   "label.education": "EDUCATION",
@@ -33,7 +33,7 @@
   "rowhide.hybrid-2-0": "c8200.mp4,img-6191.mp4,img-6277.mp4",
   "roworder.hybrid-2-0": "img-6277.mp4,DSC_8857.jpeg,img-6185.mp4,IMG_6155.JPEG,IMG_6181.JPEG,c8200.mp4,img-6191.mp4,tdmovieout-16.mp4,tdmovieout-8.mp4",
   "rowhide.a3-festival": "img-5336.mp4,img-5439.mp4",
-  "rowhide.for-the-cause-2026": "IMG_1492.JPEG,IMG_9507.JPEG,ftc-30.mp4,img-9585.mp4",
+  "rowhide.for-the-cause-2026": "IMG_1492.JPEG,IMG_9507.JPEG,ftc-30.mp4,img-9585.mp4,img-9653.mp4",
   "visual.intro": "Click to see more about a project.",
   "roworder.for-the-cause-2026": "ftc-30.mp4,IMG_1492.JPEG,IMG_9507.JPEG,img-9632.mp4,img-9624.mp4,img-1522.mp4,img-9585.mp4,img-9637.mp4,img-9653.mp4,img-9654.mp4",
   "imgsize.smokedope2016-2016lyfe": "M",
@@ -44,7 +44,7 @@
   "work.for-the-cause-2026.role": "",
   "imgsize.for-the-cause-25": "L",
   "roworder.for-the-cause-25": "01.jpg,tdmovieout-63-1.mp4,tdmovieout-37-2.mp4,tdmovieout-41-1.mp4,tdmovieout-42-1.mp4,tdmovieout-45-1.mp4,tdmovieout-64.mp4,tdmovieout-69-1.mp4",
-  "imgsize.mach1-festival": "M",
+  "imgsize.mach1-festival": "S",
   "roworder.mach1-festival": "DSCF0525.jpg,01.jpg,02.jpg,03.jpg,DSCF0719.jpg,img-9038.mp4,img-9045.mp4,img-9060.mp4,tdmovieout-25.mp4",
   "rowhide.cat-among-animals": "03.jpg,04.jpg,06.jpg",
   "imgsize.thread-congee-club": "L",
@@ -54,7 +54,8 @@
   "gallery.nike-air-liquid-max": "appear-33-mov.mp4:L,copy-9b0c5501-1b50-4c21-9bc3-7b03d2453258.mp4:L,IMG_0125.JPEG:M,appear-8-mov.mp4:M,appear-38-mov.mp4:M,appear-67-mov.mp4:M",
   "work.live-coding.title": "Live AV with Steve Pan",
   "imgsize.hybrid-2-0": "M",
-  "imgsize.nin-as-alive-as-you-need-me-to-be": "L",
-  "imgsize.abstracted-organica": "L",
-  "imgsize.for-the-cause-2026": "M"
+  "work.hybrid-2-0.summary": "Live audiovisual installation, 640 LEDS, acrylic, aluminium, steel wire. Presented in the Platform Presents group exhibition Hybrid 2.0, Naarm / Melbourne.",
+  "imgsize.its-murph-weightless-tour": "M",
+  "intro.line2": "Recent visual works include the xx (Coachella), Nine Inch Nails MV, itsMurph US Tour, and more.",
+  "availability": "Also available for commissions/visual work, collaborations, teaching, and speaking."
 }

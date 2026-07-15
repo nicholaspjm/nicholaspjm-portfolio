@@ -29,7 +29,7 @@ export default function WorkPage() {
         </Editable>{" "}
         <span className="pathnote">~/practice/live</span>
       </p>
-      <ul>
+      <ul className="perf-list">
         {performances.map((p, i) => (
           <li
             key={`perf-${i}`}
@@ -40,11 +40,10 @@ export default function WorkPage() {
               s: p.detail,
             })}
           >
-            {p.year && <em>{p.year}. </em>}
             <i>{editableText[`perf.${i}.title`] ?? p.title}</i>
-            {p.detail && (
-              <>, {editableText[`perf.${i}.detail`] ?? p.detail}</>
-            )}
+            <br />
+            {p.year && <em>{p.year}. </em>}
+            {p.detail && (editableText[`perf.${i}.detail`] ?? p.detail)}
           </li>
         ))}
       </ul>

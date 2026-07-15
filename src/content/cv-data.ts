@@ -18,21 +18,6 @@ export const performances: CVEntry[] = [
     "detail": "Presented a commissioned work."
   },
   {
-    "year": "2026",
-    "title": "For The Cause",
-    "detail": "Naarm / Melbourne. Visual design and live performance."
-  },
-  {
-    "year": "2025",
-    "title": "For The Cause",
-    "detail": "Naarm / Melbourne. Visual design and live performance."
-  },
-  {
-    "year": "2025",
-    "title": "Hybrid 2.0",
-    "detail": "Live audiovisual performance."
-  },
-  {
     "year": "2025",
     "title": "Platform Presents",
     "detail": "Group exhibition, Naarm / Melbourne."
@@ -40,6 +25,11 @@ export const performances: CVEntry[] = [
   {
     "year": "2025",
     "title": "Reptant",
+    "detail": "Live visual design."
+  },
+  {
+    "year": "2025",
+    "title": "1800Play",
     "detail": "Live visual design."
   },
   {
@@ -56,16 +46,6 @@ export const performances: CVEntry[] = [
     "year": "2025",
     "title": "TESSELATE's TOPIA Festival, Main Stage",
     "detail": "Visual design and live performance."
-  },
-  {
-    "year": "",
-    "title": "Thread",
-    "detail": "Ongoing visual design for the club night."
-  },
-  {
-    "year": "",
-    "title": "Babie Club",
-    "detail": "Ongoing visual design for the club night."
   }
 ];
 

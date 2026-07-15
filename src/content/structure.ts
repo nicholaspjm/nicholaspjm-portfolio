@@ -76,6 +76,12 @@ export const structure: {
       "title": "Forgotten Once Remembered",
       "text": null
     },
+    "handclap-album-launch": {
+      "section": "installation",
+      "hidden": false,
+      "title": "Handclap Album Launch",
+      "text": null
+    },
     "live-coding": {
       "section": "installation",
       "hidden": false,
@@ -86,6 +92,12 @@ export const structure: {
       "section": "installation",
       "hidden": false,
       "title": "Mach1 Festival",
+      "text": null
+    },
+    "nu-saul-williams": {
+      "section": "installation",
+      "hidden": false,
+      "title": "Nu Saul Williams",
       "text": null
     },
     "pitch-far-from-god": {

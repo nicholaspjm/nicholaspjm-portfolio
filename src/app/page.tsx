@@ -58,17 +58,22 @@ function SeeMore({ href = "/work" }: { href?: string }) {
   );
 }
 
-/** A project entry — the whole block is a link to the project. */
+/** A project entry — the whole block is a link to the project.
+ *  `context` scopes the row's saved size/hide/order, so the same work can be
+ *  large under selected works and small (or fully hidden) under its section;
+ *  older un-contexted saves still apply as the shared base. */
 function ProjectBlock({
   p,
   num,
   total,
+  context,
   feature = false,
   showImages = true,
 }: {
   p: Project;
   num: number;
   total: number;
+  context: "selected" | "section";
   feature?: boolean;
   showImages?: boolean;
 }) {
@@ -90,7 +95,8 @@ function ProjectBlock({
           sizeClass={imageSizeClass(p.imageSize)}
           title={p.title}
           oneOnMobile
-          resizeId={p.slug}
+          resizeId={`${context}.${p.slug}`}
+          fallbackResizeId={p.slug}
           rowSlug={p.slug}
           rowPrev={prev(p)}
         />
@@ -210,6 +216,7 @@ export default function Home() {
       {selected.map((p, i) => (
         <ProjectBlock
           key={`sel-${p.slug}`}
+          context="selected"
           p={p}
           num={i + 1}
           total={selected.length}
@@ -229,6 +236,7 @@ export default function Home() {
       {commissioned.map((p, i) => (
         <ProjectBlock
           key={p.slug}
+          context="section"
           p={p}
           num={i + 1}
           total={commissioned.length}
@@ -252,12 +260,14 @@ export default function Home() {
       {installations.map((p, i) => (
         <ProjectBlock
           key={p.slug}
+          context="section"
           p={p}
           num={i + 1}
           total={installations.length}
         />
       ))}
-      <ul>
+      {/* Formatted like the project entries: title line, then year + detail. */}
+      <ul className="perf-list">
         {performances.map((p, i) => (
           <li
             key={`perf-${i}`}
@@ -268,19 +278,17 @@ export default function Home() {
               s: p.detail,
             })}
           >
-            {p.year && <em>{p.year}. </em>}
             <i>
               <Editable id={`perf.${i}.title`} as="span">
                 {p.title}
               </Editable>
             </i>
+            <br />
+            {p.year && <em>{p.year}. </em>}
             {p.detail && (
-              <>
-                {", "}
-                <Editable id={`perf.${i}.detail`} as="span">
-                  {p.detail}
-                </Editable>
-              </>
+              <Editable id={`perf.${i}.detail`} as="span">
+                {p.detail}
+              </Editable>
             )}
           </li>
         ))}
@@ -303,6 +311,7 @@ export default function Home() {
       {explorations.map((p, i) => (
         <ProjectBlock
           key={p.slug}
+          context="section"
           p={p}
           num={i + 1}
           total={explorations.length}

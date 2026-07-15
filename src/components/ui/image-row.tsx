@@ -70,6 +70,7 @@ export function ImageRow({
   title,
   oneOnMobile = false,
   resizeId,
+  fallbackResizeId,
   rowSlug,
   rowPrev,
 }: {
@@ -78,6 +79,10 @@ export function ImageRow({
   title: string;
   oneOnMobile?: boolean;
   resizeId?: string;
+  /** Older, un-contexted key to read saved settings from when the contexted
+   *  resizeId has none saved yet (e.g. "the-xx-festival-tour" behind
+   *  "selected.the-xx-festival-tour"). New saves always write resizeId. */
+  fallbackResizeId?: string;
   /** When every image belongs to one work (e.g. a Selected Works row), the
    *  slug + preview JSON to link and preview to. Per-image slug/prev win. */
   rowSlug?: string;
@@ -85,6 +90,15 @@ export function ImageRow({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
+
+  /** Saved setting for this row: contexted key first, then the legacy one. */
+  const saved = (prefix: string): string | undefined => {
+    if (!resizeId) return undefined;
+    return (
+      editableText[`${prefix}.${resizeId}`] ??
+      (fallbackResizeId ? editableText[`${prefix}.${fallbackResizeId}`] : undefined)
+    );
+  };
 
   // Twin rows of the same work share one config entry (see rowCfgs above).
   const storeKey = resizeId ?? `row:${title}`;
@@ -115,9 +129,7 @@ export function ImageRow({
     : sizeClass.includes("size-m")
       ? "M"
       : "S";
-  const override = resizeId
-    ? (editableText[`imgsize.${resizeId}`] as Size | undefined)
-    : undefined;
+  const override = saved("imgsize") as Size | undefined;
   const size: Size = cfg?.size ?? override ?? initial;
   const cls = SIZE_CLASS[size];
 
@@ -125,7 +137,7 @@ export function ImageRow({
   // on the live build; localhost shows them (dimmed) only in edit mode.
   const hidden = new Set(
     cfg?.hidden ??
-      (resizeId ? (editableText[`rowhide.${resizeId}`] ?? "") : "")
+      (saved("rowhide") ?? "")
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean),
@@ -135,12 +147,12 @@ export function ImageRow({
   // keys. Saved keys come first; anything new in the folder appends after.
   const naturalOrder = images.map(itemKey).join(",");
   const baseOrder = () => {
-    const saved = (resizeId ? (editableText[`roworder.${resizeId}`] ?? "") : "")
+    const savedOrder = (saved("roworder") ?? "")
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
     const known = new Set(images.map(itemKey));
-    const out = saved.filter((k) => known.has(k));
+    const out = savedOrder.filter((k) => known.has(k));
     for (const im of images) {
       const k = itemKey(im);
       if (!out.includes(k)) out.push(k);
@@ -218,6 +230,16 @@ export function ImageRow({
               {s}
             </button>
           ))}
+          <button
+            onClick={() =>
+              writeCfg(storeKey, {
+                ...snapshot(),
+                hidden: hidden.size >= order.length ? [] : [...order],
+              })
+            }
+          >
+            {hidden.size >= order.length ? "show all" : "hide all"}
+          </button>
           {/* cfg only exists once the user interacts, so it doubles as the
               dirty flag: untouched rows are never collected at save time. */}
           <span
