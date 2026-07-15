@@ -6,18 +6,17 @@ import { getEditMode, subscribe } from "@/lib/edit-store";
 import { Editable } from "./editable";
 
 /**
- * A project entry line (number / title / year / summary / role). Normally the
- * whole block is a link to the work; while the content editor is in edit mode
- * it renders as a plain div instead so the title and summary can be clicked and
- * edited without following the link. Title/summary/role are editable and keyed
- * by slug so an edit applies wherever the work is listed.
+ * A project entry line (number / title / year / summary). Normally the whole
+ * block is a link to the work; while the content editor is in edit mode it
+ * renders as a plain div instead so the title and summary can be clicked and
+ * edited without following the link. Title/summary are editable and keyed by
+ * slug so an edit applies wherever the work is listed.
  */
 export function ProjectEntry({
   slug,
   title,
   year,
   summary,
-  role,
   num,
   total,
   feature = false,
@@ -27,7 +26,6 @@ export function ProjectEntry({
   title: string;
   year: string;
   summary: string;
-  role?: string;
   num: number;
   total: number;
   feature?: boolean;
@@ -49,15 +47,6 @@ export function ProjectEntry({
       <Editable id={`work.${slug}.summary`} as="span">
         {summary}
       </Editable>
-      {role && (
-        <>
-          {" "}
-          <Editable id={`work.${slug}.role`} as="span">
-            {role}
-          </Editable>
-          .
-        </>
-      )}
     </>
   );
 

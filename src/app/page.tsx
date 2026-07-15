@@ -79,7 +79,6 @@ function ProjectBlock({
         title={p.title}
         year={p.year}
         summary={p.summary}
-        role={p.role}
         num={num}
         total={total}
         feature={feature}
