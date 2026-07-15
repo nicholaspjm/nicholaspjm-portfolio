@@ -118,12 +118,17 @@ a.extra, .extra {
   line-height: 1.55;
 }
 
-/* Performances: shaped like the project entries (title line, year + detail). */
+/* Performances: shaped like the project entries (bold title line, then
+   year + detail beneath). */
 .perf-list li {
-  margin: 0.9em 0;
+  margin: 1.1em 0;
   line-height: 1.5;
 }
-.perf-list li > i { font-style: italic; }
+.perf-list li > i {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--ink);
+}
 
 /* "see more" pointer at the end of a section. */
 .see-more {
