@@ -69,3 +69,6 @@ next-env.d.ts
 /public/videos/projects/for-the-cause/07.mov
 /public/videos/projects/for-the-cause/08.mov
 /public/videos/projects/for-the-cause/09.mov
+
+# Generated each build by scan-images (last-updated date); not committed.
+/src/content/build-info.ts

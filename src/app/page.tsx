@@ -120,12 +120,11 @@ export default function Home() {
 
   const rich = (
     <div className="leftcol">
-      {/* TOP NAV: everything in one row of plain buttons ------------------ */}
-      <div style={{ margin: "0.4em 0 1.4em 0" }}>
+      {/* TOP NAV: evenly spread row of plain buttons --------------------- */}
+      <div className="topnav">
         <NavButton href="/work">list view</NavButton>
         <NavButton href="/visual">visual view</NavButton>
         <NavButton href="/cv">CV</NavButton>
-        <NavButton href="#tools">tools</NavButton>{" "}
         <InfoSheet>
           <p>
             <Editable id="label.about" as="span" className="extra">
