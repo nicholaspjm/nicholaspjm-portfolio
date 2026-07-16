@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { asset } from "@/lib/asset";
+
+/** Rows/preview render small, so serve the generated thumbnail tier. */
+const thumbOf = (src: string) =>
+  src.startsWith("/images/projects/")
+    ? src.replace("/images/projects/", "/images/thumbs/")
+    : src;
 
 export interface PreviewData {
   t: string; // title
@@ -100,8 +107,10 @@ export function PreviewZone() {
       <h2 className="pv-title">{pv.t}</h2>
       {pv.s && <p className="pv-sum">{pv.s}</p>}
       {pv.img && (
+        // asset() applies the deploy basePath (raw <img src> doesn't get it
+        // automatically), so the preview image loads on the live subpath too.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={pv.img} alt={pv.t} />
+        <img src={asset(thumbOf(pv.img))} alt={pv.t} loading="lazy" />
       )}
     </aside>
   );
