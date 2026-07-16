@@ -67,7 +67,7 @@ export function Readout() {
     <div className="readout" aria-hidden>
       <div className="readout-info">
         <span className="rd-flag">
-          <PalestineFlag /> free palestine
+          <PalestineFlag />
         </span>
         <span>page under construction</span>
         {BUILD_DATE && <span>last updated {BUILD_DATE}</span>}
