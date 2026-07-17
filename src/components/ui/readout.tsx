@@ -69,11 +69,10 @@ export function Readout() {
         <span className="rd-flag">
           <PalestineFlag />
         </span>
-        <span>page under construction</span>
+        <span>website under construction</span>
         {BUILD_DATE && <span>last updated {BUILD_DATE}</span>}
         <span>naarm / melbourne</span>
         <span>-37.81, 144.96</span>
-        <span>built in touchdesigner + next.js</span>
       </div>
       <div className="readout-live">{line}</div>
     </div>

@@ -509,15 +509,13 @@ html::-webkit-scrollbar {
   white-space: pre;
   opacity: 0.8;
 }
-.rd-flag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
 .rd-flag svg {
   width: 16px;
   height: 10px;
   display: block;
+  /* the row is block-level, so push the flag itself to the right edge */
+  margin-left: auto;
+  margin-bottom: 2px;
   box-shadow: 0 0 0 0.5px rgba(128, 128, 128, 0.4);
 }
 @media (max-width: 560px) {
