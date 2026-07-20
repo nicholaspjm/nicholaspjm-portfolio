@@ -72,3 +72,7 @@ next-env.d.ts
 
 # Generated each build by scan-images (last-updated date); not committed.
 /src/content/build-info.ts
+
+# Cloudflare Pages direct-upload package (regenerate: npm run build, then re-zip)
+/cloudflare-upload/
+/nicholaspjm-cloudflare.zip

@@ -57,9 +57,11 @@ const PROCESS_RE = /\.(jpe?g|png)$/i;
 const VIDEO_RE = /\.(mp4|webm)$/i;
 const PREFIX_RE = /^\d+[\s._-]+/; // "01 slug" -> "slug"
 
-const FULL_EDGE = 1920; // max long edge for published images
+// Full tier serves the project detail pages, so it stays generous: near-4K
+// long edge at high quality. Thumbs cover rows / the visual page / previews.
+const FULL_EDGE = 2560; // max long edge for published images
 const THUMB_H = 640; // thumbnail height (rows render at <=340px, 2x retina)
-const FULL_Q = 80;
+const FULL_Q = 86;
 const THUMB_Q = 75;
 
 // sharp is a native dependency; degrade to plain copies if it's unavailable
