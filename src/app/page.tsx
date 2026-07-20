@@ -6,7 +6,7 @@ import {
   imageSizeClass,
 } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
-import { performances, awards, press, education } from "@/content/cv";
+import { performances, awards, press, teaching, education } from "@/content/cv";
 import { tools } from "@/content/tools";
 import * as media from "@/content/project-images";
 
@@ -377,28 +377,41 @@ export default function Home() {
         </Editable>{" "}
         <a href={`mailto:${site.email}`}>Get in touch</a>.
       </p>
-      <ul className="info-list">
-        <li>
-          <Editable id="teaching.b2" as="span">
-            Technical TouchDesigner tutorials published on YouTube.
-          </Editable>
-        </li>
-        <li>
-          <Editable id="teaching.b1" as="span">
-            Touch Collective, co-founder: workshops, artist talks, and live
-            visual events in Naarm / Melbourne.
-          </Editable>
-        </li>
-        <li>
-          <Editable id="teaching.b3" as="span">
-            Speaker, Creative Technology Melbourne.
-          </Editable>
-        </li>
-        <li>
-          <Editable id="teaching.b7" as="span">
-            Workshop, Melbourne Fringe Festival (2025).
-          </Editable>
-        </li>
+      {/* Rows come from content/cv.csv (teaching section), shaped like the
+          other listings: bold title line, then year + detail. */}
+      <ul className="perf-list">
+        {teaching.map((p, i) => (
+          <li
+            key={`teach-${i}`}
+            data-prev={JSON.stringify({
+              t: p.title,
+              y: p.year,
+              k: "teaching",
+              s: p.detail,
+            })}
+          >
+            <i>
+              <Editable id={`teach.${i}.title`} as="span">
+                {p.title}
+              </Editable>
+            </i>
+            <br />
+            {p.year && <em>{p.year}. </em>}
+            {p.detail && (
+              <Editable id={`teach.${i}.detail`} as="span">
+                {p.detail}
+              </Editable>
+            )}
+            {p.link && (
+              <>
+                {" "}
+                <a href={p.link.href} target="_blank" rel="noreferrer">
+                  {p.link.label} ↗
+                </a>
+              </>
+            )}
+          </li>
+        ))}
       </ul>
       <SeeMore href="/cv" />
       <p style={{ marginTop: "0.5em" }}>

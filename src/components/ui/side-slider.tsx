@@ -154,11 +154,6 @@ export function SideSlider() {
       // timeline wraps within the rail height; parallax couples to scroll
       const offset = (drift + window.scrollY * 0.3 * dpr) % h;
 
-      // inner-edge hairline
-      ctx.fillStyle = col.ink;
-      ctx.globalAlpha = 0.25;
-      ctx.fillRect(0, 0, 1, h);
-
       hoverIdx = -1;
       let hoverDist = 11 * dpr;
       const thick = 1 * dpr; // thin, hairline bars — as before

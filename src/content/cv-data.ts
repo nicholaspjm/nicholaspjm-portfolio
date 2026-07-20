@@ -78,27 +78,27 @@ export const press: CVEntry[] = [
 export const teaching: CVEntry[] = [
   {
     "year": "",
-    "title": "Touch Collective, Co-founder",
-    "detail": "Regular TouchDesigner workshops, artist talks, and live visual events. Naarm / Melbourne."
-  },
-  {
-    "year": "2025",
-    "title": "Speaker, Creative Technology Melbourne",
-    "detail": "Talk on real-time visual systems."
-  },
-  {
-    "year": "2025",
-    "title": "Workshop, Melbourne Fringe Festival",
-    "detail": "TouchDesigner workshop."
-  },
-  {
-    "year": "",
     "title": "YouTube (@nicholaspjm)",
     "detail": "Technical TouchDesigner tutorials and creative coding education.",
     "link": {
       "href": "https://youtube.com/@nicholaspjm",
       "label": "@nicholaspjm"
     }
+  },
+  {
+    "year": "",
+    "title": "Touch Collective, Co-founder",
+    "detail": "Regular TouchDesigner workshops, artist talks, and live visual events across Naarm / Melbourne."
+  },
+  {
+    "year": "2025",
+    "title": "Speaker, Creative Technology Melbourne",
+    "detail": "Invited talk on real-time visual systems."
+  },
+  {
+    "year": "2025",
+    "title": "Workshop, Melbourne Fringe Festival",
+    "detail": "Hands-on introduction to real-time visuals in TouchDesigner."
   }
 ];
 
