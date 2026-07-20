@@ -76,3 +76,6 @@ next-env.d.ts
 # Cloudflare Pages direct-upload package (regenerate: npm run build, then re-zip)
 /cloudflare-upload/
 /nicholaspjm-cloudflare.zip
+
+# Local archive of superseded video originals (all replaced by web .mp4).
+/archive-video-originals/

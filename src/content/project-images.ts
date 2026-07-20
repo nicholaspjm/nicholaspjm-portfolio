@@ -10,6 +10,11 @@ export const projectImages: Record<string, string[]> = {
     "/images/projects/atmos-norla-dome/02.jpg",
     "/images/projects/atmos-norla-dome/IMG_1115.jpg"
   ],
+  "autumn-contemplations": [
+    "/images/projects/autumn-contemplations/hd.jpg",
+    "/images/projects/autumn-contemplations/TREEPIC.3.jpg",
+    "/images/projects/autumn-contemplations/TREEPIC.15.jpg"
+  ],
   "cat-among-animals": [
     "/images/projects/cat-among-animals/01.jpg",
     "/images/projects/cat-among-animals/02.jpg",
@@ -36,7 +41,8 @@ export const projectImages: Record<string, string[]> = {
     "/images/projects/forgotten-once-remembered/02.jpg",
     "/images/projects/forgotten-once-remembered/03.jpg",
     "/images/projects/forgotten-once-remembered/04.jpg",
-    "/images/projects/forgotten-once-remembered/05.jpg"
+    "/images/projects/forgotten-once-remembered/05.jpg",
+    "/images/projects/forgotten-once-remembered/IMG_9658.jpg"
   ],
   "hybrid-2-0": [
     "/images/projects/hybrid-2-0/DSC_8857.jpeg",
@@ -84,6 +90,11 @@ export const projectImages: Record<string, string[]> = {
     "/images/projects/the-xx-festival-tour/IMG_0307.JPG",
     "/images/projects/the-xx-festival-tour/IMG_0336.JPG",
     "/images/projects/the-xx-festival-tour/IMG_0377.JPEG"
+  ],
+  "through-the-looking-glass-chadstone": [
+    "/images/projects/through-the-looking-glass-chadstone/01.jpg",
+    "/images/projects/through-the-looking-glass-chadstone/02.jpg",
+    "/images/projects/through-the-looking-glass-chadstone/03.jpg"
   ]
 };
 
@@ -105,6 +116,9 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/atmos-norla-dome/img-1110.mp4",
     "/videos/projects/atmos-norla-dome/img-1123.mp4",
     "/videos/projects/atmos-norla-dome/img-1141.mp4"
+  ],
+  "autumn-contemplations": [
+    "/videos/projects/autumn-contemplations/autumn-contemplations.mp4"
   ],
   "cat-among-animals": [
     "/videos/projects/cat-among-animals/01.mp4",
@@ -141,7 +155,8 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/for-the-cause-2026/img-9654.mp4"
   ],
   "forgotten-once-remembered": [
-    "/videos/projects/forgotten-once-remembered/01.mp4"
+    "/videos/projects/forgotten-once-remembered/01.mp4",
+    "/videos/projects/forgotten-once-remembered/blue-ice.mp4"
   ],
   "hybrid-2-0": [
     "/videos/projects/hybrid-2-0/c8200.mp4",
@@ -193,7 +208,11 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/smokedope2016-2016lyfe/02.mp4",
     "/videos/projects/smokedope2016-2016lyfe/03.mp4",
     "/videos/projects/smokedope2016-2016lyfe/04.mp4",
-    "/videos/projects/smokedope2016-2016lyfe/05.mp4"
+    "/videos/projects/smokedope2016-2016lyfe/05.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/tdmovieout-99-1.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/tdmovieout-114.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/tdmovieout-121.mp4",
+    "/videos/projects/smokedope2016-2016lyfe/tdmovieout-139.mp4"
   ],
   "the-xx-festival-tour": [
     "/videos/projects/the-xx-festival-tour/coachella-weekend-1-full-show.mp4",
@@ -207,6 +226,9 @@ export const projectVideos: Record<string, string[]> = {
     "/videos/projects/thread-congee-club/tdmovieout-39-1.mp4",
     "/videos/projects/thread-congee-club/tdmovieout-61.mp4",
     "/videos/projects/thread-congee-club/tdmovieout-82-1.mp4"
+  ],
+  "through-the-looking-glass-chadstone": [
+    "/videos/projects/through-the-looking-glass-chadstone/chadstone-light.mp4"
   ],
   "woven-touch": [
     "/videos/projects/woven-touch/thread-19.mp4"

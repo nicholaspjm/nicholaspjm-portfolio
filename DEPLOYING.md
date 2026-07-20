@@ -17,35 +17,50 @@ sits on a project subpath there. Nothing to do by hand.
 A local `npm run build` produces a **root-path** build (no base path), which is
 what Cloudflare and a custom domain want.
 
+`wrangler.jsonc` is what makes this work. It declares the site as **static
+assets** served from `out/`. Without it, `wrangler deploy` auto-detects
+"Next.js", assumes a server app, runs the OpenNext adapter, and fails looking
+for `.next/standalone/.next/server/pages-manifest.json` — which a static export
+never produces.
+
 ### Option A: connect the Git repo (recommended)
 
-No uploading at all, and it redeploys itself on every push.
-
-Cloudflare dashboard → *Workers & Pages* → *Create* → *Pages* →
-*Connect to Git* → pick `nicholaspjm/nicholaspjm-portfolio`, then:
+No uploading, and it redeploys on every push. Cloudflare dashboard →
+*Workers & Pages* → *Create* → *Connect to Git* → pick
+`nicholaspjm/nicholaspjm-portfolio`, then:
 
 - Build command: `npm run build`
-- Output directory: `out`
+- Deploy command: `npx wrangler deploy`
 - Environment variables: none
 
 Leave `NEXT_PUBLIC_BASE_PATH` unset so the build targets the domain root.
 
 ### Option B: deploy from this machine
 
-One command, uploads `out/` directly:
-
 ```
 npm run deploy-cloudflare
 ```
 
-The first run opens a browser to authorise Wrangler against your Cloudflare
-account. Use this if you want to publish without pushing to GitHub.
+Builds, then uploads `out/` via `wrangler deploy`. The first run opens a
+browser to authorise Wrangler against your Cloudflare account.
+
+Validate config changes without deploying:
+
+```
+npx wrangler deploy --dry-run
+```
 
 ### Do not drag the folder into the dashboard
 
-The browser upload silently drops subdirectories on a payload this size (the
-site is ~490MB, mostly video), which publishes the HTML with no CSS, images, or
-routes. Use Option A or B instead.
+The browser upload silently drops subdirectories on a payload this size,
+publishing the HTML with no CSS, images, or routes. Use Option A or B.
+
+### Keep source video out of `public/`
+
+`public/` is copied verbatim into `out/` and uploaded. Only transcoded `.mp4`
+files belong there; `.mov` originals live in `content/` (gitignored) or
+`archive-video-originals/`. Leaving 19 stale `.mov` files in `public/videos`
+had `out/` at 489MB instead of 235MB.
 
 ## Custom domain
 

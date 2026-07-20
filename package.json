@@ -13,7 +13,7 @@
     "convert-videos": "node scripts/convert-videos.mjs",
     "new-project": "node scripts/new-project.mjs",
     "studio": "node scripts/studio-server.mjs",
-    "deploy-cloudflare": "npm run build && npx wrangler@latest pages deploy out --project-name=nicholaspjm --commit-dirty=true"
+    "deploy-cloudflare": "npm run build && npx wrangler@latest deploy"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
