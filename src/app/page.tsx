@@ -466,10 +466,10 @@ export default function Home() {
         </NavButton>
       </p>
 
-      {/* AWARDS ------------------------------------------------------------ */}
+      {/* AWARDS & PRESS ---------------------------------------------------- */}
       <p style={{ marginTop: "2.2em" }}>
         <Editable id="label.awards" as="span" className="static-label">
-          awards
+          awards &amp; press
         </Editable>
       </p>
       <ul className="info-list">
@@ -499,22 +499,6 @@ export default function Home() {
             )}
           </li>
         ))}
-      </ul>
-      <SectionFoot id="foot.awards">
-        Selected recognition shown here.
-      </SectionFoot>
-
-      <p>
-        <br />
-      </p>
-
-      {/* PRESS -------------------------------------------------------------- */}
-      <p>
-        <Editable id="label.press" as="span" className="static-label">
-          selected press
-        </Editable>
-      </p>
-      <ul className="info-list">
         {press.map((p, i) => (
           <li key={`press-${i}`}>
             {p.year && <em>{p.year}. </em>}
@@ -534,9 +518,9 @@ export default function Home() {
           </li>
         ))}
       </ul>
-      <SectionFoot id="foot.press">
-        Selected coverage shown here; further features and interviews are
-        catalogued alongside the practice history.
+      <SectionFoot id="foot.awards">
+        Selected recognition and coverage shown here; further features and
+        interviews are catalogued alongside the practice history.
       </SectionFoot>
 
       <p>
