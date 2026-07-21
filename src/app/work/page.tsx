@@ -1,53 +1,67 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getListedProjects, getCategories } from "@/lib/projects";
-import { performances } from "@/content/cv";
+import { asset } from "@/lib/asset";
 import { NoiseRule } from "@/components/ui/noise";
-import { Editable } from "@/components/ui/editable";
-import { editableText } from "@/content/editable-text";
 import { WorkIndex, type WorkItem } from "./work-index";
 
 export const metadata: Metadata = { title: "Work" };
 
+/** Small thumbnails for the strip at the bottom (same tier the rows use). */
+const thumbOf = (src: string) =>
+  src.startsWith("/images/projects/")
+    ? src.replace("/images/projects/", "/images/thumbs/")
+    : src;
+
 export default function WorkPage() {
-  const projects: WorkItem[] = getListedProjects().map((p) => ({
+  const all = getListedProjects();
+  const projects: WorkItem[] = all.map((p) => ({
     slug: p.slug,
     title: p.title,
     year: p.year,
     summary: p.summary,
     categories: p.categories,
   }));
+
+  // One image per project for the mini visual strip, first come first served.
+  const strip = all
+    .map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      src: p.images?.find((im) => im.src)?.src,
+    }))
+    .filter((x): x is { slug: string; title: string; src: string } =>
+      Boolean(x.src),
+    )
+    .slice(0, 18);
+
   return (
     <>
       <WorkIndex projects={projects} cats={getCategories()} />
 
       <NoiseRule char="/" />
 
-      {/* PERFORMANCES & EXHIBITIONS ---------------------------------------- */}
+      {/* MINI VISUAL: a condensed taste of the visual page ----------------- */}
       <p>
-        <Editable id="label.perfExhibitions" as="span" className="extra">
-          performances &amp; exhibitions
-        </Editable>{" "}
-        <span className="pathnote">~/practice/live</span>
+        <span className="extra">visual</span>{" "}
+        <Link href="/visual">open the full visual view →</Link>
       </p>
-      <ul className="perf-list">
-        {performances.map((p, i) => (
-          <li
-            key={`perf-${i}`}
-            data-prev={JSON.stringify({
-              t: p.title,
-              y: p.year,
-              k: "performance",
-              s: p.detail,
-            })}
-          >
-            <i>{editableText[`perf.${i}.title`] ?? p.title}</i>
-            <br />
-            {p.year && <em>{p.year}. </em>}
-            {p.detail && (editableText[`perf.${i}.detail`] ?? p.detail)}
-          </li>
+      <div className="mini-visual">
+        {strip.map((x) => (
+          <Link key={x.slug} href={`/work/${x.slug}`} className="mv-item">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={asset(thumbOf(x.src))}
+              alt={x.title}
+              loading="lazy"
+              decoding="async"
+            />
+          </Link>
         ))}
-      </ul>
-
+      </div>
+      <p className="see-more">
+        <Link href="/visual">see more →</Link>
+      </p>
     </>
   );
 }

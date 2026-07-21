@@ -8,6 +8,7 @@ import {
 import { selectedWorks } from "@/content/selected";
 import { performances, awards, press, teaching, education } from "@/content/cv";
 import { tools } from "@/content/tools";
+import { editableText } from "@/content/editable-text";
 import * as media from "@/content/project-images";
 
 // Tolerant read: project-images.ts is generated, and during a git pull with
@@ -22,7 +23,30 @@ import { InfoSheet } from "@/components/ui/info-sheet";
 import { ImageRow } from "@/components/ui/image-row";
 import { Editable } from "@/components/ui/editable";
 import { ProjectEntry } from "@/components/ui/project-entry";
+import { SectionArrange } from "@/components/ui/section-arrange";
 import { ToolEntry } from "@/components/ui/tool-entry";
+
+/** Apply the saved arrangement for a homepage section: saved order first
+ *  (unknown slugs keep their base order after it), then drop hidden ones.
+ *  Saved by the edit-mode SectionArrange panel as secorder.* / sechide.*. */
+function arrange(list: Project[], key: string): Project[] {
+  const ord = (editableText[`secorder.${key}`] ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const hid = new Set(
+    (editableText[`sechide.${key}`] ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+  );
+  const idx = new Map(ord.map((s, i) => [s, i]));
+  const saved = list
+    .filter((p) => idx.has(p.slug))
+    .sort((a, b) => idx.get(a.slug)! - idx.get(b.slug)!);
+  const rest = list.filter((p) => !idx.has(p.slug));
+  return [...saved, ...rest].filter((p) => !hid.has(p.slug));
+}
 
 /** JSON payload for the right-hand preview zone. */
 function prev(p: Project) {
@@ -107,16 +131,28 @@ function ProjectBlock({
 
 export default function Home() {
   const all = getListedProjects();
-  const commissioned = all.filter(
+  // Base lists keep every project (the arrange panel needs hidden ones too);
+  // the rendered lists apply the saved order and drop the hidden.
+  const commissionedBase = all.filter(
     (p) => (p.section ?? "commissioned") === "commissioned",
   );
-  const installations = all.filter((p) => p.section === "installation");
-  const explorations = all.filter((p) => p.section === "sketch");
-
+  const installationsBase = all.filter((p) => p.section === "installation");
+  const explorationsBase = all.filter((p) => p.section === "sketch");
   // Curated highlight reel, hand-ordered in src/content/selected.ts.
-  const selected = selectedWorks
+  const selectedBase = selectedWorks
     .map((slug) => getProjectBySlug(slug))
     .filter((p): p is Project => Boolean(p));
+
+  const commissioned = arrange(commissionedBase, "commissioned");
+  const installations = arrange(installationsBase, "installation");
+  const explorations = arrange(explorationsBase, "sketch");
+  const selected = arrange(selectedBase, "selected");
+
+  const arrItems = (l: Project[]) =>
+    l.map((p) => ({
+      slug: p.slug,
+      title: editableText[`work.${p.slug}.title`] ?? p.title,
+    }));
 
   const rich = (
     <div className="leftcol">
@@ -212,6 +248,7 @@ export default function Home() {
         </Editable>{" "}
         <span className="pathnote">~/practice/selected</span>
       </p>
+      <SectionArrange sectionKey="selected" items={arrItems(selectedBase)} />
       {selected.map((p, i) => (
         <ProjectBlock
           key={`sel-${p.slug}`}
@@ -232,6 +269,10 @@ export default function Home() {
         </Editable>{" "}
         <span className="pathnote">~/practice/visual</span>
       </p>
+      <SectionArrange
+        sectionKey="commissioned"
+        items={arrItems(commissionedBase)}
+      />
       {commissioned.map((p, i) => (
         <ProjectBlock
           key={p.slug}
@@ -256,6 +297,10 @@ export default function Home() {
         </Editable>{" "}
         <span className="pathnote">~/practice/rooms</span>
       </p>
+      <SectionArrange
+        sectionKey="installation"
+        items={arrItems(installationsBase)}
+      />
       {installations.map((p, i) => (
         <ProjectBlock
           key={p.slug}
@@ -307,6 +352,7 @@ export default function Home() {
         </Editable>{" "}
         <span className="pathnote">~/practice/fun</span>
       </p>
+      <SectionArrange sectionKey="sketch" items={arrItems(explorationsBase)} />
       {explorations.map((p, i) => (
         <ProjectBlock
           key={p.slug}

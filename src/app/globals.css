@@ -130,6 +130,55 @@ a.extra, .extra {
   color: var(--ink);
 }
 
+/* Edit-mode panel: rearrange / hide a homepage section's projects. */
+.sec-arrange {
+  border: 1px dashed var(--soft);
+  padding: 8px 10px;
+  margin: 0.6em 0 1em;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+}
+.sec-arrange-head {
+  margin: 0 0 6px 0;
+  color: var(--soft);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.sa-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 3px 0;
+}
+.sa-row button {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 0 6px;
+}
+.sa-row button:disabled { opacity: 0.3; }
+.sa-title { margin-left: 4px; }
+.sa-hidden .sa-title { color: var(--soft); text-decoration: line-through; }
+
+/* Condensed visual strip at the bottom of /work. */
+.mini-visual {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.8em 0 0.6em;
+  max-width: 66vw;
+}
+@media (max-width: 900px) {
+  .mini-visual { max-width: 100%; }
+}
+.mini-visual .mv-item { line-height: 0; }
+.mini-visual img {
+  display: block;
+  height: 92px;
+  width: auto;
+}
+.mini-visual .mv-item:hover img { outline: 2px solid var(--link); }
+
 /* "see more" pointer at the end of a section. */
 .see-more {
   margin: 0.5em 0 0.2em;
