@@ -50,6 +50,17 @@ Validate config changes without deploying:
 npx wrangler deploy --dry-run
 ```
 
+### Only build `main`, never `gh-pages`
+
+The `gh-pages` branch is the GitHub Pages *output* (built HTML, no
+`package.json`), auto-updated on every push to `main`. If Cloudflare builds it,
+`npm run build` fails with "no package.json at /opt/buildhome/repo". In the
+Worker's *Branch control*, set **Production branch: main** and
+**Builds for non-production branches: Disabled**, so Cloudflare only ever
+builds `main`. "Retry build" re-runs whatever branch that build used, so to
+build `main` push a commit (or deploy `main` explicitly) rather than retrying a
+`gh-pages` build.
+
 ### Do not drag the folder into the dashboard
 
 The browser upload silently drops subdirectories on a payload this size,
