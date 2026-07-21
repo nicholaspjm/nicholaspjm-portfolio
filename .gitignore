@@ -79,3 +79,6 @@ next-env.d.ts
 
 # Local archive of superseded video originals (all replaced by web .mp4).
 /archive-video-originals/
+
+# Compiled launcher (built from scripts/edit-site.ps1 via scripts/build-exe.ps1).
+/Edit Site.exe

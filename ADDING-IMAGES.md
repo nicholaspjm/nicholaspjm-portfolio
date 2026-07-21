@@ -63,6 +63,20 @@ Add a `text.md` to a project folder and its paragraphs (separated by blank
 lines) become the page's body text, replacing what the code defines. The
 first paragraph renders as the lead.
 
+## Editing locally (one click)
+
+Double-click **`Edit Site.exe`** (or **`Edit Site.bat`**) in the project folder.
+It starts the website and the content studio, waits for them, and opens your
+browser. Click **edit text** at the bottom of the page, make changes, then
+**save**. To stop, close the two windows titled *NPJM Dev* and *NPJM Studio*.
+
+- First launch runs `npm install` once, so it may take a minute.
+- The `.exe` is built from `scripts/edit-site.ps1`; rebuild it after changing
+  that with `powershell -File scripts\build-exe.ps1`.
+- Windows may show a blue "SmartScreen" warning the first time (unsigned app):
+  *More info -> Run anyway*. The `.bat` never triggers this if you'd rather use
+  it.
+
 ## The CV
 
 The CV lives at `content/cv.csv`, a plain spreadsheet. Open it in Excel,
