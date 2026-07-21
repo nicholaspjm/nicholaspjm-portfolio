@@ -23,17 +23,16 @@ export default function WorkPage() {
     categories: p.categories,
   }));
 
-  // One image per project for the mini visual strip, first come first served.
-  const strip = all
-    .map((p) => ({
-      slug: p.slug,
-      title: p.title,
-      src: p.images?.find((im) => im.src)?.src,
-    }))
-    .filter((x): x is { slug: string; title: string; src: string } =>
-      Boolean(x.src),
-    )
-    .slice(0, 18);
+  // Tiles for the mini visual strip: up to two stills per project, plenty to
+  // fill the band (the CSS clips it to roughly the bottom fifth of the
+  // screen, so extras simply never show).
+  const strip: { slug: string; title: string; src: string }[] = [];
+  for (const p of all) {
+    for (const im of (p.images ?? []).filter((i) => i.src).slice(0, 3)) {
+      strip.push({ slug: p.slug, title: p.title, src: im.src! });
+    }
+  }
+  strip.splice(60);
 
   return (
     <>
