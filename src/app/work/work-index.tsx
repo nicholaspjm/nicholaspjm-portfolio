@@ -16,16 +16,52 @@ export interface WorkItem {
 }
 
 type Sort = "newest" | "oldest" | "a-z";
-const SORTS: Sort[] = ["newest", "oldest", "a-z"];
 
-function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
+/** The 23 raw project categories condensed into four filter groups. A project
+ *  matches a group when any of its categories is in the group; everything is
+ *  always reachable under "all". Old links with raw categories (from detail
+ *  page tags) still work via the fallback below. */
+const GROUPS: { label: string; cats: string[] }[] = [
+  {
+    label: "live",
+    cats: [
+      "Live Visuals",
+      "Festival",
+      "Performance",
+      "Live Coding",
+      "Touring",
+      "Club",
+      "Lighting",
+      "Music",
+    ],
+  },
+  {
+    label: "music video & vfx",
+    cats: ["Music Video", "VFX", "Commercial"],
+  },
+  {
+    label: "installation",
+    cats: ["Installation", "Interactive", "Projection Mapping", "Exhibition"],
+  },
+  {
+    label: "personal & tools",
+    cats: ["Personal", "Tool", "Real-time", "Design"],
+  },
+];
+
+function List({ projects }: { projects: WorkItem[] }) {
   const search = useSearchParams();
   const filter = search.get("cat") ?? undefined;
   const [sort, setSort] = useState<Sort>("newest");
 
-  const filtered = filter
-    ? projects.filter((p) => p.categories.includes(filter))
-    : projects;
+  const group = filter
+    ? GROUPS.find((g) => g.label === filter)
+    : undefined;
+  const filtered = !filter
+    ? projects
+    : group
+      ? projects.filter((p) => p.categories.some((c) => group.cats.includes(c)))
+      : projects.filter((p) => p.categories.includes(filter));
   const yr = (p: WorkItem) => parseInt(p.year, 10) || 0;
   const shown = [...filtered].sort((a, b) => {
     if (sort === "newest") return yr(b) - yr(a);
@@ -48,19 +84,28 @@ function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
 
       <p>
         <NavButton href="/work">all</NavButton>
-        {cats.map((c) => (
-          <NavButton key={c} href={`/work?cat=${encodeURIComponent(c)}`}>
-            {c.toLowerCase()}
+        {GROUPS.map((g) => (
+          <NavButton
+            key={g.label}
+            href={`/work?cat=${encodeURIComponent(g.label)}`}
+          >
+            {g.label}
           </NavButton>
-        ))}{" "}
-        <button
-          onClick={() =>
-            setSort(SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length])
-          }
-          title="Change sort order"
-        >
-          sort: {sort}
-        </button>
+        ))}
+      </p>
+
+      <p className="sort-row">
+        <label>
+          order by{" "}
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as Sort)}
+          >
+            <option value="newest">newest first</option>
+            <option value="oldest">oldest first</option>
+            <option value="a-z">a to z</option>
+          </select>
+        </label>
       </p>
 
       <ul>
@@ -85,7 +130,7 @@ function List({ projects, cats }: { projects: WorkItem[]; cats: string[] }) {
   );
 }
 
-export function WorkIndex(props: { projects: WorkItem[]; cats: string[] }) {
+export function WorkIndex(props: { projects: WorkItem[] }) {
   // useSearchParams must sit under Suspense for static export.
   return (
     <Suspense fallback={null}>

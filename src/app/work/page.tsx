@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getListedProjects, getCategories } from "@/lib/projects";
+import { getListedProjects } from "@/lib/projects";
 import { asset } from "@/lib/asset";
 import { NoiseRule } from "@/components/ui/noise";
 import { WorkIndex, type WorkItem } from "./work-index";
@@ -37,7 +37,7 @@ export default function WorkPage() {
 
   return (
     <>
-      <WorkIndex projects={projects} cats={getCategories()} />
+      <WorkIndex projects={projects} />
 
       <NoiseRule char="/" />
 
