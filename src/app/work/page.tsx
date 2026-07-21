@@ -47,7 +47,11 @@ export default function WorkPage() {
       </p>
       <div className="mini-visual">
         {strip.map((x) => (
-          <Link key={x.slug} href={`/work/${x.slug}`} className="mv-item">
+          <Link
+            key={`${x.slug}-${x.src.split("/").pop()}`}
+            href={`/work/${x.slug}`}
+            className="mv-item"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={asset(thumbOf(x.src))}
