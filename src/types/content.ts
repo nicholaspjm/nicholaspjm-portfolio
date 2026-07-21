@@ -136,4 +136,6 @@ export interface SiteInfo {
   email: string;
   social: { label: string; href: string }[];
   nav: { label: string; href: string }[];
+  /** Google Analytics 4 Measurement ID ("G-XXXXXXXXXX"). Empty = disabled. */
+  gaId?: string;
 }

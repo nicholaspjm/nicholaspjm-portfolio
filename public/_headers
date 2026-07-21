@@ -1,0 +1,15 @@
+# Cloudflare (and Netlify) read this from the deploy root to set response
+# headers. Copied verbatim into out/ by the build.
+#
+# _next/static assets are content-hashed, so their URL changes whenever the
+# file changes — safe to cache forever.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Media keeps its filename across edits, so cache in the browser for a day:
+# fast repeat visits and page-to-page navigation, updates still show next day.
+# (Cloudflare's edge cache already serves these near-instantly regardless.)
+/images/*
+  Cache-Control: public, max-age=86400
+/videos/*
+  Cache-Control: public, max-age=86400

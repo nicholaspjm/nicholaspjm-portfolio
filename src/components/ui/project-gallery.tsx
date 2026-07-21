@@ -155,8 +155,16 @@ export function ProjectGallery({
             aria-label={alt}
           />
         ) : img.src ? (
+          // The first image is above the fold; load it eagerly with priority
+          // so it paints fast, and lazy-load the rest.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={asset(img.src)} alt={alt} loading="lazy" decoding="async" />
+          <img
+            src={asset(img.src)}
+            alt={alt}
+            loading={i === 0 ? "eager" : "lazy"}
+            fetchPriority={i === 0 ? "high" : "auto"}
+            decoding="async"
+          />
         ) : null;
         const capId = `imgcap.${slug}.${it.key}`;
         const cap = editableText[capId];

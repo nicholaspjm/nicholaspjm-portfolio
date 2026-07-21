@@ -19,4 +19,8 @@ export const site: SiteInfo = {
     { label: "CV", href: "/cv" },
     { label: "Info", href: "/info" },
   ],
+  // Paste your Google Analytics 4 Measurement ID here (Admin -> Data streams ->
+  // your web stream -> "Measurement ID", looks like "G-XXXXXXXXXX"). Leaving it
+  // blank disables analytics. Only loads on the production build.
+  gaId: "",
 };

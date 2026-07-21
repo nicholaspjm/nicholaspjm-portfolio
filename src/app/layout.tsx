@@ -7,6 +7,7 @@ import { PreviewZone } from "@/components/ui/preview-zone";
 import { SideSlider } from "@/components/ui/side-slider";
 import { DarkToggle } from "@/components/ui/dark-toggle";
 import { EditBar } from "@/components/ui/edit-bar";
+import { Analytics } from "@/components/layout/analytics";
 import "./globals.css";
 
 // Apply saved dark mode before first paint to avoid a flash.
@@ -41,6 +42,7 @@ export default function RootLayout({
           <DarkToggle />
         </div>
         <EditBar />
+        <Analytics />
       </body>
     </html>
   );
