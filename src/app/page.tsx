@@ -122,7 +122,6 @@ function ProjectBlock({
           resizeId={`${context}.${p.slug}`}
           fallbackResizeId={p.slug}
           rowSlug={p.slug}
-          rowPrev={prev(p)}
         />
       )}
     </>

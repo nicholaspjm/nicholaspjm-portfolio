@@ -20,8 +20,6 @@ export interface RowImage {
   alt?: string;
   /** When set, the item links through to /work/<slug>. */
   slug?: string;
-  /** Preview-zone JSON for this item's work (drives the hover preview). */
-  prev?: string;
 }
 
 type Size = "S" | "M" | "L";
@@ -72,7 +70,6 @@ export function ImageRow({
   resizeId,
   fallbackResizeId,
   rowSlug,
-  rowPrev,
 }: {
   images: RowImage[];
   sizeClass: string; // "" | " size-m" | " size-l"
@@ -84,9 +81,8 @@ export function ImageRow({
    *  "selected.the-xx-festival-tour"). New saves always write resizeId. */
   fallbackResizeId?: string;
   /** When every image belongs to one work (e.g. a Selected Works row), the
-   *  slug + preview JSON to link and preview to. Per-image slug/prev win. */
+   *  slug to link each image to. Per-image slug wins. */
   rowSlug?: string;
-  rowPrev?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
@@ -279,10 +275,9 @@ export function ImageRow({
           // Index-qualified: two works can share a file (e.g. a feature that
           // reuses another project's photos), so the path alone can collide.
           const key = `${img.src ?? img.video ?? img.youtube ?? ""}-${i}`;
-          // Per-image slug/preview win; otherwise fall back to the row's work
-          // (Selected Works rows carry rowSlug/rowPrev for all their images).
+          // Per-image slug wins; otherwise fall back to the row's work
+          // (Selected Works rows carry rowSlug for all their images).
           const slug = img.slug ?? rowSlug;
-          const prev = img.prev ?? rowPrev;
           const media = img.youtube ? (
             <iframe
               className="yt"
@@ -341,7 +336,6 @@ export function ImageRow({
                 <Link
                   href={`/work/${slug}`}
                   className={img.youtube ? "yt-link" : undefined}
-                  data-prev={prev}
                   data-work={slug}
                 >
                   {media}
