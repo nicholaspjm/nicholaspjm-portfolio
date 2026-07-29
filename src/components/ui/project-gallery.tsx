@@ -83,6 +83,16 @@ export function ProjectGallery({
   const [items, setItems] = useState<Item[]>(initial);
   // Only saved when the user actually rearranged or resized something here.
   const [dirty, setDirty] = useState(false);
+  // Click-to-enlarge: the item currently shown in the lightbox.
+  const [zoom, setZoom] = useState<Item | null>(null);
+  useEffect(() => {
+    if (!zoom) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setZoom(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [zoom]);
 
   // Play clips only while on screen so a page full of video stays light.
   useEffect(() => {
@@ -168,9 +178,20 @@ export function ProjectGallery({
         ) : null;
         const capId = `imgcap.${slug}.${it.key}`;
         const cap = editableText[capId];
+        const enlargeable = !editing && Boolean(img.src || img.video);
         return (
           <figure key={it.key} className={`gallery-item size-${it.size.toLowerCase()}`}>
-            {media}
+            {enlargeable ? (
+              <span
+                className="zoomable"
+                onClick={() => setZoom(it)}
+                title="Click to enlarge"
+              >
+                {media}
+              </span>
+            ) : (
+              media
+            )}
             {editing ? (
               <figcaption
                 className="gallery-cap editable-on"
@@ -224,6 +245,29 @@ export function ProjectGallery({
           data-edit-dirty={dirty ? "1" : undefined}
           hidden
         />
+      )}
+      {/* Click-to-enlarge lightbox: click anywhere (or Esc) to close. */}
+      {zoom && (
+        <div
+          className="lightbox"
+          onClick={() => setZoom(null)}
+          role="dialog"
+          aria-label={`${title} enlarged`}
+        >
+          {zoom.img.src ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={asset(zoom.img.src)} alt={zoom.img.alt ?? title} />
+          ) : zoom.img.video ? (
+            <video
+              src={asset(zoom.img.video)}
+              controls
+              autoPlay
+              loop
+              playsInline
+            />
+          ) : null}
+          <span className="lightbox-hint">click anywhere to close</span>
+        </div>
       )}
     </div>
   );

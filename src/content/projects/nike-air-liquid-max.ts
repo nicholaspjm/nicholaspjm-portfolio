@@ -4,6 +4,7 @@ export const project: Project = {
   slug: "nike-air-liquid-max",
   title: "Nike Air Liquid Max",
   year: "2026",
+  credits: ["Commissioned by Nike for the Air Liquid Max launch campaign"],
   weight: 0.9,
   summary:
     "Gaussian-splat VFX commercial for Nike's Air Liquid Max product launch campaign.",

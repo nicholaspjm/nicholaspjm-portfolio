@@ -6,6 +6,8 @@ export const project: Project = {
   title: "Woven Touch",
   section: "sketch",
   year: "2026",
+  date: "July 2026",
+  credits: ["Released as an open TouchDesigner tool"],
   weight: 0.55,
   summary:
     "A TouchDesigner instrument that weaves text, images, and 3D geometry into drooping woven thread. Real time, with gravity and click-drag interaction.",

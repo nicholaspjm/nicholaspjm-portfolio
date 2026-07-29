@@ -7,6 +7,7 @@ export const project: Project = {
   title: "A3 Festival",
   section: "installation",
   year: "2025",
+  credits: ["Main-stage visual design and live performance, A3 Festival"],
   weight: 0.75,
   summary:
     "Main-stage visual design and live performance at A3 Festival.",

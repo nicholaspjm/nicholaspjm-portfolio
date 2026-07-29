@@ -6,6 +6,7 @@ export const project: Project = {
   title: "Through the Looking Glass, Chadstone",
   section: "installation",
   year: "2026",
+  credits: ["Commissioned by Chadstone", "With Dean Norton and Studio John Fish"],
   weight: 0.85,
   summary:
     "A large-scale reactive light environment for Chadstone, Naarm / Melbourne.",

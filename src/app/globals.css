@@ -729,8 +729,11 @@ html::-webkit-scrollbar {
   --accent: #ffff55;
   background: var(--bg);
   color: var(--ink);
-  margin: 0 -8px;
-  padding: 8px;
+  /* bleed over BOTH gutters (8px body margin each side + 22px rail padding
+     on the right) so the white surround is even, then keep the content
+     symmetrically inset from the viewport on both sides */
+  margin: 0 calc(-8px - 22px) 0 -8px;
+  padding: 8px 30px;
   min-height: 100dvh;
 }
 
@@ -1151,9 +1154,10 @@ html[data-preview] .scatter-field { opacity: 0; }
   background: var(--bg);
   border: 1px solid var(--ink);
   padding: 12px 16px 16px 16px;
+  /* above the work-timeline rail (70), below the top toggles (85) */
+  z-index: 80;
   transform: translateY(calc(100% + 28px));
   transition: transform 240ms ease;
-  z-index: 60;
 }
 .sheet-panel.open { transform: translateY(0); }
 .sheet-panel .sheet-close { float: right; }
@@ -1295,4 +1299,76 @@ html[data-preview] .scatter-field { opacity: 0; }
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   TEMPORARY SIZE PASS — preview: every homepage row forced to S.
+   Delete this whole block to restore the saved per-row sizes.
+   ------------------------------------------------------------------------ */
+.image-row.size-m,
+.image-row.size-l {
+  max-height: 118px;
+  gap: 0.5em;
+}
+.image-row.size-m img, .image-row.size-l img,
+.image-row.size-m video, .image-row.size-l video,
+.image-row.size-m .yt, .image-row.size-l .yt {
+  height: 110px;
+}
+
+/* ---------------------------------------------------------------------------
+   Detail-page meta block — date + details, set apart from the prose.
+   ------------------------------------------------------------------------ */
+.meta-block {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  border-top: 1px solid var(--soft);
+  border-bottom: 1px solid var(--soft);
+  padding: 8px 0;
+  margin: 1.4em 0 1.6em;
+  max-width: 72ch;
+}
+.mb-row {
+  display: flex;
+  gap: 10px;
+  margin: 3px 0;
+  line-height: 1.5;
+}
+.mb-k {
+  flex: 0 0 64px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 10px;
+  color: var(--soft);
+  padding-top: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Click-to-enlarge lightbox on detail-page galleries.
+   ------------------------------------------------------------------------ */
+.zoomable { cursor: zoom-in; display: block; line-height: 0; }
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+.lightbox img,
+.lightbox video {
+  max-width: 94vw;
+  max-height: 92vh;
+  display: block;
+}
+.lightbox-hint {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  color: #bbb;
 }

@@ -5,6 +5,7 @@ export const project: Project = {
   title: "Cat Among Animals",
   section: "installation",
   year: "2025",
+  credits: ["Live AV performance with Steve Pan", "Curated by Chloé at Oddany Gallery", "Photography by Kelly Li"],
   weight: 0.65,
   summary:
     "Collaborative live-coded audiovisual performance with Steve Pan, curated by Chloé at Oddany Gallery.",

@@ -7,6 +7,7 @@ export const project: Project = {
   title: "Autumn Contemplations",
   section: "sketch",
   year: "2026",
+  credits: ["Personal series"],
   weight: 0.5,
   summary:
     "A personal series of real-time studies: slow, organic systems in an autumn palette.",

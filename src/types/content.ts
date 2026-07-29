@@ -92,6 +92,11 @@ export interface Project {
   section?: ProjectSection;
   /** Year string. e.g. "2024" or "2023–24". */
   year: string;
+  /** Precise date for the detail page's meta block ("March 2025"); falls
+   *  back to `year` when omitted. */
+  date?: string;
+  /** Detail-page credit lines: commissioned by, collaborators, venue, etc. */
+  credits?: string[];
   /** One-liner shown in the index list. */
   summary: string;
   /** Free-form role / credit. */

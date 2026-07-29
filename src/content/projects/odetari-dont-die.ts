@@ -4,6 +4,7 @@ export const project: Project = {
   slug: "odetari-dont-die",
   title: "DON'T DIE, Odetari ft. SOYEON",
   year: "2026",
+  credits: ["Official music video for Odetari, featuring SOYEON of (G)I-DLE"],
   weight: 0.8,
   summary:
     "VFX for Odetari's official music video for “DON'T DIE”, featuring SOYEON of (G)I-DLE.",

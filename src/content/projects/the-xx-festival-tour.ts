@@ -24,6 +24,8 @@ export const project: Project = {
   slug: "the-xx-festival-tour",
   title: "The xx Festival Tour",
   year: "2026",
+  date: "April 2026",
+  credits: ["Commissioned for The xx's 2026 festival tour", "Presented at Coachella, Main Stage"],
   weight: 1,
   summary:
     "Audio-reactive TouchDesigner visual design for The xx's 2026 festival tour, including Coachella Main Stage.",

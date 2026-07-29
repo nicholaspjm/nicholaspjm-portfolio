@@ -5,6 +5,7 @@ export const project: Project = {
   title: "Live Visual Coding",
   section: "installation",
   year: "2025",
+  credits: ["Six12 with Steve Pan; Odd Chaos; Pop Pop with Cy_"],
   weight: 0.6,
   summary:
     "Live-coded visual performances, including Six12 with Steve Pan, Odd Chaos, and Pop Pop with Cy_.",
