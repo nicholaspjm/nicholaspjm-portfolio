@@ -106,7 +106,6 @@ function ProjectBlock({
       <ProjectEntry
         slug={p.slug}
         title={p.title}
-        year={p.year}
         summary={p.summary}
         num={num}
         total={total}
@@ -122,6 +121,7 @@ function ProjectBlock({
           resizeId={`${context}.${p.slug}`}
           fallbackResizeId={p.slug}
           rowSlug={p.slug}
+          rowPrev={prev(p)}
         />
       )}
     </>
@@ -238,14 +238,11 @@ export default function Home() {
         Enquiries: <a href={`mailto:${site.email}`}>{site.email}</a>.
       </p>
 
-      <p style={{ marginTop: "1.6em" }}>&hellip;</p>
-
       {/* SELECTED WORKS: curated, hand-ordered highlights ---------------- */}
       <p style={{ marginTop: "1.4em" }}>
         <Editable id="label.selected" as="span" className="extra">
           selected works
-        </Editable>{" "}
-        <span className="pathnote">~/practice/selected</span>
+        </Editable>
       </p>
       <SectionArrange sectionKey="selected" items={arrItems(selectedBase)} />
       {selected.map((p, i) => (
@@ -265,8 +262,7 @@ export default function Home() {
       <p style={{ marginTop: "1.4em" }}>
         <Editable id="label.commissions" as="span" className="extra">
           visual
-        </Editable>{" "}
-        <span className="pathnote">~/practice/visual</span>
+        </Editable>
       </p>
       <SectionArrange
         sectionKey="commissioned"
@@ -293,8 +289,7 @@ export default function Home() {
       <p>
         <Editable id="label.installation" as="span" className="extra">
           installation &amp; performance
-        </Editable>{" "}
-        <span className="pathnote">~/practice/rooms</span>
+        </Editable>
       </p>
       <SectionArrange
         sectionKey="installation"
@@ -348,8 +343,7 @@ export default function Home() {
       <p>
         <Editable id="label.sketches" as="span" className="extra">
           personal explorations
-        </Editable>{" "}
-        <span className="pathnote">~/practice/fun</span>
+        </Editable>
       </p>
       <SectionArrange sectionKey="sketch" items={arrItems(explorationsBase)} />
       {explorations.map((p, i) => (
@@ -369,8 +363,7 @@ export default function Home() {
       <p id="tools">
         <Editable id="label.tools" as="span" className="extra">
           public tools
-        </Editable>{" "}
-        <span className="pathnote">~/practice/released</span>
+        </Editable>
       </p>
       <ul className="tool-list">
         {tools.map((t, i) => {
@@ -411,8 +404,7 @@ export default function Home() {
       <p style={{ marginTop: "2.2em" }}>
         <Editable id="label.teaching" as="span" className="static-label">
           teaching and talks
-        </Editable>{" "}
-        <span className="pathnote">~/practice/teaching</span>
+        </Editable>
       </p>
       <p style={{ marginTop: "0.4em", maxWidth: "56ch" }}>
         <Editable id="teaching.intro" as="span">

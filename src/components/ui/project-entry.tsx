@@ -15,7 +15,6 @@ import { Editable } from "./editable";
 export function ProjectEntry({
   slug,
   title,
-  year,
   summary,
   num,
   total,
@@ -24,7 +23,6 @@ export function ProjectEntry({
 }: {
   slug: string;
   title: string;
-  year: string;
   summary: string;
   num: number;
   total: number;
@@ -43,7 +41,6 @@ export function ProjectEntry({
         {title}
       </Editable>
       <br />
-      <em>{year}.</em>{" "}
       <Editable id={`work.${slug}.summary`} as="span">
         {summary}
       </Editable>

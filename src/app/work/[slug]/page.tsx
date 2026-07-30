@@ -37,6 +37,10 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   const blocks = project.blocks.filter(
     (b) => !(b.kind === "embed" && galleryYt.some((id) => b.url.includes(id))),
   );
+  // luciarebolino-style order: title + date + brief description/links up top,
+  // then ALL the media, then the longer text at the bottom.
+  const mediaBlocks = blocks.filter((b) => b.kind !== "text");
+  const textBlocks = blocks.filter((b) => b.kind === "text");
 
   return (
     <div className="bluepage">
@@ -47,45 +51,10 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
 
       {/* Giant bordoclima-scale masthead */}
       <header>
-        <span className="bigyear">
-          {project.year} · {project.section ?? "commissioned"} ·{" "}
-          {project.categories.join(" / ").toLowerCase()}
-        </span>
         <Editable id={`work.${project.slug}.title`} as="h1" className="bigtitle">
           {project.title}
         </Editable>
-        {(project.link || (project.links && project.links.length > 0)) && (
-          <p>
-            {project.link && (
-              <NavButton href={project.link.href} external>
-                {project.link.label}
-              </NavButton>
-            )}
-            {project.links?.map((l) => (
-              <NavButton key={l.href} href={l.href} external>
-                {l.label.toLowerCase()}
-              </NavButton>
-            ))}
-          </p>
-        )}
       </header>
-
-      <div style={{ maxWidth: "72ch" }}>
-        <p>
-          <Editable id={`work.${project.slug}.summary`} as="span">
-            {project.summary}
-          </Editable>
-          {project.role && (
-            <>
-              {" "}
-              <Editable id={`work.${project.slug}.role`} as="span">
-                {project.role}
-              </Editable>
-              .
-            </>
-          )}
-        </p>
-      </div>
 
       {/* Date + details, set apart from the prose (mono, hairline-ruled).
           Both lines are editable in the studio (meta.<slug>.date/.details). */}
@@ -111,15 +80,53 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
         </div>
       </div>
 
-      <Blocks blocks={blocks} />
+      {/* Brief description + links */}
+      <div style={{ maxWidth: "72ch" }}>
+        <p>
+          <Editable id={`work.${project.slug}.summary`} as="span">
+            {project.summary}
+          </Editable>
+          {project.role && (
+            <>
+              {" "}
+              <Editable id={`work.${project.slug}.role`} as="span">
+                {project.role}
+              </Editable>
+              .
+            </>
+          )}
+        </p>
+        {(project.link || (project.links && project.links.length > 0)) && (
+          <p>
+            {project.link && (
+              <NavButton href={project.link.href} external>
+                {project.link.label}
+              </NavButton>
+            )}
+            {project.links?.map((l) => (
+              <NavButton key={l.href} href={l.href} external>
+                {l.label.toLowerCase()}
+              </NavButton>
+            ))}
+          </p>
+        )}
+      </div>
 
-      {/* Photos, clips, and YouTube embeds, all resizable in the editor. */}
+      {/* All the media: page videos/embeds, then the full gallery. */}
+      <Blocks blocks={mediaBlocks} />
       {project.images && project.images.length > 0 && (
         <ProjectGallery
           slug={project.slug}
           images={project.images}
           title={project.title}
         />
+      )}
+
+      {/* The longer read lives at the bottom. */}
+      {textBlocks.length > 0 && (
+        <div style={{ maxWidth: "72ch", marginTop: "1.2em" }}>
+          <Blocks blocks={textBlocks} />
+        </div>
       )}
 
       <p>

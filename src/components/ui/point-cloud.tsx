@@ -36,7 +36,7 @@ export function PointCloud() {
     // crisp on high-DPI / mobile screens instead of being upscaled from a
     // CSS-resolution canvas. Each point is drawn as a dpr-sized block below so
     // the dot reads at a consistent ~1 CSS-pixel size and stays solid, not grey.
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dpr = Math.min(window.devicePixelRatio || 1, 3);
     // Every point is a single device pixel — the finest possible grain, so the
     // dots stay as tiny crisp rectangles on high-DPI / fractional-ratio screens
     // instead of thickening into larger blocks.
@@ -46,12 +46,19 @@ export function PointCloud() {
     const resize = () => {
       // re-read each resize so the correct device pixel ratio is used even if
       // the component mounted on a different screen / before rotation
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 3);
       const w = Math.max(1, Math.floor(window.innerWidth * dpr));
       const h = Math.max(1, Math.floor(window.innerHeight * dpr));
       if (canvas.width === w && canvas.height === h && img) return;
       canvas.width = w;
       canvas.height = h;
+      // Pin the CSS size to EXACTLY backing/dpr: with the default stretched
+      // 100% sizing, fractional display scaling (Windows 125%/150%, 3x
+      // phones) resamples the bitmap and smears solid-black single-pixel
+      // dots into grey. An exact mapping keeps every dot a crisp black
+      // device pixel.
+      canvas.style.width = `${w / dpr}px`;
+      canvas.style.height = `${h / dpr}px`;
       img = ctx.createImageData(w, h);
       buf = new Uint32Array(img.data.buffer);
     };

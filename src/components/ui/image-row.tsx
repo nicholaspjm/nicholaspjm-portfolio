@@ -70,6 +70,7 @@ export function ImageRow({
   resizeId,
   fallbackResizeId,
   rowSlug,
+  rowPrev,
 }: {
   images: RowImage[];
   sizeClass: string; // "" | " size-m" | " size-l"
@@ -83,6 +84,8 @@ export function ImageRow({
   /** When every image belongs to one work (e.g. a Selected Works row), the
    *  slug to link each image to. Per-image slug wins. */
   rowSlug?: string;
+  /** Preview-zone JSON for the row's work; hovering an image shows it. */
+  rowPrev?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
@@ -336,6 +339,7 @@ export function ImageRow({
                 <Link
                   href={`/work/${slug}`}
                   className={img.youtube ? "yt-link" : undefined}
+                  data-prev={rowPrev}
                   data-work={slug}
                 >
                   {media}
