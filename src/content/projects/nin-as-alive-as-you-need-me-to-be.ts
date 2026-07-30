@@ -5,7 +5,7 @@ export const project: Project = {
   title: "Nine Inch Nails, As Alive As You Need Me To Be",
   year: "2025",
   date: "September 2025",
-  credits: ["Official music video for Nine Inch Nails", "Winner, Best Rock Song, 68th Grammy Awards (2026)"],
+  credits: ["Client: Nine Inch Nails", "Official music video", "Award: Best Rock Song, 68th Grammy Awards, 2026"],
   weight: 1,
   summary:
     "Official music video visual design for Nine Inch Nails. Winner, Best Rock Song, 68th Grammy Awards (2026).",

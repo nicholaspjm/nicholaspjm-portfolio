@@ -88,15 +88,11 @@ function SeeMore({ href = "/work" }: { href?: string }) {
  *  older un-contexted saves still apply as the shared base. */
 function ProjectBlock({
   p,
-  num,
-  total,
   context,
   feature = false,
   showImages = true,
 }: {
   p: Project;
-  num: number;
-  total: number;
   context: "selected" | "section";
   feature?: boolean;
   showImages?: boolean;
@@ -107,8 +103,6 @@ function ProjectBlock({
         slug={p.slug}
         title={p.title}
         summary={p.summary}
-        num={num}
-        total={total}
         feature={feature}
         prev={prev(p)}
       />
@@ -238,6 +232,8 @@ export default function Home() {
         Enquiries: <a href={`mailto:${site.email}`}>{site.email}</a>.
       </p>
 
+      <div className="spacer-v" aria-hidden />
+
       {/* SELECTED WORKS: curated, hand-ordered highlights ---------------- */}
       <p style={{ marginTop: "1.4em" }}>
         <Editable id="label.selected" as="span" className="extra">
@@ -250,8 +246,6 @@ export default function Home() {
           key={`sel-${p.slug}`}
           context="selected"
           p={p}
-          num={i + 1}
-          total={selected.length}
         />
       ))}
       <SeeMore />
@@ -273,8 +267,6 @@ export default function Home() {
           key={p.slug}
           context="section"
           p={p}
-          num={i + 1}
-          total={commissioned.length}
         />
       ))}
       <SectionFoot id="foot.visual">
@@ -300,8 +292,6 @@ export default function Home() {
           key={p.slug}
           context="section"
           p={p}
-          num={i + 1}
-          total={installations.length}
         />
       ))}
       {/* Formatted like the project entries: title line, then year + detail. */}
@@ -351,8 +341,6 @@ export default function Home() {
           key={p.slug}
           context="section"
           p={p}
-          num={i + 1}
-          total={explorations.length}
         />
       ))}
       <SeeMore />
@@ -379,8 +367,6 @@ export default function Home() {
                   k: "tool",
                   s: `${t.summary} (${t.stack})`,
                 })}
-                num={i + 1}
-                total={tools.length}
                 name={t.name}
                 summary={t.summary}
                 stack={t.stack}

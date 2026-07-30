@@ -5,6 +5,7 @@ export const project: Project = {
   title: "Abstracted Organica",
   section: "installation",
   year: "2026",
+  date: "2026",
   credits: ["Series term coined by Gabriella Brown for It's Nice That"],
   weight: 0.7,
   summary:

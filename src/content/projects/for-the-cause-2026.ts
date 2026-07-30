@@ -6,8 +6,8 @@ export const project: Project = {
   title: "For The Cause 2026",
   section: "installation",
   year: "2026",
-  date: "March 2026",
-  credits: ["Full lighting design and main-stage visuals", "For The Cause, Boonwurrung Country"],
+  date: "March 2026, Boonwurrung Country",
+  credits: ["Client: For The Cause", "Lighting design and main-stage visuals"],
   weight: 0.85,
   summary:
     "Full lighting design and main-stage visuals for For The Cause (FTC) 2026, an intimate festival on Boonwurrung Country.",

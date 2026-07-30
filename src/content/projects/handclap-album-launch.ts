@@ -7,7 +7,8 @@ export const project: Project = {
   title: "Hand Clap Album Launch",
   section: "installation",
   year: "2026",
-  credits: ["Album launch visuals for Hand Clap, Naarm / Melbourne"],
+  date: "2026, Naarm / Melbourne",
+  credits: ["Client: Hand Clap", "Album launch visuals"],
   weight: 0.6,
   summary:
     "Visuals for Hand Clap's album launch, Naarm / Melbourne.",

@@ -13,8 +13,6 @@ import { Editable } from "./editable";
 export function ToolEntry({
   href,
   prev,
-  num,
-  total,
   name,
   summary,
   stack,
@@ -22,8 +20,6 @@ export function ToolEntry({
 }: {
   href: string;
   prev: string;
-  num: number;
-  total: number;
   name: string;
   summary: string;
   stack: string;
@@ -33,9 +29,6 @@ export function ToolEntry({
 
   const inner = (
     <>
-      <span className="entry-num">
-        {String(num).padStart(2, "0")}/{String(total).padStart(2, "0")}
-      </span>
       <Editable id={`tool.${idx}.name`} as="span" className="tool-name">
         {name}
       </Editable>{" "}

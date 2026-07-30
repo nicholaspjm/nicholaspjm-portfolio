@@ -16,16 +16,12 @@ export function ProjectEntry({
   slug,
   title,
   summary,
-  num,
-  total,
   feature = false,
   prev,
 }: {
   slug: string;
   title: string;
   summary: string;
-  num: number;
-  total: number;
   feature?: boolean;
   prev: string;
 }) {
@@ -34,9 +30,6 @@ export function ProjectEntry({
 
   const inner = (
     <>
-      <span className="entry-num">
-        {String(num).padStart(2, "0")}/{String(total).padStart(2, "0")}
-      </span>
       <Editable id={`work.${slug}.title`} as="span" className="ptitle">
         {title}
       </Editable>

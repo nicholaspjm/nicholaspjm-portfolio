@@ -7,8 +7,8 @@ export const project: Project = {
   title: "Pitch Music & Arts: Far from God, Close to Heaven",
   section: "installation",
   year: "2025",
-  date: "March 2025",
-  credits: ["Three-hour improvised audiovisual set at Pitch Music & Arts", "Grampian Plains, Victoria"],
+  date: "March 2025, Grampian Plains, VIC",
+  credits: ["Pitch Music & Arts", "Three-hour improvised audiovisual set"],
   weight: 0.72,
   summary:
     "A three-hour improvised audiovisual set at Pitch Music & Arts, Grampian Plains, Victoria.",

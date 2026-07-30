@@ -7,7 +7,8 @@ export const project: Project = {
   title: "Atmos, Norla Dome",
   section: "installation",
   year: "2024",
-  credits: ["Projection-mapped visuals for Atmos at the Norla Dome, Naarm / Melbourne"],
+  date: "2024, Naarm / Melbourne",
+  credits: ["Client: Atmos", "Norla Dome", "Projection-mapped visuals"],
   weight: 0.6,
   summary:
     "Live, projection-mapped visuals for Atmos at the Norla Dome, Naarm / Melbourne.",

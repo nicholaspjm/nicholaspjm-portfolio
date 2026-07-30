@@ -5,7 +5,7 @@ export const project: Project = {
   title: "Forgotten, Once Remembered",
   section: "installation",
   year: "2025",
-  date: "March 2025",
+  date: "March 2025, Naarm / Melbourne",
   credits: ["In collaboration with Grace Kim (Nabii)", "Performed by Carmen Y 易嘉敏", "Presented at Pitch Music & Arts and Babie Club"],
   summary:
     "Interactive audiovisual dance piece with Grace Kim (Nabii), interpreted by Carmen Y 易嘉敏. Pitch Music & Arts and Babie Club.",

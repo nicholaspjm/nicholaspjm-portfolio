@@ -7,7 +7,8 @@ export const project: Project = {
   title: "Thread & Congee Club's First Birthday",
   section: "installation",
   year: "2025",
-  credits: ["Ongoing visual design for Thread, Congee Club"],
+  date: "2025, Naarm / Melbourne",
+  credits: ["Client: Thread, Congee Club", "Ongoing visual design"],
   weight: 0.6,
   summary:
     "Real-time, audio-reactive GLSL visuals for Thread and Congee Club's first birthday at Miscellania, Naarm / Melbourne.",

@@ -6,8 +6,8 @@ export const project: Project = {
   title: "Nū, Opening for Saul Williams",
   section: "installation",
   year: "2026",
-  date: "June 2026",
-  credits: ["Opening for Saul Williams meets Carlos Niño & Friends", "Melbourne Recital Centre, RISING 2026"],
+  date: "June 2026, Naarm / Melbourne",
+  credits: ["Client: Nū", "Opening for Saul Williams meets Carlos Niño & Friends", "Melbourne Recital Centre, RISING"],
   weight: 0.7,
   summary:
     "Live visuals for Nū's opening set for Saul Williams meets Carlos Niño & Friends at Melbourne Recital Centre, RISING 2026.",

@@ -5,7 +5,8 @@ export const project: Project = {
   title: "Mach1 Festival",
   section: "installation",
   year: "2026",
-  credits: ["Tent installation and visual design for Mach1 Festival"],
+  date: "2026",
+  credits: ["Client: Mach1 Festival", "Tent installation and visual design"],
   weight: 0.7,
   summary:
     "Festival tent installation and visual design for Mach1 Festival.",

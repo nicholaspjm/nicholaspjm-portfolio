@@ -7,7 +7,8 @@ export const project: Project = {
   title: "Hybrid 2.0",
   section: "sketch",
   year: "2025",
-  credits: ["Presented in Hybrid 2.0, a Platform Presents group exhibition, Naarm / Melbourne", "640 LEDs, acrylic, aluminium, steel wire"],
+  date: "2025, Naarm / Melbourne",
+  credits: ["Presented in Hybrid 2.0, a Platform Presents group exhibition", "640 LEDs, acrylic, aluminium, steel wire"],
   weight: 0.75,
   summary:
     "Live audiovisual installation, presented in the Platform Presents group exhibition, Naarm / Melbourne.",

@@ -56,28 +56,23 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
         </Editable>
       </header>
 
-      {/* Date + details, set apart from the prose (mono, hairline-ruled).
-          Both lines are editable in the studio (meta.<slug>.date/.details). */}
-      <div className="meta-block">
-        <div className="mb-row">
-          <span className="mb-k">date</span>
-          <Editable id={`meta.${project.slug}.date`} as="span">
-            {project.date ?? project.year}
+      {/* Credits, traditional portfolio style: date and place, then one
+          labelled line per credit, then the tools. Body type, not mono, so it
+          sits with the rest of the text. Each line edits in the studio. */}
+      <div className="credits">
+        <Editable id={`meta.${project.slug}.date`} as="p">
+          {project.date ?? project.year}
+        </Editable>
+        {(project.credits ?? []).map((c, i) => (
+          <Editable key={i} id={`meta.${project.slug}.credit${i}`} as="p">
+            {c}
           </Editable>
-        </div>
-        <div className="mb-row">
-          <span className="mb-k">details</span>
-          <Editable id={`meta.${project.slug}.details`} as="span">
-            {[
-              ...(project.credits ?? []),
-              project.tags && project.tags.length > 0
-                ? `Tools: ${project.tags.join(", ")}`
-                : "",
-            ]
-              .filter(Boolean)
-              .join(" · ")}
+        ))}
+        {project.tags && project.tags.length > 0 && (
+          <Editable id={`meta.${project.slug}.tools`} as="p">
+            {project.tags.join(", ")}
           </Editable>
-        </div>
+        )}
       </div>
 
       {/* Brief description + links */}

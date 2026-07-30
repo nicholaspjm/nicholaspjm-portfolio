@@ -25,7 +25,7 @@ export const project: Project = {
   title: "The xx Festival Tour",
   year: "2026",
   date: "April 2026",
-  credits: ["Commissioned for The xx's 2026 festival tour", "Presented at Coachella, Main Stage"],
+  credits: ["Client: The xx", "Presented at Coachella, main stage", "Festival tour visual design"],
   weight: 1,
   summary:
     "Audio-reactive TouchDesigner visual design for The xx's 2026 festival tour, including Coachella Main Stage.",

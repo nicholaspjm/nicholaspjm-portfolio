@@ -1334,30 +1334,19 @@ html[data-preview] .scatter-field { opacity: 0; }
 }
 
 /* ---------------------------------------------------------------------------
-   Detail-page meta block — date + details, set apart from the prose.
+   Detail-page credits — traditional portfolio block: date and place, then a
+   labelled line per credit. Body type, sitting quietly with the prose.
    ------------------------------------------------------------------------ */
-.meta-block {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 12px;
-  border-top: 1px solid var(--soft);
-  border-bottom: 1px solid var(--soft);
-  padding: 8px 0;
-  margin: 1.4em 0 1.6em;
+.credits {
   max-width: 72ch;
+  margin: 1.1em 0 1.5em;
+  line-height: 1.45;
 }
-.mb-row {
-  display: flex;
-  gap: 10px;
-  margin: 3px 0;
-  line-height: 1.5;
+.credits p {
+  margin: 0;
 }
-.mb-k {
-  flex: 0 0 64px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 10px;
-  color: var(--soft);
-  padding-top: 2px;
+.credits p:first-child {
+  margin-bottom: 0.35em;
 }
 
 /* ---------------------------------------------------------------------------
