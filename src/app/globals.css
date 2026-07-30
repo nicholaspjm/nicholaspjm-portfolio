@@ -902,9 +902,11 @@ html[data-preview] .scatter-field { opacity: 0; }
   height: auto;
   filter: url(#blob-distort);
 }
+/* Both labels sit BELOW the frame (the "indented down" look), stacked:
+   track line first, then title · year. */
 .blob-label {
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   left: -1px;
   font-family: "Courier New", Courier, monospace;
   font-size: 9px;
@@ -916,8 +918,8 @@ html[data-preview] .scatter-field { opacity: 0; }
 }
 .blob-meta {
   position: absolute;
-  top: 100%;
-  right: -1px;
+  top: calc(100% + 14px);
+  left: -1px;
   font-family: "Courier New", Courier, monospace;
   font-size: 9px;
   line-height: 1.5;
@@ -979,7 +981,7 @@ html[data-preview] .scatter-field { opacity: 0; }
   position: relative;
   display: block;
   break-inside: avoid;
-  margin: 0 0 34px 0;
+  margin: 0 0 40px 0; /* room for the two stacked labels below the frame */
   border: 1px solid var(--ink);
   background: var(--bg);
   text-decoration: none;
@@ -1027,6 +1029,36 @@ html[data-preview] .scatter-field { opacity: 0; }
   text-transform: uppercase;
 }
 /* dev editor: per-frame hide/show toggle */
+/* Edit-mode controls on a visual frame: hide/show + pin/unpin. */
+.vblob-ctl {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+}
+.vblob-ctl button {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+  border: 0;
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+}
+.vblob-pinmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  padding: 1px 6px;
+  background: var(--link);
+  color: #fff;
+}
 .vblob-hide {
   position: absolute;
   right: 0;
@@ -1299,21 +1331,6 @@ html[data-preview] .scatter-field { opacity: 0; }
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* ---------------------------------------------------------------------------
-   TEMPORARY SIZE PASS — preview: every homepage row forced to S.
-   Delete this whole block to restore the saved per-row sizes.
-   ------------------------------------------------------------------------ */
-.image-row.size-m,
-.image-row.size-l {
-  max-height: 118px;
-  gap: 0.5em;
-}
-.image-row.size-m img, .image-row.size-l img,
-.image-row.size-m video, .image-row.size-l video,
-.image-row.size-m .yt, .image-row.size-l .yt {
-  height: 110px;
 }
 
 /* ---------------------------------------------------------------------------

@@ -39,6 +39,14 @@ function initialHidden(): Set<string> {
   );
 }
 
+/** Works pinned to the top of the page (comma list of slugs, in pin order). */
+function initialPinned(): string[] {
+  return (editableText["visual.pinned"] ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 /**
  * Every work image laid out as a clean, non-overlapping masonry in the
  * blob-tracker frame (bounding box, corner ticks, track label). Images sit
@@ -55,6 +63,8 @@ export function VisualField({ items }: { items: VisualItem[] }) {
   const [order, setOrder] = useState<number[] | null>(null);
   const editMode = useSyncExternalStore(subscribe, getEditMode, () => false);
   const [hidden, setHidden] = useState<Set<string>>(initialHidden);
+  // Pinned works always lead the page, in pin order; the rest shuffle.
+  const [pinned, setPinned] = useState<string[]>(initialPinned);
   // Only saved when the user actually toggled something on this page.
   const [dirty, setDirty] = useState(false);
 
@@ -104,84 +114,129 @@ export function VisualField({ items }: { items: VisualItem[] }) {
       return next;
     });
   };
+  const togglePin = (slug: string) => {
+    setDirty(true);
+    setPinned((prev) =>
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug],
+    );
+  };
+
+  // Pinned works float to the top (keeping pin order, then each work's items
+  // in their shuffled order); everything else keeps the shuffle.
+  const pinRank = (i: number) => {
+    const r = pinned.indexOf(items[i].slug);
+    return r === -1 ? pinned.length : r;
+  };
+  const shown = [...order].sort((a, b) => pinRank(a) - pinRank(b));
+
+  const pinnedIdxs = shown.filter((i) => pinned.includes(items[i].slug));
+  const restIdxs = shown.filter((i) => !pinned.includes(items[i].slug));
+
+  const renderItem = (idx: number, n: number) => {
+    const it = items[idx];
+    const k = keyOf(it);
+    const isHidden = hidden.has(k);
+    // Hidden items only render while edit mode is on (dimmed + marked,
+    // with the toggle). Otherwise the page shows exactly what live shows.
+    if (isHidden && !editing) return null;
+
+    const isPinned = pinned.includes(it.slug);
+    const cls = `vblob${isHidden ? " vblob-hidden" : ""}`;
+    const inner = (
+      <>
+        <span className="blob-label">
+          trk_{String(n + 1).padStart(2, "0")} · {it.slug}
+        </span>
+        {isHidden && <span className="vblob-hiddenmark">hidden on live</span>}
+        {editing && isPinned && (
+          <span className="vblob-pinmark">pinned</span>
+        )}
+        {it.youtube ? (
+          <iframe
+            className="yt"
+            src={ytEmbed(it.youtube, it.start)}
+            title={it.title}
+            loading="lazy"
+            allow="autoplay; encrypted-media; picture-in-picture"
+          />
+        ) : it.video ? (
+          <video
+            className="vid"
+            src={asset(it.video)}
+            muted
+            loop
+            playsInline
+            preload="none"
+            aria-label={it.title}
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={asset(thumbOf(it.src!))}
+            alt={it.title}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+        <span className="blob-meta">
+          {it.title} · {it.year}
+        </span>
+      </>
+    );
+
+    // Edit mode: frames become plain divs (no navigation) with toggles.
+    if (editing) {
+      return (
+        <div key={`${k}-${idx}`} className={cls}>
+          {inner}
+          <div className="vblob-ctl">
+            <button onClick={() => toggle(k)}>
+              {isHidden ? "show" : "hide"}
+            </button>
+            <button onClick={() => togglePin(it.slug)}>
+              {isPinned ? "unpin" : "pin work"}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <Link key={`${k}-${idx}`} href={`/work/${it.slug}`} className={cls}>
+        {inner}
+        <span className="vblob-cta">open work ↗</span>
+      </Link>
+    );
+  };
 
   return (
-    <div className="visual-field" ref={fieldRef}>
-      {order.map((idx, n) => {
-        const it = items[idx];
-        const k = keyOf(it);
-        const isHidden = hidden.has(k);
-        // Hidden items only render while edit mode is on (dimmed + marked,
-        // with the toggle). Otherwise the page shows exactly what live shows.
-        if (isHidden && !editing) return null;
-
-        const cls = `vblob${isHidden ? " vblob-hidden" : ""}`;
-        const inner = (
-          <>
-            <span className="blob-label">
-              trk_{String(n + 1).padStart(2, "0")} · {it.slug}
-            </span>
-            {isHidden && <span className="vblob-hiddenmark">hidden on live</span>}
-            {it.youtube ? (
-              <iframe
-                className="yt"
-                src={ytEmbed(it.youtube, it.start)}
-                title={it.title}
-                loading="lazy"
-                allow="autoplay; encrypted-media; picture-in-picture"
-              />
-            ) : it.video ? (
-              <video
-                className="vid"
-                src={asset(it.video)}
-                muted
-                loop
-                playsInline
-                preload="none"
-                aria-label={it.title}
-              />
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={asset(thumbOf(it.src!))}
-                alt={it.title}
-                loading="lazy"
-                decoding="async"
-              />
-            )}
-            <span className="blob-meta">
-              {it.title} · {it.year}
-            </span>
-          </>
-        );
-
-        // Edit mode: frames become plain divs (no navigation) with the toggle.
-        if (editing) {
-          return (
-            <div key={`${k}-${idx}`} className={cls}>
-              {inner}
-              <button className="vblob-hide" onClick={() => toggle(k)}>
-                {isHidden ? "show" : "hide"}
-              </button>
-            </div>
-          );
-        }
-
-        return (
-          <Link key={`${k}-${idx}`} href={`/work/${it.slug}`} className={cls}>
-            {inner}
-            <span className="vblob-cta">open work ↗</span>
-          </Link>
-        );
-      })}
+    <div ref={fieldRef}>
+      {/* Pinned works lead the page in their own band, in pin order. */}
+      {pinnedIdxs.length > 0 && (
+        <div className="visual-field">
+          {pinnedIdxs.map((idx, i) => renderItem(idx, i))}
+        </div>
+      )}
+      <div className="visual-field">
+        {restIdxs.map((idx, i) => renderItem(idx, pinnedIdxs.length + i))}
+      </div>
       {editing && (
-        <span
-          data-edit-id="visual.hidden"
-          data-edit-default=""
-          data-edit-value={[...hidden].sort().join(",")}
-          data-edit-dirty={dirty ? "1" : undefined}
-          hidden
-        />
+        <>
+          <span
+            data-edit-id="visual.hidden"
+            data-edit-default=""
+            data-edit-value={[...hidden].sort().join(",")}
+            data-edit-dirty={dirty ? "1" : undefined}
+            hidden
+          />
+          <span
+            data-edit-id="visual.pinned"
+            data-edit-default=""
+            data-edit-value={pinned.join(",")}
+            data-edit-dirty={dirty ? "1" : undefined}
+            hidden
+          />
+        </>
       )}
     </div>
   );

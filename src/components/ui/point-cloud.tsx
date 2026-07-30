@@ -114,28 +114,9 @@ export function PointCloud() {
       .then((r) => r.arrayBuffer())
       .then((buf) => {
         if (disposed) return;
-        // Thin the scan to a calmer density: keep a deterministic ~72% of
-        // points (stable subset, no frame-to-frame flicker) so the field
-        // reads less grainy while the room shape stays intact.
-        const raw = new Float32Array(buf);
-        const KEEP = 0.72;
-        let m = 0;
-        for (let i = 0; i < raw.length; i += 3) {
-          const hsh = Math.sin(i * 12.9898) * 43758.5453;
-          if (hsh - Math.floor(hsh) < KEEP) m += 3;
-        }
-        const kept = new Float32Array(m);
-        let j = 0;
-        for (let i = 0; i < raw.length; i += 3) {
-          const hsh = Math.sin(i * 12.9898) * 43758.5453;
-          if (hsh - Math.floor(hsh) < KEEP) {
-            kept[j] = raw[i];
-            kept[j + 1] = raw[i + 1];
-            kept[j + 2] = raw[i + 2];
-            j += 3;
-          }
-        }
-        pts = kept;
+        // Full scan density: every point, each a single solid-black device
+        // pixel, for the finest, darkest rendition of the room.
+        pts = new Float32Array(buf);
         bornAt = performance.now();
         raf = requestAnimationFrame(draw);
       })

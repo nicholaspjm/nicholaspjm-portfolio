@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { BUILD_DATE } from "@/content/build-info";
 
 /** Small hoist-triangle Palestine flag — inline SVG so it renders the same
@@ -24,6 +25,9 @@ function PalestineFlag() {
  */
 export function Readout() {
   const [line, setLine] = useState("");
+  // Corner overlay belongs to the main page only.
+  const pathname = usePathname();
+  const home = pathname === "/" || pathname === "";
 
   useEffect(() => {
     let x = 0;
@@ -63,6 +67,7 @@ export function Readout() {
     };
   }, []);
 
+  if (!home) return null;
   return (
     <div className="readout" aria-hidden>
       <div className="readout-info">
