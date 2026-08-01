@@ -41,11 +41,13 @@ export function PointCloud() {
     // pixels on any screen: a single device pixel is invisibly fine on
     // high-DPI displays, but a fixed CSS size would blur. Recomputed on
     // resize because dpr can change between screens.
-    let dot = 2;
+    let dot = 1;
     const setDot = () => {
-      // ceil, not round, so fractional ratios (125%/150% Windows) round up
-      // rather than shrinking the dot below the 1x size.
-      dot = Math.max(2, Math.ceil(dpr * 1.5));
+      // Dot size in DEVICE pixels. Scaling it freely with dpr made phones
+      // (dpr 3) draw 5x5 blocks, which reads as chunky. Cap at 2 so the
+      // point stays a fine speck everywhere: 1px at 1x, 2px on retina and
+      // phones (a sub-CSS-pixel dot, the finest that still renders solid).
+      dot = Math.min(2, Math.max(1, Math.round(dpr)));
     };
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
