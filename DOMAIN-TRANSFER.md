@@ -1,6 +1,11 @@
 # Moving nicholaspjm.com from Cargo to Cloudflare
 
 Checked against the registry on 30 July 2026.
+**Re-verified against live DNS on 25 August 2026 — nothing has changed.**
+`nicholaspjm.com` still answers on `ns1/ns2.cargo.site`, still resolves to
+Cargo's `3.215.100.79` / `3.234.189.133`, and the Google Workspace `MX`
+(`1 SMTP.GOOGLE.com`) and the `google-site-verification` TXT are both intact.
+Every step below is still accurate as written.
 
 ## What the registry says
 
@@ -82,6 +87,17 @@ The Cloudflare build already targets a root domain with no
 `https://nicholaspjm.com`. Google Analytics is independent of all this: paste
 the `G-XXXXXXXXXX` measurement ID into `gaId` in that same file whenever you
 like, before or after the domain move.
+
+## After the move
+
+Two things only become possible once the domain is live on Cloudflare, both
+listed in `SEO.md`:
+
+- **Google Search Console** — add the property and submit
+  `https://nicholaspjm.com/sitemap.xml`. The `google-site-verification` TXT
+  already on the domain should verify it immediately.
+- **Cloudflare Web Analytics** — free and cookieless, and the reason `gaId` in
+  `src/content/site.ts` is deliberately left empty.
 
 ## Reference
 
