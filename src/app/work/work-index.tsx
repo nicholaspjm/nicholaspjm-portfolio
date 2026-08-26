@@ -133,11 +133,11 @@ export function WorkIndex({ projects }: { projects: WorkItem[] }) {
         <NavButton href="/info">info</NavButton>
       </p>
 
-      <p>
+      <h1 className="labelrow">
         <Editable id="label.indexOfWork" as="span" className="extra">
           index of work
         </Editable>
-      </p>
+      </h1>
 
       <p>
         <NavButton href="/work">all</NavButton>

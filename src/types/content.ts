@@ -141,6 +141,11 @@ export interface SiteInfo {
   email: string;
   social: { label: string; href: string }[];
   nav: { label: string; href: string }[];
+  /** Other names people search for. Feeds JSON-LD `alternateName`. */
+  alsoKnownAs?: string[];
+  /** Discipline and place terms. Feeds `<meta keywords>` and JSON-LD
+   *  `knowsAbout`, and is the vocabulary page descriptions draw on. */
+  keywords?: string[];
   /** Google Analytics 4 Measurement ID ("G-XXXXXXXXXX"). Empty = disabled. */
   gaId?: string;
 }

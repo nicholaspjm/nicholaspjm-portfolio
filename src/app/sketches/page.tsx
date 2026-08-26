@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { NavButton } from "@/components/ui/nav-button";
 import { Editable } from "@/components/ui/editable";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Sketches",
-  description: "Self-directed experiments in real-time graphics.",
-};
+export const metadata: Metadata = pageMeta({
+  title: "Sketches — real-time graphics experiments",
+  description:
+    "Self-directed experiments in real-time graphics: TouchDesigner, GLSL and generative systems built outside client work.",
+  path: "/sketches/",
+});
 
 export default function SketchesPage() {
   return (
@@ -16,11 +19,11 @@ export default function SketchesPage() {
         <NavButton href="/cv">CV</NavButton>
       </p>
 
-      <p>
+      <h1 className="labelrow">
         <Editable id="label.sketches" as="span" className="extra">
           sketches
         </Editable>
-      </p>
+      </h1>
     </>
   );
 }

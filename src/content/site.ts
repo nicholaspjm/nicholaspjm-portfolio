@@ -3,8 +3,11 @@ import type { SiteInfo } from "@/types/content";
 export const site: SiteInfo = {
   name: "Nicholas Marriott",
   shortName: "NPJM",
+  // Never rendered on screen — this is the meta description and OG blurb, so
+  // it is written for a search result: name first, discipline, then place.
+  // Kept under ~160 characters so Google shows it whole.
   tagline:
-    "Designer and technologist working across audio-reactive visuals, interactive installation, and real-time systems. Based in Naarm / Melbourne.",
+    "Nicholas Marriott (nicholaspjm) — creative technologist and new media artist in Naarm / Melbourne. Projection, audio-reactive visuals, real-time installation.",
   url: "https://nicholaspjm.com",
   email: "contact@nicholaspjm.com",
   social: [
@@ -18,6 +21,26 @@ export const site: SiteInfo = {
     { label: "Sketches", href: "/sketches" },
     { label: "CV", href: "/cv" },
     { label: "Info", href: "/info" },
+  ],
+  alsoKnownAs: ["nicholaspjm", "Nick Marriott", "NPJM"],
+  // The vocabulary the site should be findable by. Used for JSON-LD
+  // `knowsAbout` and as the source for page descriptions — not stuffed into
+  // body copy, which search engines discount and readers notice.
+  keywords: [
+    "projection mapping",
+    "projection design",
+    "new media art",
+    "creative technology",
+    "creative technologist",
+    "audio-reactive visuals",
+    "interactive installation",
+    "real-time graphics",
+    "live visuals",
+    "TouchDesigner",
+    "VJ",
+    "Melbourne",
+    "Naarm",
+    "Australia",
   ],
   // Paste your Google Analytics 4 Measurement ID here (Admin -> Data streams ->
   // your web stream -> "Measurement ID", looks like "G-XXXXXXXXXX"). Leaving it

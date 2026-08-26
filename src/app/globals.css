@@ -78,6 +78,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p { margin: 0 0 0.4em 0; }
+
+/* Section labels are real headings (h1/h2) for search engines and screen
+   readers, but they must not look like it. Tailwind's preflight already drops
+   heading font-size and weight to inherit; these rules restore the rest of the
+   paragraph behaviour they replaced:
+     .labelrow        same block rhythm as the <p> that used to wrap them
+     .labelrow.tight  no margin, for a label that sat above a <br />
+   The yellow `.extra` highlight stays on an inline <span> inside, so it hugs
+   its text instead of stretching the full width of a block heading. */
+.labelrow { margin: 0 0 0.4em 0; font: inherit; }
+.labelrow.tight { margin: 0; }
 em, i, cite { font-style: italic; }
 strong, b { font-weight: 700; }
 

@@ -2,10 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getListedProjects } from "@/lib/projects";
 import { asset } from "@/lib/asset";
+import { pageMeta } from "@/lib/seo";
 import { NoiseRule } from "@/components/ui/noise";
 import { WorkIndex, type WorkItem } from "./work-index";
 
-export const metadata: Metadata = { title: "Work" };
+export const metadata: Metadata = pageMeta({
+  title: "Work — projection, new media & live visuals",
+  description:
+    "Selected projects: projection design, audio-reactive visuals, interactive installation and live visuals for festivals, artists and brands.",
+  path: "/work/",
+});
 
 /** Small thumbnails for the strip at the bottom (same tier the rows use). */
 const thumbOf = (src: string) =>

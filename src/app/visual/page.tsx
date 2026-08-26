@@ -3,11 +3,14 @@ import { getListedProjects } from "@/lib/projects";
 import { NavButton } from "@/components/ui/nav-button";
 import { VisualField, type VisualItem } from "@/components/ui/visual-field";
 import { Editable } from "@/components/ui/editable";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Visual",
-  description: "Every image, scattered. Click through to the work.",
-};
+export const metadata: Metadata = pageMeta({
+  title: "Visual index — every image",
+  description:
+    "Every image from every project in one scattered field: projection, installation and live-visual work by Nicholas Marriott. Click through to the work.",
+  path: "/visual/",
+});
 
 export default function VisualPage() {
   // Everything a work carries: photos, gifs, local clips, YouTube embeds.
@@ -31,12 +34,13 @@ export default function VisualPage() {
         <NavButton href="/">← index</NavButton>
         <NavButton href="/work">index of work</NavButton>
       </p>
-      <p style={{ margin: "0 0 0.2em 0" }}>
+      <h1 className="labelrow tight">
         <Editable id="label.visual" as="span" className="extra">
           visual
         </Editable>{" "}
         <span className="pathnote">~/practice/visuals</span>
-        <br />
+      </h1>
+      <p style={{ margin: "0 0 0.2em 0" }}>
         <Editable id="visual.intro" as="span">
           Every image, scattered. Click any to open its work.
         </Editable>

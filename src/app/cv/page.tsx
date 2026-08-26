@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
+import { pageMeta } from "@/lib/seo";
 import { getListedProjects } from "@/lib/projects";
 import {
   performances,
@@ -12,7 +13,12 @@ import { NavButton } from "@/components/ui/nav-button";
 import { CVSheet, type CVRow } from "@/components/ui/cv-sheet";
 import { Editable } from "@/components/ui/editable";
 
-export const metadata: Metadata = { title: "CV" };
+export const metadata: Metadata = pageMeta({
+  title: "CV — exhibitions, festivals, commissions & teaching",
+  description:
+    "Curriculum vitae for Nicholas Marriott: installations, festival and live-visual commissions, awards, press, teaching and education.",
+  path: "/cv/",
+});
 
 export default function CVPage() {
   const projects = getListedProjects();
@@ -73,11 +79,11 @@ export default function CVPage() {
         <NavButton href={`mailto:${site.email}`}>{site.email}</NavButton>
       </p>
 
-      <p>
+      <h1 className="labelrow">
         <Editable id="label.cv" as="span" className="extra">
           Nicholas Marriott CV
         </Editable>
-      </p>
+      </h1>
 
       {/* The CV sheet is held back from the live site for now; localhost
           still shows it so it can keep being worked on. */}

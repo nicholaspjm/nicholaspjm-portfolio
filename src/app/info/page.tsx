@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
+import { pageMeta } from "@/lib/seo";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { Editable } from "@/components/ui/editable";
 
-export const metadata: Metadata = { title: "Info" };
+export const metadata: Metadata = pageMeta({
+  title: "Info — about, contact & colophon",
+  description:
+    "About Nicholas Marriott (nicholaspjm): creative technologist and new media artist in Naarm / Melbourne. Contact for commissions, teaching and speaking.",
+  path: "/info/",
+});
 
 export default function InfoPage() {
   return (
@@ -23,11 +29,11 @@ export default function InfoPage() {
         ))}
       </p>
 
-      <p style={{ marginTop: "0.6em" }}>
+      <h1 className="labelrow" style={{ marginTop: "0.6em" }}>
         <Editable id="info.label.about" as="span" className="extra">
           about
         </Editable>
-      </p>
+      </h1>
 
       <div style={{ maxWidth: "64ch" }}>
         <Editable id="info.about.p1" as="p" style={{ marginTop: "0.6em" }}>
@@ -61,11 +67,12 @@ export default function InfoPage() {
 
       <NoiseRule char="/" />
 
-      <p>
+      <h2 className="labelrow tight">
         <Editable id="info.label.contact" as="span" className="extra">
           contact
         </Editable>
-        <br />
+      </h2>
+      <p>
         For commissions, collaborations, teaching, and press:{" "}
         <a href={`mailto:${site.email}`}>{site.email}</a> · +61 480 748 953 ·{" "}
         <span className="data" style={{ fontSize: 13 }}>
@@ -73,11 +80,12 @@ export default function InfoPage() {
         </span>
       </p>
 
-      <p style={{ marginTop: "0.8em" }}>
+      <h2 className="labelrow tight" style={{ marginTop: "0.8em" }}>
         <Editable id="info.label.colophon" as="span" className="extra">
           colophon
         </Editable>
-        <br />
+      </h2>
+      <p>
         Built with Next.js. Set in Arial with Courier for data. The background
         of the <Link href="/">index</Link> is a point-cloud scan; the rail at
         right is a live map of the page&rsquo;s structure. Design favours

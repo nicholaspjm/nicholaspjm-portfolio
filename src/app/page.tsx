@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
+import { pageMeta } from "@/lib/seo";
 import {
   getListedProjects,
   getProjectBySlug,
@@ -25,6 +27,13 @@ import { Editable } from "@/components/ui/editable";
 import { ProjectEntry } from "@/components/ui/project-entry";
 import { SectionArrange } from "@/components/ui/section-arrange";
 import { ToolEntry } from "@/components/ui/tool-entry";
+
+export const metadata: Metadata = {
+  ...pageMeta({ description: site.tagline, path: "/" }),
+  title: {
+    absolute: "Nicholas Marriott (nicholaspjm) — creative technologist, Melbourne",
+  },
+};
 
 /** Apply the saved arrangement for a homepage section: saved order first
  *  (unknown slugs keep their base order after it), then drop hidden ones.
@@ -149,6 +158,13 @@ export default function Home() {
 
   const rich = (
     <div className="leftcol">
+      {/* The index has no visible title — the work is the title. Search
+          engines still need one, so it is here for them and for screen
+          readers, carrying the terms the practice should be found by. */}
+      <h1 className="sr-only">
+        Nicholas Marriott (nicholaspjm) — projection, new media and creative
+        technology in Naarm / Melbourne
+      </h1>
       {/* TOP NAV: evenly spread row of plain buttons --------------------- */}
       <div className="topnav">
         <NavButton href="/work">list view</NavButton>

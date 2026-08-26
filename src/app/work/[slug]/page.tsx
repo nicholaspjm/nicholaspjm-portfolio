@@ -9,6 +9,8 @@ import { Blocks } from "@/components/content/block-renderer";
 import { NavButton } from "@/components/ui/nav-button";
 import { ProjectGallery } from "@/components/ui/project-gallery";
 import { Editable } from "@/components/ui/editable";
+import { ProjectSchema } from "@/components/layout/structured-data";
+import { pageMeta, projectOgImage, projectStill } from "@/lib/seo";
 
 export function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
@@ -20,7 +22,15 @@ export async function generateMetadata(
   const { slug } = await props.params;
   const project = getProjectBySlug(slug);
   if (!project) return {};
-  return { title: project.title, description: project.summary };
+  // Works that lead with a YouTube embed or a clip carry no still to crop,
+  // so they fall back to the site card rather than shipping a broken image.
+  const still = projectStill(project);
+  return pageMeta({
+    title: project.title,
+    description: project.summary,
+    path: `/work/${slug}/`,
+    image: still ? projectOgImage(slug) : undefined,
+  });
 }
 
 export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
@@ -44,6 +54,7 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
 
   return (
     <div className="bluepage">
+      <ProjectSchema project={project} />
       <p>
         <NavButton href="/">← index</NavButton>
         <NavButton href="/work">all work</NavButton>
