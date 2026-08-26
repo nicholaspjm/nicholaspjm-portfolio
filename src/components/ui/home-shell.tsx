@@ -19,7 +19,7 @@ export function HomeShell({
     <>
       <p style={{ margin: "0.4em 0 1em 0" }}>
         <button onClick={() => setSimpleView((v) => !v)}>
-          {simpleView ? "← rich view" : "list all ↓"}
+          {simpleView ? "rich view" : "list all"}
         </button>
       </p>
       {simpleView ? simple : rich}

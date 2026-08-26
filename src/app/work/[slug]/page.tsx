@@ -56,7 +56,7 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
     <div className="bluepage">
       <ProjectSchema project={project} />
       <p>
-        <NavButton href="/">← index</NavButton>
+        <NavButton href="/">index</NavButton>
         <NavButton href="/work">all work</NavButton>
       </p>
 
@@ -142,12 +142,12 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
       <p>
         {prev && (
           <NavButton href={`/work/${prev.slug}`}>
-            ← {prev.title.toLowerCase()}
+            {prev.title.toLowerCase()}
           </NavButton>
         )}
         {next && (
           <NavButton href={`/work/${next.slug}`}>
-            {next.title.toLowerCase()} →
+            {next.title.toLowerCase()}
           </NavButton>
         )}
       </p>

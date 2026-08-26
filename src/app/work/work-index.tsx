@@ -129,7 +129,7 @@ export function WorkIndex({ projects }: { projects: WorkItem[] }) {
   return (
     <>
       <p>
-        <NavButton href="/">← index</NavButton>
+        <NavButton href="/">index</NavButton>
         <NavButton href="/info">info</NavButton>
       </p>
 

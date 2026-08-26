@@ -31,7 +31,7 @@ export default function VisualPage() {
   return (
     <div style={{ padding: "0.4em 12px 0" }}>
       <p style={{ margin: "0 0 0.6em 0" }}>
-        <NavButton href="/">← index</NavButton>
+        <NavButton href="/">index</NavButton>
         <NavButton href="/work">index of work</NavButton>
       </p>
       <h1 className="labelrow tight">

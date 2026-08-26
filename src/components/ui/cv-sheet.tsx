@@ -238,7 +238,7 @@ export function CVSheet({ rows }: { rows: CVRow[] }) {
   return (
     <>
       <p>
-        <button onClick={download}>export .csv ↓</button>{" "}
+        <button onClick={download}>export .csv</button>{" "}
         <span className="foot">
           <Editable id="cv.formulaHint" as="span">
             the formula bar runs for real. Try WHERE year &gt;= 2026, WHERE

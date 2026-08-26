@@ -49,7 +49,7 @@ export default function WorkPage() {
       {/* MINI VISUAL: a condensed taste of the visual page ----------------- */}
       <p>
         <span className="extra">visual</span>{" "}
-        <Link href="/visual">open the full visual view →</Link>
+        <Link href="/visual">open the full visual view</Link>
       </p>
       <div className="mini-visual">
         {strip.map((x) => (
@@ -69,7 +69,7 @@ export default function WorkPage() {
         ))}
       </div>
       <p className="see-more">
-        <Link href="/visual">see more →</Link>
+        <Link href="/visual">see more</Link>
       </p>
     </>
   );

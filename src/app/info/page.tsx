@@ -17,7 +17,7 @@ export default function InfoPage() {
   return (
     <>
       <p>
-        <NavButton href="/">← index</NavButton>
+        <NavButton href="/">index</NavButton>
         <NavButton href="/work">work</NavButton>
         <NavButton href="/sketches">sketches</NavButton>
         <NavButton href="/cv">CV</NavButton>

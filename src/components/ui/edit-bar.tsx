@@ -78,7 +78,7 @@ export function EditBar() {
           setEditMode(!editMode);
         }}
       >
-        {editMode ? "done editing" : "✎ edit text"}
+        {editMode ? "done editing" : "edit text"}
       </button>
       {editMode && <button onClick={save}>save</button>}
       {status && <span className="editbar-status">{status}</span>}

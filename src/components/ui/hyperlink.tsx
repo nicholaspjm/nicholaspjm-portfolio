@@ -21,7 +21,6 @@ export function Hyperlink({ href, children, className, external }: Props) {
         className={cn("link", className)}
       >
         {children}
-        <span className="caption ml-1 text-ink-soft">↗</span>
       </a>
     );
   }

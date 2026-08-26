@@ -14,7 +14,7 @@ export default function SketchesPage() {
   return (
     <>
       <p>
-        <NavButton href="/">← index</NavButton>
+        <NavButton href="/">index</NavButton>
         <NavButton href="/work">visual work</NavButton>
         <NavButton href="/cv">CV</NavButton>
       </p>

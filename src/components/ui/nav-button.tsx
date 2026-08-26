@@ -33,7 +33,6 @@ export function NavButton({ href, external, className, children }: Props) {
       }}
     >
       {children}
-      {isExternal && " ↗"}
-    </button>
+          </button>
   );
 }

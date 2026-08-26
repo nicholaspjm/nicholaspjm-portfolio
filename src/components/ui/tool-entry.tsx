@@ -32,7 +32,7 @@ export function ToolEntry({
       <Editable id={`tool.${idx}.name`} as="span" className="tool-name">
         {name}
       </Editable>{" "}
-      <span className="foot">({stack}) ↗</span>
+      <span className="foot">({stack})</span>
       <br />
       <Editable id={`tool.${idx}.summary`} as="span" className="tool-sum">
         {summary}

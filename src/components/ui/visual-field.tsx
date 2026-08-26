@@ -204,7 +204,7 @@ export function VisualField({ items }: { items: VisualItem[] }) {
     return (
       <Link key={`${k}-${idx}`} href={`/work/${it.slug}`} className={cls}>
         {inner}
-        <span className="vblob-cta">open work ↗</span>
+        <span className="vblob-cta">open work</span>
       </Link>
     );
   };

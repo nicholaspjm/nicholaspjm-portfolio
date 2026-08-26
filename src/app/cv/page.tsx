@@ -74,7 +74,7 @@ export default function CVPage() {
   return (
     <>
       <p>
-        <NavButton href="/">← index</NavButton>
+        <NavButton href="/">index</NavButton>
         <NavButton href="/work">visual work</NavButton>
         <NavButton href={`mailto:${site.email}`}>{site.email}</NavButton>
       </p>
