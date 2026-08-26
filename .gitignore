@@ -73,6 +73,12 @@ next-env.d.ts
 # Generated each build by scan-images (last-updated date); not committed.
 /src/content/build-info.ts
 
+# Per-project social share cards, cropped from the published images by
+# scripts/make-og-images.mjs before every dev/build. Regenerated, not tracked.
+# (public/og-default.png IS committed — it draws text, and the CI runner does
+# not have the fonts to reproduce it.)
+/public/og/
+
 # Cloudflare Pages direct-upload package (regenerate: npm run build, then re-zip)
 /cloudflare-upload/
 /nicholaspjm-cloudflare.zip
