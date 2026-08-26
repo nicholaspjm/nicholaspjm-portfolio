@@ -13,8 +13,12 @@ import { asset } from "@/lib/asset";
 export function PointCloud() {
   const ref = useRef<HTMLCanvasElement>(null);
   // The /cv page is a dense data sheet; the point cloud makes it hard to read.
+  // /preview is the calm-homepage experiment — no cloud there by design.
   const pathname = usePathname();
-  const hide = pathname === "/cv" || pathname === "/cv/";
+  const hide =
+    pathname === "/cv" ||
+    pathname === "/cv/" ||
+    pathname.startsWith("/preview");
 
   useEffect(() => {
     if (hide) return;

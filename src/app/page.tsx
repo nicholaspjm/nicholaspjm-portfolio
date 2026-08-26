@@ -1,32 +1,28 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { site } from "@/content/site";
 import { pageMeta } from "@/lib/seo";
-import {
-  getListedProjects,
-  getProjectBySlug,
-  imageSizeClass,
-} from "@/lib/projects";
+import { getListedProjects, getProjectBySlug } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
-import { performances, awards, press, teaching, education } from "@/content/cv";
-import { tools } from "@/content/tools";
 import { editableText } from "@/content/editable-text";
-import * as media from "@/content/project-images";
-
-// Tolerant read: project-images.ts is generated, and during a git pull with
-// the dev server running it can momentarily be an older version without this
-// export. Degrade to "no tool photos" instead of crashing the page.
-const toolImages: Record<string, string[]> =
-  (media as { toolImages?: Record<string, string[]> }).toolImages ?? {};
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
-import { ImageRow } from "@/components/ui/image-row";
 import { Editable } from "@/components/ui/editable";
-import { ProjectEntry } from "@/components/ui/project-entry";
 import { SectionArrange } from "@/components/ui/section-arrange";
-import { ToolEntry } from "@/components/ui/tool-entry";
+import {
+  arrange,
+  ProjectBlock,
+  SectionFoot,
+  SeeMore,
+} from "@/components/home/blocks";
+import {
+  PerfList,
+  ToolsList,
+  TeachingList,
+  AwardsPressList,
+  EducationList,
+} from "@/components/home/lists";
 
 export const metadata: Metadata = {
   ...pageMeta({ description: site.tagline, path: "/" }),
@@ -34,102 +30,6 @@ export const metadata: Metadata = {
     absolute: "Nicholas Marriott (nicholaspjm) — creative technologist, Melbourne",
   },
 };
-
-/** Apply the saved arrangement for a homepage section: saved order first
- *  (unknown slugs keep their base order after it), then drop hidden ones.
- *  Saved by the edit-mode SectionArrange panel as secorder.* / sechide.*. */
-function arrange(list: Project[], key: string): Project[] {
-  const ord = (editableText[`secorder.${key}`] ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const hid = new Set(
-    (editableText[`sechide.${key}`] ?? "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean),
-  );
-  const idx = new Map(ord.map((s, i) => [s, i]));
-  const saved = list
-    .filter((p) => idx.has(p.slug))
-    .sort((a, b) => idx.get(a.slug)! - idx.get(b.slug)!);
-  const rest = list.filter((p) => !idx.has(p.slug));
-  return [...saved, ...rest].filter((p) => !hid.has(p.slug));
-}
-
-/** JSON payload for the right-hand preview zone. */
-function prev(p: Project) {
-  return JSON.stringify({
-    t: p.title,
-    y: p.year,
-    k: p.section ?? "commissioned",
-    s: p.summary,
-    img: p.images?.find((im) => im.src)?.src,
-    href: `/work/${p.slug}`,
-  });
-}
-
-/** Quiet closing line under a section: an editable credit sentence (edit the
- *  names in the studio) followed by a pointer to the full CV. */
-function SectionFoot({ id, children }: { id: string; children: string }) {
-  return (
-    <p className="section-foot">
-      <Editable id={id} as="span">
-        {children}
-      </Editable>{" "}
-      The complete list is available in the <Link href="/cv">CV</Link>.
-    </p>
-  );
-}
-
-/** "see more" pointer at the end of a section, to the full list view. */
-function SeeMore({ href = "/work" }: { href?: string }) {
-  return (
-    <p className="see-more">
-      <Link href={href}>see more →</Link>
-    </p>
-  );
-}
-
-/** A project entry — the whole block is a link to the project.
- *  `context` scopes the row's saved size/hide/order, so the same work can be
- *  large under selected works and small (or fully hidden) under its section;
- *  older un-contexted saves still apply as the shared base. */
-function ProjectBlock({
-  p,
-  context,
-  feature = false,
-  showImages = true,
-}: {
-  p: Project;
-  context: "selected" | "section";
-  feature?: boolean;
-  showImages?: boolean;
-}) {
-  return (
-    <>
-      <ProjectEntry
-        slug={p.slug}
-        title={p.title}
-        summary={p.summary}
-        feature={feature}
-        prev={prev(p)}
-      />
-      {showImages && p.images && p.images.length > 0 && (
-        <ImageRow
-          images={p.images}
-          sizeClass={imageSizeClass(p.imageSize)}
-          title={p.title}
-          oneOnMobile
-          resizeId={`${context}.${p.slug}`}
-          fallbackResizeId={p.slug}
-          rowSlug={p.slug}
-          rowPrev={prev(p)}
-        />
-      )}
-    </>
-  );
-}
 
 export default function Home() {
   const all = getListedProjects();
@@ -230,7 +130,6 @@ export default function Home() {
       {/* NOW ------------------------------------------------------------- */}
       <p className="atm-mark">
         now
-        <br />↪
       </p>
       <Editable
         id="now.statement"
@@ -257,12 +156,8 @@ export default function Home() {
         </Editable>
       </p>
       <SectionArrange sectionKey="selected" items={arrItems(selectedBase)} />
-      {selected.map((p, i) => (
-        <ProjectBlock
-          key={`sel-${p.slug}`}
-          context="selected"
-          p={p}
-        />
+      {selected.map((p) => (
+        <ProjectBlock key={`sel-${p.slug}`} context="selected" p={p} />
       ))}
       <SeeMore />
 
@@ -278,12 +173,8 @@ export default function Home() {
         sectionKey="commissioned"
         items={arrItems(commissionedBase)}
       />
-      {commissioned.map((p, i) => (
-        <ProjectBlock
-          key={p.slug}
-          context="section"
-          p={p}
-        />
+      {commissioned.map((p) => (
+        <ProjectBlock key={p.slug} context="section" p={p} />
       ))}
       <SectionFoot id="foot.visual">
         Further commissions and collaborations include work with MTLA Studio,
@@ -303,40 +194,10 @@ export default function Home() {
         sectionKey="installation"
         items={arrItems(installationsBase)}
       />
-      {installations.map((p, i) => (
-        <ProjectBlock
-          key={p.slug}
-          context="section"
-          p={p}
-        />
+      {installations.map((p) => (
+        <ProjectBlock key={p.slug} context="section" p={p} />
       ))}
-      {/* Formatted like the project entries: title line, then year + detail. */}
-      <ul className="perf-list">
-        {performances.map((p, i) => (
-          <li
-            key={`perf-${i}`}
-            data-prev={JSON.stringify({
-              t: p.title,
-              y: p.year,
-              k: "performance",
-              s: p.detail,
-            })}
-          >
-            <i>
-              <Editable id={`perf.${i}.title`} as="span">
-                {p.title}
-              </Editable>
-            </i>
-            <br />
-            {p.year && <em>{p.year}. </em>}
-            {p.detail && (
-              <Editable id={`perf.${i}.detail`} as="span">
-                {p.detail}
-              </Editable>
-            )}
-          </li>
-        ))}
-      </ul>
+      <PerfList />
       <SectionFoot id="foot.installation">
         Work has also been presented at Concordia, Pythia, Atmos, Thread, Step
         Count, Mach1, 1800Play, TOPIA, Ode, and Order Up.
@@ -352,12 +213,8 @@ export default function Home() {
         </Editable>
       </p>
       <SectionArrange sectionKey="sketch" items={arrItems(explorationsBase)} />
-      {explorations.map((p, i) => (
-        <ProjectBlock
-          key={p.slug}
-          context="section"
-          p={p}
-        />
+      {explorations.map((p) => (
+        <ProjectBlock key={p.slug} context="section" p={p} />
       ))}
       <SeeMore />
 
@@ -369,38 +226,7 @@ export default function Home() {
           public tools
         </Editable>
       </p>
-      <ul className="tool-list">
-        {tools.map((t, i) => {
-          // Photos dropped into content/tools/<slug>/ show under the entry.
-          const tSlug = t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-          const photos = toolImages[tSlug] ?? [];
-          return (
-            <li key={t.name}>
-              <ToolEntry
-                href={t.links[0]?.href ?? "#"}
-                prev={JSON.stringify({
-                  t: t.name,
-                  k: "tool",
-                  s: `${t.summary} (${t.stack})`,
-                })}
-                name={t.name}
-                summary={t.summary}
-                stack={t.stack}
-                idx={i}
-              />
-              {photos.length > 0 && (
-                <ImageRow
-                  images={photos.map((src) => ({ src }))}
-                  sizeClass=""
-                  title={t.name}
-                  oneOnMobile
-                  resizeId={`tool-${tSlug}`}
-                />
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      <ToolsList />
 
       {/* TEACHING (no dividers from here down; bold headings separate) ---- */}
       <p style={{ marginTop: "2.2em" }}>
@@ -408,50 +234,7 @@ export default function Home() {
           teaching and talks
         </Editable>
       </p>
-      <p style={{ marginTop: "0.4em", maxWidth: "56ch" }}>
-        <Editable id="teaching.intro" as="span">
-          Sharing real-time techniques openly is part of the practice: I try to
-          keep teaching accessible and not-for-profit, and I am always keen to
-          speak and teach more.
-        </Editable>{" "}
-        <a href={`mailto:${site.email}`}>Get in touch</a>.
-      </p>
-      {/* Rows come from content/cv.csv (teaching section), shaped like the
-          other listings: bold title line, then year + detail. */}
-      <ul className="perf-list">
-        {teaching.map((p, i) => (
-          <li
-            key={`teach-${i}`}
-            data-prev={JSON.stringify({
-              t: p.title,
-              y: p.year,
-              k: "teaching",
-              s: p.detail,
-            })}
-          >
-            <i>
-              <Editable id={`teach.${i}.title`} as="span">
-                {p.title}
-              </Editable>
-            </i>
-            <br />
-            {p.year && <em>{p.year}. </em>}
-            {p.detail && (
-              <Editable id={`teach.${i}.detail`} as="span">
-                {p.detail}
-              </Editable>
-            )}
-            {p.link && (
-              <>
-                {" "}
-                <a href={p.link.href} target="_blank" rel="noreferrer">
-                  {p.link.label} ↗
-                </a>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <TeachingList />
       <SeeMore href="/cv" />
       <p style={{ marginTop: "0.5em" }}>
         <NavButton href="https://youtube.com/@nicholaspjm" external>
@@ -465,52 +248,7 @@ export default function Home() {
           awards &amp; press
         </Editable>
       </p>
-      <ul className="info-list">
-        {awards.map((a, i) => (
-          <li
-            key={`award-${i}`}
-            data-prev={JSON.stringify({
-              t: a.title,
-              y: a.year,
-              k: "award",
-              s: a.detail,
-            })}
-          >
-            <em>{a.year}.</em>{" "}
-            <span className="highlight">
-              <Editable id={`award.${i}.title`} as="span">
-                {a.title}
-              </Editable>
-            </span>
-            {a.detail && (
-              <>
-                {", "}
-                <Editable id={`award.${i}.detail`} as="span">
-                  {a.detail}
-                </Editable>
-              </>
-            )}
-          </li>
-        ))}
-        {press.map((p, i) => (
-          <li key={`press-${i}`}>
-            {p.year && <em>{p.year}. </em>}
-            <Editable id={`press.${i}.title`} as="span">
-              {p.title}
-            </Editable>
-            {p.detail && (
-              <>
-                {", "}
-                <i>
-                  <Editable id={`press.${i}.detail`} as="span">
-                    {p.detail}
-                  </Editable>
-                </i>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <AwardsPressList />
       <SectionFoot id="foot.awards">
         Selected recognition and coverage shown here; further features and
         interviews are catalogued alongside the practice history.
@@ -526,24 +264,7 @@ export default function Home() {
           education
         </Editable>
       </p>
-      <ul className="info-list">
-        {education.map((e, i) => (
-          <li key={`edu-${i}`}>
-            <em>{e.year}.</em>{" "}
-            <Editable id={`edu.${i}.title`} as="span">
-              {e.title}
-            </Editable>
-            {e.detail && (
-              <>
-                {", "}
-                <Editable id={`edu.${i}.detail`} as="span">
-                  {e.detail}
-                </Editable>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <EducationList />
 
       <p>
         <br />

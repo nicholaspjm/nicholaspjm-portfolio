@@ -88,3 +88,6 @@ next-env.d.ts
 
 # Compiled launcher (built from scripts/edit-site.ps1 via scripts/build-exe.ps1).
 /Edit Site.exe
+
+# Local Claude Code session config (dev-server launch), not part of the site.
+/.claude/
