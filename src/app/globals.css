@@ -527,19 +527,20 @@ button {
   pointer-events: auto; /* needs hover + click for the pop-out */
 }
 
-/* Rail pop-out — a work's title slides in from the side on hover. */
+/* Rail pop-out — a work's title slides in from the side on hover. Bare
+   inverted text, no chip: white type under difference blending flips against
+   whatever sits behind it (dark on paper, light over the bars / dark mode). */
 .rail-pop {
   position: fixed;
   right: 26px;
   transform: translateY(-50%) translateX(10px);
   opacity: 0;
   transition: transform 150ms ease, opacity 150ms ease;
-  background: var(--ink);
-  color: var(--bg);
+  color: #fff;
+  mix-blend-mode: difference;
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
   line-height: 1.5;
-  padding: 2px 8px;
   max-width: 42vw;
   white-space: nowrap;
   overflow: hidden;
@@ -591,10 +592,6 @@ html::-webkit-scrollbar {
 .readout-info span {
   display: block;
   line-height: 1.5;
-}
-.readout-live {
-  white-space: pre;
-  opacity: 0.8;
 }
 .rd-flag svg {
   width: 16px;

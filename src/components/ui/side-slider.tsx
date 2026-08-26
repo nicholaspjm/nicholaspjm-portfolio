@@ -167,7 +167,6 @@ export function SideSlider() {
 
         const breathe = 1 + Math.sin(time * 0.6 + p.phase) * 0.14;
         const len = (0.26 + p.mag * 0.74) * (w - 2 * dpr) * breathe;
-        const alpha = 0.3 + p.mag * 0.34;
 
         if (pointerY >= 0) {
           const d = Math.abs(iy - pointerY);
@@ -177,16 +176,16 @@ export function SideSlider() {
           }
         }
 
-        ctx.globalAlpha = i === hoverIdx ? 1 : alpha;
+        // Solid ink hairlines — magnitude reads through length alone. The old
+        // per-bar alpha ramp made the stack look like a soft gradient.
         ctx.fillStyle = i === hoverIdx ? col.accent : col.ink;
         ctx.fillRect(w - len, iy, len, thick);
       }
-      ctx.globalAlpha = 1;
 
       // --- hover pop-out label -------------------------------------------
       if (hoverIdx >= 0) {
         const p = work[hoverIdx];
-        pop.textContent = `${p.year} · ${p.title}${p.href ? " ↗" : ""}`;
+        pop.textContent = `${p.year} · ${p.title}`;
         pop.style.top = `${pointerY / dpr}px`;
         pop.classList.add("on");
         canvas.style.cursor = p.href ? "pointer" : "default";

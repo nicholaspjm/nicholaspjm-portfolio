@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { BUILD_DATE } from "@/content/build-info";
 
@@ -18,54 +17,13 @@ function PalestineFlag() {
 }
 
 /**
- * Ikeda-style corner data readout: a few static site tidbits (status, last
- * updated, place) with a Palestine flag, above a live line of cursor
- * position, scroll depth, viewport, and UTC clock. Fixed bottom-right, tiny
- * mono, ignorable.
+ * Corner note: a few static site tidbits (status, last updated, place) with a
+ * Palestine flag. Fixed bottom-right, tiny mono, ignorable.
  */
 export function Readout() {
-  const [line, setLine] = useState("");
   // Corner overlay belongs to the main page only.
   const pathname = usePathname();
   const home = pathname === "/" || pathname === "";
-
-  useEffect(() => {
-    let x = 0;
-    let y = 0;
-
-    const pad = (n: number, w = 4) => String(n).padStart(w, "0");
-
-    const update = () => {
-      const doc = document.documentElement;
-      const max = doc.scrollHeight - window.innerHeight;
-      const pct = max > 0 ? Math.round((window.scrollY / max) * 100) : 0;
-      const t = new Date();
-      const clock = [t.getUTCHours(), t.getUTCMinutes(), t.getUTCSeconds()]
-        .map((v) => String(v).padStart(2, "0"))
-        .join(":");
-      setLine(
-        `x ${pad(x)}  y ${pad(y)}  scr ${String(pct).padStart(3, "0")}%  vp ${pad(window.innerWidth)}×${pad(window.innerHeight)}  utc ${clock}`,
-      );
-    };
-
-    const onMove = (e: MouseEvent) => {
-      x = e.clientX;
-      y = e.clientY;
-      update();
-    };
-
-    window.addEventListener("mousemove", onMove, { passive: true });
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    const id = setInterval(update, 1000);
-    update();
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-      clearInterval(id);
-    };
-  }, []);
 
   if (!home) return null;
   return (
@@ -77,9 +35,7 @@ export function Readout() {
         <span>website under construction</span>
         {BUILD_DATE && <span>last updated {BUILD_DATE}</span>}
         <span>naarm / melbourne</span>
-        <span>-37.81, 144.96</span>
       </div>
-      <div className="readout-live">{line}</div>
     </div>
   );
 }
