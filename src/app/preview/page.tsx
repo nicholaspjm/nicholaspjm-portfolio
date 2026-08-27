@@ -50,7 +50,7 @@ export default function PreviewPage() {
   const selected = arrange(selectedBase, "selected");
 
   return (
-    <div className="leftcol">
+    <div className="leftcol preview-page">
       <h1 className="sr-only">visual test</h1>
 
       <div className="topnav">

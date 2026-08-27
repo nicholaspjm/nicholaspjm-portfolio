@@ -1436,3 +1436,16 @@ html[data-preview] .scatter-field { opacity: 0; }
     transition: none;
   }
 }
+
+/* /preview only: plain ground and a wider column. The plotter grid comes off
+   the body (scoped with :has since body is outside the page tree), and the
+   56ch column cap opens up to two thirds of the viewport. Spacing inside the
+   column is untouched. */
+body:has(.preview-page) {
+  background-image: none;
+}
+@media (min-width: 901px) {
+  .leftcol.preview-page {
+    max-width: 66.67vw;
+  }
+}
