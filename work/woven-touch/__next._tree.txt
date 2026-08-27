@@ -1,2 +1,2 @@
-:HL["/nicholaspjm-portfolio/_next/static/chunks/02pcbyci9skw0.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"work","param":null,"prefetchHints":8,"slots":{"children":{"name":"slug","param":{"type":"d","key":"woven-touch","siblings":null},"prefetchHints":4,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"c0nbQ7WwsuFrjNoZ5E9vj"}
+:HL["/nicholaspjm-portfolio/_next/static/chunks/0x1law7fcdn9w.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"work","param":null,"prefetchHints":8,"slots":{"children":{"name":"slug","param":{"type":"d","key":"woven-touch","siblings":null},"prefetchHints":4,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"OW8VpC4ffzUWCfGauTGdH"}
