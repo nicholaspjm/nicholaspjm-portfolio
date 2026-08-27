@@ -1388,22 +1388,14 @@ html[data-preview] .scatter-field { opacity: 0; }
 }
 
 /* ---- /preview experiment: folded categories ---------------------------- */
-/* Each category collapses to its label; clicking the label unfolds it. The
-   body animates via grid-template-rows 0fr -> 1fr, so no heights are ever
-   measured; overflow:hidden on .fold-inner also contains the children's
-   margins, which is what lets the closed row sit at exactly label height. */
-.fold-stack {
-  margin-top: 2.2em;
-}
-.fold {
-  border-top: 1px solid var(--color-rule);
-  padding: 0.55em 0 0.45em;
-}
-.fold:last-child {
-  border-bottom: 1px solid var(--color-rule);
-}
+/* The fold head reproduces the label paragraph the live page renders (same
+   0.4em paragraph rhythm; any marginTop comes inline from the page, exactly
+   as on home), so the folded page keeps the live vertical rhythm. The body
+   animates via grid-template-rows 0fr -> 1fr, so no heights are measured;
+   overflow:hidden on .fold-inner also contains the children's margins, which
+   is what lets a closed section sit at exactly label height. */
 .fold-head {
-  margin: 0;
+  margin: 0 0 0.4em 0;
   font: inherit;
 }
 .fold-head button {
@@ -1411,8 +1403,8 @@ html[data-preview] .scatter-field { opacity: 0; }
   font: inherit;
   cursor: pointer;
 }
-.fold-head button:hover .extra,
-.fold-head button:focus-visible .extra {
+.fold-head button:hover span,
+.fold-head button:focus-visible span {
   text-decoration: underline;
 }
 .fold-head button:focus-visible {
