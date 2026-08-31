@@ -91,3 +91,7 @@ next-env.d.ts
 
 # Local Claude Code session config (dev-server launch), not part of the site.
 /.claude/
+CLAUDE.md
+.claude/
+AGENTS.md
+.cursor/
