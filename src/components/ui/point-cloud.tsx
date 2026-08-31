@@ -36,11 +36,11 @@ export function PointCloud() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // render at the device pixel ratio (capped for perf) so the scan stays
-    // crisp on high-DPI / mobile screens instead of being upscaled from a
-    // CSS-resolution canvas. Each point is drawn as a dpr-sized block below so
-    // the dot reads at a consistent ~1 CSS-pixel size and stays solid, not grey.
-    let dpr = Math.min(window.devicePixelRatio || 1, 3);
+    // Render at the TRUE device pixel ratio. Capping below the real ratio is
+    // what made the scan blurry on some phones: a 3x bitmap on a 3.5x or 4x
+    // screen gets resampled up by the compositor, smearing every dot. 4 is
+    // above every shipping display, so the cap never bites in practice.
+    let dpr = Math.min(window.devicePixelRatio || 1, 4);
     // Dot size in DEVICE pixels, scaled so a point lands at roughly 1.5 CSS
     // pixels on any screen: a single device pixel is invisibly fine on
     // high-DPI displays, but a fixed CSS size would blur. Recomputed on
@@ -58,20 +58,23 @@ export function PointCloud() {
     const resize = () => {
       // re-read each resize so the correct device pixel ratio is used even if
       // the component mounted on a different screen / before rotation
-      dpr = Math.min(window.devicePixelRatio || 1, 3);
+      dpr = Math.min(window.devicePixelRatio || 1, 4);
       setDot();
-      const w = Math.max(1, Math.floor(window.innerWidth * dpr));
-      const h = Math.max(1, Math.floor(window.innerHeight * dpr));
+      // Size from WHOLE CSS pixels outwards, never the reverse. Flooring the
+      // backing store first and dividing back (w/dpr) leaves a fractional CSS
+      // width like 1438.4px, so the fixed element lands on a fractional device
+      // pixel and the compositor resamples the whole bitmap — the other half
+      // of the blur. An integer CSS box times dpr maps 1:1 on every screen,
+      // including fractional Windows scaling (125%/150%).
+      const cssW = Math.max(1, window.innerWidth);
+      const cssH = Math.max(1, window.innerHeight);
+      const w = Math.round(cssW * dpr);
+      const h = Math.round(cssH * dpr);
       if (canvas.width === w && canvas.height === h && img) return;
       canvas.width = w;
       canvas.height = h;
-      // Pin the CSS size to EXACTLY backing/dpr: with the default stretched
-      // 100% sizing, fractional display scaling (Windows 125%/150%, 3x
-      // phones) resamples the bitmap and smears solid-black single-pixel
-      // dots into grey. An exact mapping keeps every dot a crisp black
-      // device pixel.
-      canvas.style.width = `${w / dpr}px`;
-      canvas.style.height = `${h / dpr}px`;
+      canvas.style.width = `${cssW}px`;
+      canvas.style.height = `${cssH}px`;
       img = ctx.createImageData(w, h);
       buf = new Uint32Array(img.data.buffer);
     };

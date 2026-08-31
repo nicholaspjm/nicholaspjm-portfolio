@@ -16,6 +16,13 @@ interface WorkPoint {
   phase: number; // breathing offset
 }
 
+/**
+ * How many screen-heights the timeline is spread over. 1 packs every work
+ * onto the rail at once; above 1 the bars sit further apart and only part of
+ * the timeline is on screen, which is what keeps the rail sparse.
+ */
+const SPREAD = 1.85;
+
 const SECTION_MAG: Record<string, number> = {
   commissioned: 0.8,
   installation: 0.62,
@@ -151,8 +158,11 @@ export function SideSlider() {
       ctx.clearRect(0, 0, w, h);
 
       if (!paused) drift += 0.28 * dpr; // continuous upward scroll
-      // timeline wraps within the rail height; parallax couples to scroll
-      const offset = (drift + window.scrollY * 0.3 * dpr) % h;
+      // The timeline runs over SPREAD screen-heights rather than exactly one,
+      // so only about 1/SPREAD of the works are on the rail at any moment and
+      // the bars sit further apart. Parallax couples to scroll.
+      const span = h * SPREAD;
+      const offset = (drift + window.scrollY * 0.3 * dpr) % span;
 
       hoverIdx = -1;
       let hoverDist = 11 * dpr;
@@ -160,10 +170,14 @@ export function SideSlider() {
 
       for (let i = 0; i < work.length; i++) {
         const p = work[i];
-        let y = (p.frac * h - offset) % h;
-        if (y < 0) y += h;
+        let y = (p.frac * span - offset) % span;
+        if (y < 0) y += span;
         const iy = Math.round(y);
         curY[i] = iy / dpr;
+        // Past the bottom of the rail: it is in the part of the timeline that
+        // has not come round yet. Skip it entirely — not drawn, not hoverable,
+        // not eligible for an ambient reveal.
+        if (iy > h) continue;
 
         const breathe = 1 + Math.sin(time * 0.6 + p.phase) * 0.14;
         const len = (0.26 + p.mag * 0.74) * (w - 2 * dpr) * breathe;
