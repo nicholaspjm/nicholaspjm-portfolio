@@ -630,7 +630,15 @@ html::-webkit-scrollbar {
 /* Point cloud background */
 .ptcloud {
   position: fixed;
-  inset: 0;
+  /* Anchored by top/left with an explicit pixel size set from JS, never
+     `inset: 0`. With all four offsets AND a width set, the box is
+     over-constrained and each engine resolves it differently — Safari has
+     been known to lay the element out at viewport size and then scale the
+     bitmap into it, which softens every dot. */
+  top: 0;
+  left: 0;
+  right: auto;
+  bottom: auto;
   z-index: -1;
   pointer-events: none;
 }
@@ -1460,8 +1468,120 @@ html[data-preview] .scatter-field { opacity: 0; }
 }
 
 /* /preview only: plain ground — the plotter grid comes off the body (scoped
-   with :has since body is outside the page tree). Everything else lays out
-   exactly like the live homepage: same 56ch column, same spacing. */
+   with :has since body is outside the page tree), leaving the morphing point
+   cloud as the only thing behind the text. Everything else lays out exactly
+   like the live homepage: same 56ch column, same spacing. */
 body:has(.preview-page) {
   background-image: none;
+}
+
+/* ---- /preview: colour schemes ----------------------------------------- */
+/* Alternatives to the blue-yellow base, switched by the picker on /preview.
+   Each redefines only the palette variables the rest of the sheet already
+   reads, so nothing else needs to know a scheme exists. The point cloud
+   follows through --pt / --pt-alpha like it does for dark mode. */
+html[data-scheme="mono"] {
+  --bg: #ffffff;
+  --ink: #111111;
+  --soft: #777777;
+  --link: #111111;
+  --hl-a-bg: #111111;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #e6e6e6;
+  --hl-b-fg: #111111;
+  --accent: #111111;
+  --pt: 0, 0, 0;
+  --pt-alpha: 1;
+}
+html[data-scheme="amber"] {
+  --bg: #0d0b06;
+  --ink: #ffb000;
+  --soft: #8a6410;
+  --link: #ffd166;
+  --hl-a-bg: #ffb000;
+  --hl-a-fg: #0d0b06;
+  --hl-b-bg: #4a3208;
+  --hl-b-fg: #ffd166;
+  --accent: #ffd166;
+  --pt: 255, 176, 0;
+  --pt-alpha: 0.55;
+  color-scheme: dark;
+}
+html[data-scheme="blueprint"] {
+  --bg: #0a1b3d;
+  --ink: #e8f0ff;
+  --soft: #7f9bd0;
+  --link: #8ecbff;
+  --hl-a-bg: #8ecbff;
+  --hl-a-fg: #0a1b3d;
+  --hl-b-bg: #16336d;
+  --hl-b-fg: #e8f0ff;
+  --accent: #8ecbff;
+  --pt: 232, 240, 255;
+  --pt-alpha: 0.5;
+  color-scheme: dark;
+}
+html[data-scheme="sage"] {
+  --bg: #eceee7;
+  --ink: #1f2a22;
+  --soft: #6b7a6e;
+  --link: #2f6b45;
+  --hl-a-bg: #2f6b45;
+  --hl-a-fg: #eceee7;
+  --hl-b-bg: #cfd9c6;
+  --hl-b-fg: #1f2a22;
+  --accent: #2f6b45;
+  --pt: 31, 42, 34;
+  --pt-alpha: 0.9;
+}
+
+/* The picker itself — plain squared buttons, out of the way under the nav. */
+.scheme-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 1em 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+}
+.scheme-label {
+  color: var(--soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 2px;
+}
+.scheme-picker button {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 1px 6px;
+}
+.scheme-picker button.on {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* ---- /preview: plain scroll indicator --------------------------------- */
+/* Replaces the work rail. A hairline that fills left to right; scaleX is
+   transform-only so it never triggers layout while scrolling. */
+.scrollline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 90;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  pointer-events: none;
+}
+.scrollline-fill {
+  height: 100%;
+  width: 100%;
+  transform-origin: 0 50%;
+  background: var(--ink);
+}
+
+/* On /preview the work rail is gone, so the gutter it reserved goes too. */
+body:has(.preview-page) {
+  padding-right: 8px;
 }

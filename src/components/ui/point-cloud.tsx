@@ -13,12 +13,10 @@ import { asset } from "@/lib/asset";
 export function PointCloud() {
   const ref = useRef<HTMLCanvasElement>(null);
   // The /cv page is a dense data sheet; the point cloud makes it hard to read.
-  // /preview is the calm-homepage experiment — no cloud there by design.
   const pathname = usePathname();
-  const hide =
-    pathname === "/cv" ||
-    pathname === "/cv/" ||
-    pathname.startsWith("/preview");
+  const hide = pathname === "/cv" || pathname === "/cv/";
+  // On /preview the scan is bent into shapes that are plainly not a room.
+  const morph = pathname.startsWith("/preview");
 
   useEffect(() => {
     if (hide) return;
@@ -59,17 +57,35 @@ export function PointCloud() {
       // re-read each resize so the correct device pixel ratio is used even if
       // the component mounted on a different screen / before rotation
       dpr = Math.min(window.devicePixelRatio || 1, 4);
-      setDot();
       // Size from WHOLE CSS pixels outwards, never the reverse. Flooring the
       // backing store first and dividing back (w/dpr) leaves a fractional CSS
       // width like 1438.4px, so the fixed element lands on a fractional device
-      // pixel and the compositor resamples the whole bitmap — the other half
-      // of the blur. An integer CSS box times dpr maps 1:1 on every screen,
-      // including fractional Windows scaling (125%/150%).
-      const cssW = Math.max(1, window.innerWidth);
-      const cssH = Math.max(1, window.innerHeight);
-      const w = Math.round(cssW * dpr);
-      const h = Math.round(cssH * dpr);
+      // pixel and the compositor resamples the whole bitmap. An integer CSS
+      // box times dpr maps 1:1 everywhere, fractional Windows scaling included.
+      //
+      // Measure the LAYOUT viewport, not window.innerWidth/Height. On iOS
+      // Safari innerHeight tracks the collapsing URL bar, so it changes on
+      // almost every scroll frame — the canvas was being torn down and
+      // reallocated constantly, and Safari serves a stale, stretched bitmap
+      // while that happens, which is what reads as permanently low-res there.
+      // documentElement.clientWidth/Height stay put through the toolbar
+      // animation. visualViewport is consulted only for its scale, so a
+      // pinch-zoomed page still rasterises sharp.
+      const de = document.documentElement;
+      const cssW = Math.max(1, de.clientWidth || window.innerWidth);
+      const cssH = Math.max(1, de.clientHeight || window.innerHeight);
+      const vvScale = window.visualViewport?.scale ?? 1;
+      // iOS Safari silently downscales canvases past a total-area budget
+      // (~16.7M device px). Past that it hands back something blurry rather
+      // than failing, so stay under it deliberately instead of being surprised.
+      const MAX_AREA = 16_000_000;
+      const wanted = dpr * Math.min(vvScale > 1 ? vvScale : 1, 2);
+      const area = cssW * cssH * wanted * wanted;
+      const eff = area > MAX_AREA ? Math.sqrt(MAX_AREA / (cssW * cssH)) : wanted;
+      const w = Math.round(cssW * eff);
+      const h = Math.round(cssH * eff);
+      dpr = eff;
+      setDot();
       if (canvas.width === w && canvas.height === h && img) return;
       canvas.width = w;
       canvas.height = h;
@@ -128,8 +144,59 @@ export function PointCloud() {
     });
     mo.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-theme"],
+      // data-scheme as well as data-theme: the preview palettes move --pt and
+      // --pt-alpha too, and without this the cloud keeps the previous colour
+      // and disappears against a dark scheme's ground.
+      attributeFilter: ["data-theme", "data-scheme"],
     });
+
+    // Morph output. Written into shared scratch rather than returned as a
+    // tuple: this runs ~35k times a frame and allocating an array per point
+    // would hand the collector 2M objects a second.
+    let mx = 0, my = 0, mz = 0;
+    const morphTo = (
+      mode: number,
+      x: number,
+      y: number,
+      z: number,
+      t: number,
+    ) => {
+      switch (mode) {
+        // 0 — the room as scanned, so the cycle always returns home.
+        case 1: {
+          // Twist: rotation about Y proportional to height, so the room
+          // shears into a helix.
+          const a = y * 2.6 + t * 0.25;
+          const ca = Math.cos(a), sa = Math.sin(a);
+          mx = x * ca + z * sa; my = y; mz = -x * sa + z * ca;
+          return;
+        }
+        case 2: {
+          // Spherize: every point pushed out to a common radius — the room
+          // turns inside out into a shell.
+          const r = Math.sqrt(x * x + y * y + z * z) || 1e-6;
+          const k = (0.62 + Math.sin(t * 0.5) * 0.06) / r;
+          mx = x * k; my = y * k; mz = z * k;
+          return;
+        }
+        case 3: {
+          // Ripple: concentric wave pushing along Z, like a struck surface.
+          const d = Math.sqrt(x * x + y * y);
+          const w = Math.sin(d * 7 - t * 1.7) * 0.2;
+          mx = x; my = y; mz = z + w;
+          return;
+        }
+        case 4: {
+          // Fold: mirror one half onto the other and splay it, which reads
+          // as architecture that cannot exist.
+          const f = Math.abs(x) - 0.42;
+          mx = f; my = y + f * 0.35; mz = z * (1 - Math.abs(f) * 0.5);
+          return;
+        }
+        default:
+          mx = x; my = y; mz = z;
+      }
+    };
 
     let bornAt = 0; // set when points arrive — drives the assembly animation
 
@@ -192,9 +259,37 @@ export function PointCloud() {
 
       buf.fill(0);
 
+      // --- abstract morphs (preview only) ------------------------------
+      // The scan is a real room. These bend it into forms that clearly are
+      // not one, holding each shape for most of its turn and then easing
+      // into the next, so the room dissolves and reassembles rather than
+      // wobbling continuously.
+      const MODES = 5;
+      const HOLD = 0.62; // fraction of each turn spent settled in the shape
+      const mPos = time / 9; // ~9s per shape
+      const mIdx = Math.floor(mPos) % MODES;
+      const mNext = (mIdx + 1) % MODES;
+      const mRaw = mPos - Math.floor(mPos);
+      const mBlend =
+        mRaw < HOLD
+          ? 0
+          : (1 - Math.cos(((mRaw - HOLD) / (1 - HOLD)) * Math.PI)) / 2;
+
       const n = pts.length;
       for (let i = 0; i < n; i += 3) {
         let x0 = pts[i], y0 = pts[i + 1], z0 = pts[i + 2];
+        if (morph) {
+          morphTo(mIdx, x0, y0, z0, time);
+          const ax = mx, ay = my, az = mz;
+          if (mBlend > 0) {
+            morphTo(mNext, x0, y0, z0, time);
+            x0 = ax + (mx - ax) * mBlend;
+            y0 = ay + (my - ay) * mBlend;
+            z0 = az + (mz - az) * mBlend;
+          } else {
+            x0 = ax; y0 = ay; z0 = az;
+          }
+        }
         // shimmer — a slow wave rolls through the scan like live sensor noise
         // (kept gentle so the field stays calm rather than grainy)
         if (!reduced) {
@@ -244,7 +339,7 @@ export function PointCloud() {
       window.removeEventListener("npjm:preview", onPreview);
       mo.disconnect();
     };
-  }, [hide]);
+  }, [hide, morph]);
 
   if (hide) return null;
   return <canvas ref={ref} className="ptcloud" aria-hidden />;

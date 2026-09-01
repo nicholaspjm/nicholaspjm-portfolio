@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { getListedProjects } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
 import { performances, awards } from "@/content/cv";
@@ -44,8 +44,12 @@ export function SideSlider() {
   const popRef = useRef<HTMLAnchorElement>(null);
   const autoRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const router = useRouter();
+  // /preview trades the rail for a plain scroll line (see ScrollLine).
+  const pathname = usePathname();
+  const off = pathname.startsWith("/preview");
 
   useEffect(() => {
+    if (off) return;
     const canvas = ref.current;
     const pop = popRef.current;
     if (!canvas || !pop) return;
@@ -306,8 +310,9 @@ export function SideSlider() {
       canvas.removeEventListener("click", onClick);
       window.removeEventListener("resize", resize);
     };
-  }, [router]);
+  }, [router, off]);
 
+  if (off) return null;
   return (
     <>
       <canvas ref={ref} className="side-slider" aria-hidden />

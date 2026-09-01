@@ -9,6 +9,8 @@ import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
 import { Editable } from "@/components/ui/editable";
 import { Fold } from "@/components/ui/fold";
+import { ScrollLine } from "@/components/ui/scroll-line";
+import { SchemePicker } from "@/components/ui/scheme-picker";
 import {
   arrange,
   ProjectBlock,
@@ -25,9 +27,11 @@ import {
 
 // Unlisted experiment: the homepage, calmer. Identical skeleton and spacing
 // to the live page — same intro, spacers, now block, labels, dividers — but
-// no point cloud behind it, a plain ground, and every category's body folded
-// until its label is clicked. Linked from nowhere; noindex keeps it out of
-// search if the link leaks; not registered in the sitemap.
+// with the ideas under test: folded category bodies, a plain ground, the
+// point cloud bent into abstract shapes (point-cloud.tsx morphs on this
+// route), the work rail traded for a plain scroll line, and a palette picker.
+// Linked from nowhere; noindex keeps it out of search if the link leaks; not
+// registered in the sitemap.
 export const metadata: Metadata = {
   title: "visual test",
   robots: { index: false, follow: false },
@@ -55,6 +59,7 @@ export default function PreviewPage() {
   return (
     <div className="leftcol preview-page">
       <h1 className="sr-only">visual test</h1>
+      <ScrollLine />
 
       {/* TOP NAV — as on home ------------------------------------------- */}
       <div className="topnav">
@@ -85,6 +90,8 @@ export default function PreviewPage() {
           </Editable>
         </InfoSheet>
       </div>
+
+      <SchemePicker />
 
       {/* INTRO — as on home --------------------------------------------- */}
       <Editable id="intro.line1" as="p">
