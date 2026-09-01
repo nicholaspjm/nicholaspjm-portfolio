@@ -101,8 +101,16 @@ export function PointCloud() {
     // hidden tabs report 0×0 — re-measure when the tab becomes visible
     document.addEventListener("visibilitychange", resize);
 
-    let rotY = 0.6;
-    let rotX = -0.4;
+    // Start where the scan actually reads. The old 0.6 / -0.4 put the room
+    // nearly edge-on: measured over the real point data, the horizontal and
+    // vertical spreads were 0.46:1, i.e. squashed along one axis, and frame
+    // coverage was 0.29. Since rotY drifts at only 0.0012 rad/frame it took
+    // roughly a minute to turn into a good view, which is why the cloud
+    // "came good" after a while rather than on arrival. 4.6 / -0.5 measures
+    // 0.84 balance and slightly better coverage — the best of a sweep over
+    // the whole revolution.
+    let rotY = 4.6;
+    let rotX = -0.5;
     let targetParX = 0;
     let targetParY = 0;
     let parX = 0;

@@ -1715,11 +1715,14 @@ html[data-scheme="paper"] {
   --ink: #111111;
   --soft: #8e8e8e;
   --link: #0000ee;
+  /* Titles are blue type rather than a blue block, as in the references —
+     but the yellow highlighter stays exactly as it is on the live site. It
+     is the one piece of the base palette this scheme keeps. */
   --hl-a-bg: transparent;
   --hl-a-fg: #0000ee;
-  --hl-b-bg: transparent;
-  --hl-b-fg: #8b1a1a;
-  --accent: #8b1a1a;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #111111;
+  --accent: #0000ee;
   --pt: 178, 178, 178;
   --pt-alpha: 1;
 }
