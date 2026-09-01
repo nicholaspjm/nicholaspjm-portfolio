@@ -1699,61 +1699,117 @@ html[data-scheme="noir"] {
 /* Dot-size control sits with the palette picker. */
 .dot-picker { margin-top: -0.6em; }
 
-/* ---- /preview: grey-on-white with blue -------------------------------- */
-/* The base palette in a quieter register: grey text instead of black, blue
-   kept for links and titles, the yellow highlighter swapped for a pale blue
-   wash. The point cloud follows the text colour rather than staying black. */
+/* ---- /preview: grey on white, blue underline -------------------------- */
+/* Cut to the grammar of the reference sheets: a near-white ground, forms
+   ghosted back to pale grey so they read as watermark rather than image,
+   small crisp near-black text over the top, links in the old browser blue
+   WITH the underline left on, and a maroon reserved for the one line that
+   needs to be noticed.
+
+   The yellow highlighter goes. In this register a section label is coloured
+   text, not a block — so the highlight variables carry a transparent ground
+   and a colour, which turns every block swipe into plain coloured type
+   without touching a single rule that reads them. */
+html[data-scheme="paper"] {
+  --bg: #ffffff;
+  --ink: #111111;
+  --soft: #8e8e8e;
+  --link: #0000ee;
+  --hl-a-bg: transparent;
+  --hl-a-fg: #0000ee;
+  --hl-b-bg: transparent;
+  --hl-b-fg: #8b1a1a;
+  --accent: #8b1a1a;
+  --pt: 178, 178, 178;
+  --pt-alpha: 1;
+}
+html[data-scheme="xerox"] {
+  --bg: #f7f7f4;
+  --ink: #1a1a1a;
+  --soft: #9a9a94;
+  --link: #0000ee;
+  --hl-a-bg: transparent;
+  --hl-a-fg: #0000ee;
+  --hl-b-bg: transparent;
+  --hl-b-fg: #7d1f1f;
+  --accent: #7d1f1f;
+  --pt: 186, 186, 180;
+  --pt-alpha: 1;
+}
+html[data-scheme="ghost"] {
+  /* The palest of the three: the cloud sits back far enough to be furniture. */
+  --bg: #fcfcfc;
+  --ink: #242424;
+  --soft: #a2a2a2;
+  --link: #0000ee;
+  --hl-a-bg: transparent;
+  --hl-a-fg: #0000ee;
+  --hl-b-bg: transparent;
+  --hl-b-fg: #8b1a1a;
+  --accent: #8b1a1a;
+  --pt: 200, 200, 200;
+  --pt-alpha: 1;
+}
 html[data-scheme="slate"] {
   --bg: #ffffff;
   --ink: #4a5058;
   --soft: #9aa1ab;
-  --link: #2b5bff;
-  --hl-a-bg: #2b5bff;
-  --hl-a-fg: #ffffff;
-  --hl-b-bg: #e8edf7;
-  --hl-b-fg: #4a5058;
+  --link: #0000ee;
+  --hl-a-bg: transparent;
+  --hl-a-fg: #0000ee;
+  --hl-b-bg: transparent;
+  --hl-b-fg: #8b1a1a;
   --accent: #2b5bff;
-  --pt: 74, 80, 88;
-  --pt-alpha: 0.85;
+  --pt: 186, 190, 196;
+  --pt-alpha: 1;
 }
 html[data-scheme="mist"] {
   --bg: #fafbfc;
   --ink: #5b6270;
   --soft: #a6adb8;
-  --link: #3d6fd8;
-  --hl-a-bg: #3d6fd8;
-  --hl-a-fg: #fafbfc;
-  --hl-b-bg: #dfe8f7;
-  --hl-b-fg: #5b6270;
-  --accent: #3d6fd8;
-  --pt: 91, 98, 112;
-  --pt-alpha: 0.8;
+  --link: #1a3fd0;
+  --hl-a-bg: transparent;
+  --hl-a-fg: #1a3fd0;
+  --hl-b-bg: transparent;
+  --hl-b-fg: #7d1f1f;
+  --accent: #1a3fd0;
+  --pt: 196, 201, 210;
+  --pt-alpha: 1;
 }
 html[data-scheme="steel"] {
   --bg: #ffffff;
   --ink: #3f4650;
   --soft: #8b939e;
-  --link: #1a4fd0;
-  --hl-a-bg: #1a4fd0;
-  --hl-a-fg: #ffffff;
-  --hl-b-bg: #dce6f5;
-  --hl-b-fg: #3f4650;
+  --link: #0000ee;
+  --hl-a-bg: transparent;
+  --hl-a-fg: #0000ee;
+  --hl-b-bg: transparent;
+  --hl-b-fg: #8b1a1a;
   --accent: #1a4fd0;
-  --pt: 63, 70, 80;
-  --pt-alpha: 0.9;
+  --pt: 176, 182, 190;
+  --pt-alpha: 1;
 }
-html[data-scheme="dove"] {
-  --bg: #f6f7f9;
-  --ink: #6a7280;
-  --soft: #aeb5bf;
-  --link: #4a7fe0;
-  --hl-a-bg: #4a7fe0;
-  --hl-a-fg: #f6f7f9;
-  --hl-b-bg: #e6edf8;
-  --hl-b-fg: #6a7280;
-  --accent: #4a7fe0;
-  --pt: 106, 114, 128;
-  --pt-alpha: 0.75;
+
+/* The underline is the point, not an oversight — these schemes want the
+   old-web link, and the site strips it everywhere by default. */
+html[data-scheme="paper"] a,
+html[data-scheme="xerox"] a,
+html[data-scheme="ghost"] a,
+html[data-scheme="slate"] a,
+html[data-scheme="mist"] a,
+html[data-scheme="steel"] a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+/* Buttons and the nav keep their box; only running text gets the rule. */
+html[data-scheme="paper"] button,
+html[data-scheme="xerox"] button,
+html[data-scheme="ghost"] button,
+html[data-scheme="slate"] button,
+html[data-scheme="mist"] button,
+html[data-scheme="steel"] button {
+  text-decoration: none;
 }
 
 /* ---- /preview: Gaussian blur backdrop ---------------------------------- */

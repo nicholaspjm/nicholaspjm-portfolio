@@ -6,11 +6,14 @@ import { useEffect, useSyncExternalStore } from "react";
 export const SCHEMES: { id: string; label: string }[] = [
   // Variations on the original blue-yellow first, then the departures.
   { id: "", label: "base" },
-  // Grey on white with blue — the base in a quieter register.
+  // Grey on white, blue underlined links, maroon accent — the register of
+  // the reference sheets. paper / xerox / ghost are the closest matches.
+  { id: "paper", label: "paper" },
+  { id: "xerox", label: "xerox" },
+  { id: "ghost", label: "ghost" },
   { id: "slate", label: "slate" },
   { id: "mist", label: "mist" },
   { id: "steel", label: "steel" },
-  { id: "dove", label: "dove" },
   { id: "ink", label: "ink" },
   { id: "red", label: "red" },
   { id: "green", label: "green" },
