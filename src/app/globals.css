@@ -1585,3 +1585,116 @@ html[data-scheme="sage"] {
 body:has(.preview-page) {
   padding-right: 8px;
 }
+
+/* ---- /preview: variations on the base palette -------------------------- */
+/* Riffs on the original blue-yellow rather than departures from it: white or
+   near-white ground, dark text, one saturated link colour, one highlighter.
+   Only the palette variables move; nothing else in the sheet knows. */
+html[data-scheme="ink"] {
+  --bg: #ffffff;
+  --ink: #0a1a2f;
+  --soft: #5c6f85;
+  --link: #0000ff;
+  --hl-a-bg: #0000ff;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #0a1a2f;
+  --accent: #0000ff;
+  --pt: 10, 26, 47;
+  --pt-alpha: 1;
+}
+html[data-scheme="red"] {
+  --bg: #ffffff;
+  --ink: #000000;
+  --soft: #7a6a6a;
+  --link: #e00000;
+  --hl-a-bg: #e00000;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #000000;
+  --accent: #e00000;
+  --pt: 0, 0, 0;
+  --pt-alpha: 1;
+}
+html[data-scheme="green"] {
+  --bg: #ffffff;
+  --ink: #000000;
+  --soft: #6a7a6a;
+  --link: #007a2f;
+  --hl-a-bg: #007a2f;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #000000;
+  --accent: #007a2f;
+  --pt: 0, 0, 0;
+  --pt-alpha: 1;
+}
+html[data-scheme="violet"] {
+  --bg: #ffffff;
+  --ink: #000000;
+  --soft: #746a85;
+  --link: #5b00ff;
+  --hl-a-bg: #5b00ff;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #d4ff00;
+  --hl-b-fg: #000000;
+  --accent: #5b00ff;
+  --pt: 0, 0, 0;
+  --pt-alpha: 1;
+}
+html[data-scheme="cream"] {
+  --bg: #f7f3e8;
+  --ink: #171512;
+  --soft: #7a7264;
+  --link: #0000ff;
+  --hl-a-bg: #0000ff;
+  --hl-a-fg: #f7f3e8;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #171512;
+  --accent: #0000ff;
+  --pt: 23, 21, 18;
+  --pt-alpha: 1;
+}
+html[data-scheme="cool"] {
+  --bg: #eef1f7;
+  --ink: #101820;
+  --soft: #6b7684;
+  --link: #0033cc;
+  --hl-a-bg: #0033cc;
+  --hl-a-fg: #eef1f7;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #101820;
+  --accent: #0033cc;
+  --pt: 16, 24, 32;
+  --pt-alpha: 1;
+}
+html[data-scheme="orange"] {
+  --bg: #ffffff;
+  --ink: #000000;
+  --soft: #857065;
+  --link: #0000ff;
+  --hl-a-bg: #0000ff;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #ff7a00;
+  --hl-b-fg: #ffffff;
+  --accent: #ff7a00;
+  --pt: 0, 0, 0;
+  --pt-alpha: 1;
+}
+html[data-scheme="noir"] {
+  --bg: #000000;
+  --ink: #ffffff;
+  --soft: #8a8a8a;
+  --link: #ffe000;
+  --hl-a-bg: #ffe000;
+  --hl-a-fg: #000000;
+  --hl-b-bg: #1f1f1f;
+  --hl-b-fg: #ffe000;
+  --accent: #ffe000;
+  --pt: 255, 255, 255;
+  --pt-alpha: 0.55;
+  color-scheme: dark;
+}
+
+/* Dot-size control sits with the palette picker. */
+.dot-picker { margin-top: -0.6em; }

@@ -39,17 +39,19 @@ export function PointCloud() {
     // screen gets resampled up by the compositor, smearing every dot. 4 is
     // above every shipping display, so the cap never bites in practice.
     let dpr = Math.min(window.devicePixelRatio || 1, 4);
-    // Dot size in DEVICE pixels, scaled so a point lands at roughly 1.5 CSS
-    // pixels on any screen: a single device pixel is invisibly fine on
-    // high-DPI displays, but a fixed CSS size would blur. Recomputed on
-    // resize because dpr can change between screens.
+    // Dot size, held constant in CSS pixels rather than device pixels. The
+    // old `min(2, round(dpr))` cap meant a 3x phone drew the same 2 device
+    // pixels as a 2x laptop — i.e. a dot a third smaller in real terms, and
+    // half the size at 4x. That is what read as "low res" on mobile: not
+    // blur, just dots too small to register. Scaling by dpr keeps a dot the
+    // same physical size on every screen.
     let dot = 1;
     const setDot = () => {
-      // Dot size in DEVICE pixels. Scaling it freely with dpr made phones
-      // (dpr 3) draw 5x5 blocks, which reads as chunky. Cap at 2 so the
-      // point stays a fine speck everywhere: 1px at 1x, 2px on retina and
-      // phones (a sub-CSS-pixel dot, the finest that still renders solid).
-      dot = Math.min(2, Math.max(1, Math.round(dpr)));
+      // data-dot (set by the preview control) overrides the default so the
+      // size can be judged on a real device instead of guessed at.
+      const raw = parseFloat(document.documentElement.dataset.dot ?? "");
+      const cssPx = Number.isFinite(raw) && raw > 0 ? raw : 1;
+      dot = Math.max(1, Math.round(cssPx * dpr));
     };
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
@@ -141,13 +143,14 @@ export function PointCloud() {
     let themeCol = readTheme();
     const mo = new MutationObserver(() => {
       themeCol = readTheme();
+      setDot();
     });
     mo.observe(document.documentElement, {
       attributes: true,
       // data-scheme as well as data-theme: the preview palettes move --pt and
       // --pt-alpha too, and without this the cloud keeps the previous colour
       // and disappears against a dark scheme's ground.
-      attributeFilter: ["data-theme", "data-scheme"],
+      attributeFilter: ["data-theme", "data-scheme", "data-dot"],
     });
 
     // Morph output. Written into shared scratch rather than returned as a
@@ -162,35 +165,81 @@ export function PointCloud() {
       t: number,
     ) => {
       switch (mode) {
-        // 0 — the room as scanned, so the cycle always returns home.
+        // 0 — the room as scanned, so the cycle always comes home.
         case 1: {
-          // Twist: rotation about Y proportional to height, so the room
-          // shears into a helix.
-          const a = y * 2.6 + t * 0.25;
-          const ca = Math.cos(a), sa = Math.sin(a);
-          mx = x * ca + z * sa; my = y; mz = -x * sa + z * ca;
+          // SPHERE INVERSION (Möbius): p ↦ k·p/|p|². The classic conformal
+          // map — everything near the centre is flung outward and everything
+          // far collapses in, so the room turns itself inside out.
+          // The clamp sets how violent the inversion is: too low and points
+          // near the centre are flung right off screen, leaving noise rather
+          // than a form. 0.18 keeps the multiplier inside about 5x.
+          const q = x * x + y * y + z * z;
+          const k = 0.35 / Math.max(q, 0.18);
+          mx = x * k; my = y * k; mz = z * k;
           return;
         }
         case 2: {
-          // Spherize: every point pushed out to a common radius — the room
-          // turns inside out into a shell.
+          // SPHERICAL HARMONIC: radius modulated by sin(mθ)·cos(nφ), the
+          // standing-wave pattern of a vibrating sphere. Gives a lobed shell
+          // that breathes as the orders drift.
           const r = Math.sqrt(x * x + y * y + z * z) || 1e-6;
-          const k = (0.62 + Math.sin(t * 0.5) * 0.06) / r;
+          const theta = Math.atan2(y, x);
+          const phi = Math.acos(z / r < -1 ? -1 : z / r > 1 ? 1 : z / r);
+          const m = 5 + Math.sin(t * 0.11) * 2;
+          const harm = Math.sin(m * theta) * Math.cos(4 * phi) * 0.2;
+          const k = (0.6 + harm) / r;
           mx = x * k; my = y * k; mz = z * k;
           return;
         }
         case 3: {
-          // Ripple: concentric wave pushing along Z, like a struck surface.
-          const d = Math.sqrt(x * x + y * y);
-          const w = Math.sin(d * 7 - t * 1.7) * 0.2;
-          mx = x; my = y; mz = z + w;
+          // COMPLEX SQUARE: treat (x,y) as a complex number and map w = z².
+          // A conformal map that doubles every angle, so the room folds
+          // through itself and comes out symmetric about the origin.
+          mx = (x * x - y * y) * 0.85;
+          my = 2 * x * y * 0.85;
+          mz = z;
           return;
         }
         case 4: {
-          // Fold: mirror one half onto the other and splay it, which reads
-          // as architecture that cannot exist.
-          const f = Math.abs(x) - 0.42;
-          mx = f; my = y + f * 0.35; mz = z * (1 - Math.abs(f) * 0.5);
+          // LORENZ FIELD: advect each point along the attractor's velocity.
+          // Not the trajectory — just one step of the field — which shears
+          // the cloud along the wings of the butterfly.
+          const s1 = 10, rr = 28, b = 8 / 3, S = 0.011;
+          const vx = s1 * (y - x);
+          const vy = x * (rr - z * 4) - y;
+          const vz = x * y * 4 - b * z;
+          mx = x + vx * S; my = y + vy * S; mz = z + vz * S;
+          return;
+        }
+        case 5: {
+          // TORUS: (x,y) reread as the two angles of a torus, so the flat
+          // room is rolled onto a donut and its far edges meet.
+          const R = 0.55, rad = 0.24;
+          const u = x * Math.PI * 1.4;
+          const v = y * Math.PI * 1.4 + t * 0.12;
+          const cv = Math.cos(v);
+          mx = (R + rad * cv) * Math.cos(u);
+          my = (R + rad * cv) * Math.sin(u);
+          mz = rad * Math.sin(v) + z * 0.3;
+          return;
+        }
+        case 6: {
+          // CURL-ish FLOW: three offset sinusoids, one per axis, reading each
+          // other's coordinates. Nearly divergence-free, so the cloud swirls
+          // and stretches without collapsing into clumps.
+          const f = 2.6;
+          mx = x + Math.sin(y * f + t * 0.4) * 0.12;
+          my = y + Math.sin(z * f + t * 0.5) * 0.12;
+          mz = z + Math.sin(x * f + t * 0.3) * 0.12;
+          return;
+        }
+        case 7: {
+          // LOG-POLAR: r ↦ log r, θ unchanged. Rings become straight lines
+          // and the scan smears into a spiral shell.
+          const r = Math.sqrt(x * x + y * y) || 1e-6;
+          const a = Math.atan2(y, x) + t * 0.1;
+          const lr = (Math.log(r + 0.12) + 2.1) * 0.42;
+          mx = lr * Math.cos(a); my = lr * Math.sin(a); mz = z * 0.8;
           return;
         }
         default:
@@ -246,7 +295,11 @@ export function PointCloud() {
       // dead-centre and large — sized to the longest viewport edge so the
       // scan reads as an immersive room you're standing inside of; points
       // that fall past the edges are simply clipped
-      const scale = Math.max(w, h) * 1.9 * (1 + impulse * 0.05);
+      // The 1.9 is tuned so the room fills the frame. Several morphs push
+      // points well past the room's extent, so pull back while morphing or
+      // the shape spends its time off screen.
+      const scale =
+        Math.max(w, h) * (morph ? 1.25 : 1.9) * (1 + impulse * 0.05);
       const cxp = w * 0.5;
       const cyp = h * 0.5;
       const fov = 2.2;
@@ -264,9 +317,9 @@ export function PointCloud() {
       // not one, holding each shape for most of its turn and then easing
       // into the next, so the room dissolves and reassembles rather than
       // wobbling continuously.
-      const MODES = 5;
+      const MODES = 8;
       const HOLD = 0.62; // fraction of each turn spent settled in the shape
-      const mPos = time / 9; // ~9s per shape
+      const mPos = time / 8; // ~8s per shape
       const mIdx = Math.floor(mPos) % MODES;
       const mNext = (mIdx + 1) % MODES;
       const mRaw = mPos - Math.floor(mPos);
