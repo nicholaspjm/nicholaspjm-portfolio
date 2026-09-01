@@ -7,9 +7,9 @@ import { NoiseRule } from "@/components/ui/noise";
 import { Editable } from "@/components/ui/editable";
 
 export const metadata: Metadata = pageMeta({
-  title: "Info — about, contact & colophon",
+  title: "About & contact — TouchDesigner artist in Melbourne",
   description:
-    "About Nicholas Marriott (nicholaspjm): creative technologist and new media artist in Naarm / Melbourne. Contact for commissions, teaching and speaking.",
+    "About Nicholas Marriott (nicholaspjm): TouchDesigner developer, creative technologist and new media artist based in Naarm / Melbourne. Available for commissions, projection design, installation, teaching and speaking.",
   path: "/info/",
 });
 

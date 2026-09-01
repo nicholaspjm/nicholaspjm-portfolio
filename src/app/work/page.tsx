@@ -7,9 +7,9 @@ import { NoiseRule } from "@/components/ui/noise";
 import { WorkIndex, type WorkItem } from "./work-index";
 
 export const metadata: Metadata = pageMeta({
-  title: "Work — projection, new media & live visuals",
+  title: "Work — TouchDesigner, projection & live visuals",
   description:
-    "Selected projects: projection design, audio-reactive visuals, interactive installation and live visuals for festivals, artists and brands.",
+    "Selected TouchDesigner and real-time projects from Naarm / Melbourne: projection design, audio-reactive visuals, interactive installation and live visuals for festivals, artists and brands.",
   path: "/work/",
 });
 

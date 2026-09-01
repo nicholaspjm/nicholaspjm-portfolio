@@ -11,6 +11,7 @@ import { Analytics } from "@/components/layout/analytics";
 import {
   PersonSchema,
   WebSiteSchema,
+  ServiceSchema,
 } from "@/components/layout/structured-data";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import "./globals.css";
@@ -79,6 +80,7 @@ export default function RootLayout({
         <Analytics />
         <PersonSchema />
         <WebSiteSchema />
+        <ServiceSchema />
       </body>
     </html>
   );

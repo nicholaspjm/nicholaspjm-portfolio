@@ -28,7 +28,8 @@ follow-up, but it is not needed.
 | Title template, keywords, robots directives | `src/app/layout.tsx` |
 | `sitemap.xml` (31 URLs) | `src/app/sitemap.ts` |
 | `robots.txt` | `src/app/robots.ts` |
-| `Person` + `WebSite` JSON-LD | `src/components/layout/structured-data.tsx`, rendered in the layout |
+| `Person` + `WebSite` + `Service` JSON-LD | `src/components/layout/structured-data.tsx`, rendered in the layout |
+| `BreadcrumbList` per project | same file, rendered by `work/[slug]/page.tsx` |
 | `CreativeWork` JSON-LD per project | same file, rendered by `work/[slug]/page.tsx` |
 | Per-project share cards | `scripts/make-og-images.mjs`, run by `prebuild`/`predev` |
 
@@ -73,6 +74,27 @@ Note that a heading may not live inside a `<p>` — the HTML parser closes the
 paragraph and React throws a hydration error. If you add a label, make the
 wrapper the heading.
 
+## Being found locally
+
+A search like "touchdesigner melbourne" or "new media artist melbourne" asks two
+things at once — a discipline and a place — so both are stated in three
+registers rather than only in prose:
+
+- **Titles.** The homepage, `/work`, `/info` and `/sketches` all name
+  TouchDesigner, and the first three name Melbourne. This is honest as well as
+  findable: 23 of the 25 works here are tagged TouchDesigner, so it genuinely
+  is the through-line of the practice.
+- **Structured data.** `hasOccupation.occupationLocation` and `workLocation`
+  on the Person say where the *practice* operates, which a bare
+  `PostalAddress` does not. A separate `Service` entity carries `serviceType`
+  and `areaServed` (Melbourne / Victoria / Australia) so a commission-intent
+  search has something to match beyond a biography. It is deliberately a
+  `Service` and not a `LocalBusiness`: there is no shopfront or public street
+  address, and claiming one would be false.
+- **The visible copy**, which already opens by saying where he is and what he
+  works in. Nothing is repeated into the body text for the crawler's benefit —
+  search engines discount it and readers notice.
+
 ## Vocabulary
 
 `site.keywords` and `site.alsoKnownAs` in `src/content/site.ts` are the source
@@ -83,13 +105,14 @@ description, written to fit a search result in under ~160 characters.
 
 ## Still to do by hand
 
-1. **Move the domain.** Everything above names `nicholaspjm.com`, which still
-   serves the old Cargo site. See `DOMAIN-TRANSFER.md`.
-2. **Google Search Console.** Add `nicholaspjm.com` once it resolves to this
-   site, and submit `https://nicholaspjm.com/sitemap.xml`. The domain already
-   carries a `google-site-verification` TXT record, so verification should
-   pass immediately. Nothing gets indexed on a schedule you control until
-   this is done.
+1. ~~**Move the domain.**~~ Done — `nicholaspjm.com` runs on Cloudflare
+   nameservers and serves this site, with the Google Workspace `MX` intact.
+2. **Google Search Console.** This is now the whole ballgame. Add
+   `nicholaspjm.com` and submit `https://nicholaspjm.com/sitemap.xml`. The
+   domain already carries a `google-site-verification` TXT record, so
+   verification should pass immediately. Until this is done nothing above can
+   be measured, and nothing gets indexed on a schedule you control — no amount
+   of on-page work substitutes for it.
 3. **Cloudflare Web Analytics.** Cloudflare dashboard → *Web Analytics* → add
    `nicholaspjm.com`. Free, cookieless, and needs no consent banner, which is
    why `gaId` in `site.ts` is deliberately left empty. Only works once the

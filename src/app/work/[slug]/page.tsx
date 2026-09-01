@@ -9,7 +9,10 @@ import { Blocks } from "@/components/content/block-renderer";
 import { NavButton } from "@/components/ui/nav-button";
 import { ProjectGallery } from "@/components/ui/project-gallery";
 import { Editable } from "@/components/ui/editable";
-import { ProjectSchema } from "@/components/layout/structured-data";
+import {
+  ProjectSchema,
+  BreadcrumbSchema,
+} from "@/components/layout/structured-data";
 import { pageMeta, projectOgImage, projectStill } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -55,6 +58,7 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   return (
     <div className="bluepage">
       <ProjectSchema project={project} />
+      <BreadcrumbSchema title={project.title} slug={project.slug} />
       <p>
         <NavButton href="/">index</NavButton>
         <NavButton href="/work">all work</NavButton>

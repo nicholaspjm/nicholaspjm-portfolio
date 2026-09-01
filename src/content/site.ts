@@ -7,7 +7,7 @@ export const site: SiteInfo = {
   // it is written for a search result: name first, discipline, then place.
   // Kept under ~160 characters so Google shows it whole.
   tagline:
-    "Nicholas Marriott (nicholaspjm) — creative technologist and new media artist in Naarm / Melbourne. Projection, audio-reactive visuals, real-time installation.",
+    "Nicholas Marriott (nicholaspjm) — TouchDesigner artist and creative technologist in Naarm / Melbourne. Projection mapping, audio-reactive visuals, installation.",
   url: "https://nicholaspjm.com",
   email: "contact@nicholaspjm.com",
   social: [
@@ -37,6 +37,9 @@ export const site: SiteInfo = {
     "real-time graphics",
     "live visuals",
     "TouchDesigner",
+    "GLSL",
+    "generative art",
+    "stage and festival visuals",
     "VJ",
     "Melbourne",
     "Naarm",
