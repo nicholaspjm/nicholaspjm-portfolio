@@ -140,17 +140,33 @@ export function PointCloud() {
         accent: (230 << 24) | ((ab & 0xff) << 16) | ((ag & 0xff) << 8) | (ar & 0xff),
       };
     };
+    // On /preview the backdrop can be switched to the blur field or to
+    // nothing at all. CSS hides the canvas either way, but the projection
+    // loop would keep running behind it — so skip the work as well.
+    let cloudOn = true;
+    const readBackdrop = () => {
+      const b = document.documentElement.dataset.backdrop;
+      cloudOn = !b || b === "cloud";
+    };
+    readBackdrop();
+
     let themeCol = readTheme();
     const mo = new MutationObserver(() => {
       themeCol = readTheme();
       setDot();
+      readBackdrop();
     });
     mo.observe(document.documentElement, {
       attributes: true,
       // data-scheme as well as data-theme: the preview palettes move --pt and
       // --pt-alpha too, and without this the cloud keeps the previous colour
       // and disappears against a dark scheme's ground.
-      attributeFilter: ["data-theme", "data-scheme", "data-dot"],
+      attributeFilter: [
+        "data-theme",
+        "data-scheme",
+        "data-dot",
+        "data-backdrop",
+      ],
     });
 
     // Morph output. Written into shared scratch rather than returned as a
@@ -265,6 +281,12 @@ export function PointCloud() {
       if (!pts) return;
       // QA hook: freeze all canvas work when window.__NPJM_PAUSE is set
       if ((window as unknown as Record<string, unknown>).__NPJM_PAUSE) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
+      if (!cloudOn) {
+        // Not the active backdrop — idle cheaply rather than projecting 35k
+        // points into a canvas nobody can see.
         raf = requestAnimationFrame(draw);
         return;
       }

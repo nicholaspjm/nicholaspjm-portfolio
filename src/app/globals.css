@@ -1698,3 +1698,132 @@ html[data-scheme="noir"] {
 
 /* Dot-size control sits with the palette picker. */
 .dot-picker { margin-top: -0.6em; }
+
+/* ---- /preview: grey-on-white with blue -------------------------------- */
+/* The base palette in a quieter register: grey text instead of black, blue
+   kept for links and titles, the yellow highlighter swapped for a pale blue
+   wash. The point cloud follows the text colour rather than staying black. */
+html[data-scheme="slate"] {
+  --bg: #ffffff;
+  --ink: #4a5058;
+  --soft: #9aa1ab;
+  --link: #2b5bff;
+  --hl-a-bg: #2b5bff;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #e8edf7;
+  --hl-b-fg: #4a5058;
+  --accent: #2b5bff;
+  --pt: 74, 80, 88;
+  --pt-alpha: 0.85;
+}
+html[data-scheme="mist"] {
+  --bg: #fafbfc;
+  --ink: #5b6270;
+  --soft: #a6adb8;
+  --link: #3d6fd8;
+  --hl-a-bg: #3d6fd8;
+  --hl-a-fg: #fafbfc;
+  --hl-b-bg: #dfe8f7;
+  --hl-b-fg: #5b6270;
+  --accent: #3d6fd8;
+  --pt: 91, 98, 112;
+  --pt-alpha: 0.8;
+}
+html[data-scheme="steel"] {
+  --bg: #ffffff;
+  --ink: #3f4650;
+  --soft: #8b939e;
+  --link: #1a4fd0;
+  --hl-a-bg: #1a4fd0;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #dce6f5;
+  --hl-b-fg: #3f4650;
+  --accent: #1a4fd0;
+  --pt: 63, 70, 80;
+  --pt-alpha: 0.9;
+}
+html[data-scheme="dove"] {
+  --bg: #f6f7f9;
+  --ink: #6a7280;
+  --soft: #aeb5bf;
+  --link: #4a7fe0;
+  --hl-a-bg: #4a7fe0;
+  --hl-a-fg: #f6f7f9;
+  --hl-b-bg: #e6edf8;
+  --hl-b-fg: #6a7280;
+  --accent: #4a7fe0;
+  --pt: 106, 114, 128;
+  --pt-alpha: 0.75;
+}
+
+/* ---- /preview: Gaussian blur backdrop ---------------------------------- */
+.blurfield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blurfield .bf {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  /* One big blur per blob. Kept on its own layer and only ever transformed,
+     so the expensive rasterisation happens once rather than every frame. */
+  filter: blur(110px);
+  will-change: transform;
+  /* Kept faint on purpose: this sits directly behind body copy, and a
+     saturated wash at full strength turns the text into an effort. */
+  opacity: 0.26;
+}
+.bf-1 {
+  width: 46vw; height: 46vw; min-width: 320px; min-height: 320px;
+  top: -6vh; left: 8vw;
+  background: var(--accent);
+  animation: bf-drift-a 34s ease-in-out infinite alternate;
+}
+.bf-2 {
+  width: 40vw; height: 40vw; min-width: 280px; min-height: 280px;
+  top: 26vh; left: 46vw;
+  background: var(--link);
+  opacity: 0.2;
+  animation: bf-drift-b 44s ease-in-out infinite alternate;
+}
+.bf-3 {
+  width: 34vw; height: 34vw; min-width: 240px; min-height: 240px;
+  top: 58vh; left: 14vw;
+  background: var(--hl-b-bg);
+  opacity: 0.5;
+  animation: bf-drift-c 39s ease-in-out infinite alternate;
+}
+.bf-4 {
+  width: 28vw; height: 28vw; min-width: 200px; min-height: 200px;
+  top: 8vh; left: 68vw;
+  background: var(--ink);
+  opacity: 0.1;
+  animation: bf-drift-b 52s ease-in-out infinite alternate-reverse;
+}
+@keyframes bf-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(9vw, 11vh, 0) scale(1.18); }
+}
+@keyframes bf-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to   { transform: translate3d(-12vw, 8vh, 0) scale(0.9); }
+}
+@keyframes bf-drift-c {
+  from { transform: translate3d(0, 0, 0) scale(0.95); }
+  to   { transform: translate3d(10vw, -12vh, 0) scale(1.25); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .blurfield .bf { animation: none; }
+}
+
+/* Backdrop switch: only one of the two is ever drawn. */
+html[data-backdrop="blur"] .ptcloud,
+html[data-backdrop="plain"] .ptcloud { display: none; }
+html[data-backdrop="cloud"] .blurfield,
+html[data-backdrop="plain"] .blurfield { display: none; }
