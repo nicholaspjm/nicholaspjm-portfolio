@@ -155,8 +155,13 @@ export default function PreviewPage() {
         headStyle={{ marginTop: "1.4em" }}
         defaultOpen
       >
-        {selected.map((p) => (
-          <ProjectBlock key={`sel-${p.slug}`} context="selected" p={p} />
+        {selected.map((p, i) => (
+          <ProjectBlock
+            key={`sel-${p.slug}`}
+            context="selected"
+            p={p}
+            eager={i === 0}
+          />
         ))}
         <SeeMore />
       </Fold>

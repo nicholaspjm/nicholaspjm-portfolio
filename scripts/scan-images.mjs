@@ -396,6 +396,38 @@ function scanMedia(base, re, urlBase) {
   return out;
 }
 const images = scanMedia(imagesOut, IMAGE_RE, "/images/projects");
+
+/**
+ * Intrinsic pixel size of every published image, keyed by its URL.
+ *
+ * Rows lay images out at a fixed HEIGHT with width:auto, so until the bytes
+ * arrive the browser has no idea how wide each one will be — it reserves
+ * nothing, then reflows the whole strip as each image lands. That is the
+ * pop-in, and the wrong-sized gaps before it. Handing the <img> its real
+ * width and height lets the browser compute the box from the aspect ratio up
+ * front and lay the row out correctly on the first paint.
+ *
+ * sharp reads only the header here, so this costs milliseconds per file.
+ */
+async function measure(base, urlBase, out) {
+  if (!sharp) return out;
+  for (const slug of dirs(base)) {
+    for (const f of files(join(base, slug))) {
+      if (!IMAGE_RE.test(f) || f.startsWith(".")) continue;
+      try {
+        const { width, height } = await sharp(join(base, slug, f)).metadata();
+        if (width && height) out[`${urlBase}/${slug}/${f}`] = [width, height];
+      } catch {
+        /* unreadable header — the image just keeps its old behaviour */
+      }
+    }
+  }
+  return out;
+}
+const imageDims = {};
+await measure(imagesOut, "/images/projects", imageDims);
+await measure(thumbsOut, "/images/thumbs", imageDims);
+await measure(toolImagesOut, "/images/tools", imageDims);
 const videos = scanMedia(videosRoot, VIDEO_RE, "/videos/projects");
 const toolImages = scanMedia(toolImagesOut, IMAGE_RE, "/images/tools");
 
@@ -417,6 +449,10 @@ export const projectImages: Record<string, string[]> = ${JSON.stringify(images, 
 export const projectVideos: Record<string, string[]> = ${JSON.stringify(videos, null, 2)};
 
 export const toolImages: Record<string, string[]> = ${JSON.stringify(toolImages, null, 2)};
+
+/** Intrinsic [width, height] per published image URL, so rows can reserve the
+ *  right box before the bytes arrive. See measure() in scripts/scan-images.mjs. */
+export const imageDims: Record<string, [number, number]> = ${JSON.stringify(imageDims)};
 `,
 );
 

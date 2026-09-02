@@ -77,11 +77,14 @@ export function ProjectBlock({
   context,
   feature = false,
   showImages = true,
+  eager = false,
 }: {
   p: Project;
   context: "selected" | "section";
   feature?: boolean;
   showImages?: boolean;
+  /** First entry on the page: load its strip eagerly. */
+  eager?: boolean;
 }) {
   return (
     <>
@@ -102,6 +105,7 @@ export function ProjectBlock({
           fallbackResizeId={p.slug}
           rowSlug={p.slug}
           rowPrev={prev(p)}
+          eager={eager}
         />
       )}
     </>

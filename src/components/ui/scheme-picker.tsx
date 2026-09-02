@@ -30,8 +30,8 @@ export const SCHEMES: { id: string; label: string }[] = [
 
 /** Button treatments. The empty id is the site's flat square box. */
 export const BUTTONS: { id: string; label: string }[] = [
-  { id: "", label: "square" },
-  { id: "underline", label: "underline" },
+  { id: "", label: "underline" },
+  { id: "square", label: "square" },
   { id: "bracket", label: "bracket" },
   { id: "hairline", label: "hairline" },
   { id: "solid", label: "solid" },

@@ -14,8 +14,16 @@
   --ink: #111111;
   --soft: #8e8e8e;
   --link: #0000ee;
-  --hl-a-bg: transparent;  /* section/project titles: type, not a block */
-  --hl-a-fg: #0000ee;
+  /* --hl-a is the INTERACTION colour: text selection, entry hover, tinted
+     fills. It must stay a real colour — making it transparent to get blue
+     title type also made selection invisible and killed the hover highlight.
+     The title treatment moved to --title-* below. */
+  --hl-a-bg: #0000ee;
+  --hl-a-fg: #ffffff;
+  /* Project and tool titles: blue TYPE rather than a blue block. Schemes that
+     want the block set these back to the --hl-a pair. */
+  --title-bg: transparent;
+  --title-fg: #0000ee;
   --hl-b-bg: #ffe000;      /* featured highlight — unchanged */
   --hl-b-fg: #111111;
   --accent: #0000ee;       /* scanline, live dots */
@@ -38,6 +46,8 @@ html[data-theme="dark"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #000000;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #6f9bff;
   --pt: 255, 255, 255;
   --pt-alpha: 0.5;
@@ -251,8 +261,8 @@ a.extra, .extra {
   font-family: "Courier New", Courier, monospace;
   font-size: 15px;
   font-weight: bold;
-  background-color: var(--hl-a-bg);
-  color: var(--hl-a-fg);
+  background-color: var(--title-bg);
+  color: var(--title-fg);
   padding: 0 3px;
 }
 .tool-sum { display: inline-block; margin-top: 0.25em; }
@@ -274,10 +284,10 @@ a.extra, .extra {
   font-weight: bold;
 }
 
-/* Project titles — blue highlighter swipe */
+/* Project titles — blue type on "paper", a blue swipe on block schemes. */
 a.ptitle, .ptitle {
-  background-color: var(--hl-a-bg) !important;
-  color: var(--hl-a-fg) !important;
+  background-color: var(--title-bg) !important;
+  color: var(--title-fg) !important;
 }
 a.ptitle:hover, .ptitle:hover {
   background-color: var(--ink) !important;
@@ -301,12 +311,20 @@ button {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
   line-height: 1.35;
-  padding: 2px 7px;
-  margin: 0 2px 2px 0;
-  border: 1px solid var(--ink);
+  padding: 2px 3px;
+  /* Wider gap: with no box to separate them, adjacent labels would otherwise
+     run together into one underlined stripe. */
+  margin: 0 10px 2px 0;
+  /* The border is kept and made transparent rather than removed. It holds the
+     box at exactly the height it had when it was drawn, so every button on
+     every page still measures the same and nothing shifts. */
+  border: 1px solid transparent;
   border-radius: 0;
-  background: var(--bg);
-  color: var(--ink);
+  background: none;
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
   cursor: pointer;
   /* A wrapped label makes a double-height button sitting in a row of
      single-height ones, which is what read as inconsistent padding across
@@ -315,10 +333,12 @@ button {
   white-space: nowrap;
 }
 button:hover {
-  background: color-mix(in srgb, var(--ink) 8%, var(--bg));
+  color: var(--ink);
+  background: none;
 }
 button:active {
-  background: color-mix(in srgb, var(--ink) 18%, var(--bg));
+  color: var(--ink);
+  background: color-mix(in srgb, var(--hl-a-bg) 14%, var(--bg));
 }
 
 /* Angle-bracket action — screenwalks ⟨about⟩ convention */
@@ -776,6 +796,8 @@ html::-webkit-scrollbar {
   --hl-a-fg: #0000aa;
   --hl-b-bg: #ffff55;
   --hl-b-fg: #0000aa;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #ffff55;
   background: var(--bg);
   color: var(--ink);
@@ -1533,6 +1555,8 @@ html[data-scheme="mono"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #e6e6e6;
   --hl-b-fg: #111111;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #111111;
   --pt: 0, 0, 0;
   --pt-alpha: 1;
@@ -1546,6 +1570,8 @@ html[data-scheme="amber"] {
   --hl-a-fg: #0d0b06;
   --hl-b-bg: #4a3208;
   --hl-b-fg: #ffd166;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #ffd166;
   --pt: 255, 176, 0;
   --pt-alpha: 0.55;
@@ -1560,6 +1586,8 @@ html[data-scheme="blueprint"] {
   --hl-a-fg: #0a1b3d;
   --hl-b-bg: #16336d;
   --hl-b-fg: #e8f0ff;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #8ecbff;
   --pt: 232, 240, 255;
   --pt-alpha: 0.5;
@@ -1574,6 +1602,8 @@ html[data-scheme="sage"] {
   --hl-a-fg: #eceee7;
   --hl-b-bg: #cfd9c6;
   --hl-b-fg: #1f2a22;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #2f6b45;
   --pt: 31, 42, 34;
   --pt-alpha: 0.9;
@@ -1601,6 +1631,16 @@ html[data-scheme="sage"] {
   padding: 1px 6px;
 }
 .scheme-picker button.on {
+  /* Weight and ink, not a filled block: over a borderless button the solid
+     swatch read as a smear rather than a selection. */
+  color: var(--ink);
+  font-weight: 700;
+  background: none;
+}
+html[data-btn="square"] .scheme-picker button.on,
+html[data-btn="solid"] .scheme-picker button.on,
+html[data-btn="pill"] .scheme-picker button.on,
+html[data-btn="mono"] .scheme-picker button.on {
   background: var(--ink);
   color: var(--bg);
 }
@@ -1639,6 +1679,8 @@ html[data-scheme="ink"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #0a1a2f;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #0000ff;
   --pt: 10, 26, 47;
   --pt-alpha: 1;
@@ -1652,6 +1694,8 @@ html[data-scheme="red"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #000000;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #e00000;
   --pt: 0, 0, 0;
   --pt-alpha: 1;
@@ -1665,6 +1709,8 @@ html[data-scheme="green"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #000000;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #007a2f;
   --pt: 0, 0, 0;
   --pt-alpha: 1;
@@ -1678,6 +1724,8 @@ html[data-scheme="violet"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #d4ff00;
   --hl-b-fg: #000000;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #5b00ff;
   --pt: 0, 0, 0;
   --pt-alpha: 1;
@@ -1691,6 +1739,8 @@ html[data-scheme="cream"] {
   --hl-a-fg: #f7f3e8;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #171512;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #0000ff;
   --pt: 23, 21, 18;
   --pt-alpha: 1;
@@ -1704,6 +1754,8 @@ html[data-scheme="cool"] {
   --hl-a-fg: #eef1f7;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #101820;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #0033cc;
   --pt: 16, 24, 32;
   --pt-alpha: 1;
@@ -1717,6 +1769,8 @@ html[data-scheme="orange"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #ff7a00;
   --hl-b-fg: #ffffff;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #ff7a00;
   --pt: 0, 0, 0;
   --pt-alpha: 1;
@@ -1730,6 +1784,8 @@ html[data-scheme="noir"] {
   --hl-a-fg: #000000;
   --hl-b-bg: #1f1f1f;
   --hl-b-fg: #ffe000;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #ffe000;
   --pt: 255, 255, 255;
   --pt-alpha: 0.55;
@@ -1750,6 +1806,8 @@ html[data-scheme="original"] {
   --hl-a-fg: #ffffff;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #000000;
+  --title-bg: var(--hl-a-bg);
+  --title-fg: var(--hl-a-fg);
   --accent: #0000ff;
   --pt: 0, 0, 0;
   --pt-alpha: 1;
@@ -1775,10 +1833,12 @@ html[data-scheme="paper"] {
   /* Titles are blue type rather than a blue block, as in the references —
      but the yellow highlighter stays exactly as it is on the live site. It
      is the one piece of the base palette this scheme keeps. */
-  --hl-a-bg: transparent;
-  --hl-a-fg: #0000ee;
+  --hl-a-bg: #0000ee;
+  --hl-a-fg: #ffffff;
   --hl-b-bg: #ffe000;
   --hl-b-fg: #111111;
+  --title-bg: transparent;
+  --title-fg: #0000ee;
   --accent: #0000ee;
   --pt: 178, 178, 178;
   --pt-alpha: 1;
@@ -1788,10 +1848,12 @@ html[data-scheme="xerox"] {
   --ink: #1a1a1a;
   --soft: #9a9a94;
   --link: #0000ee;
-  --hl-a-bg: transparent;
-  --hl-a-fg: #0000ee;
+  --hl-a-bg: #0000ee;
+  --hl-a-fg: #ffffff;
   --hl-b-bg: transparent;
   --hl-b-fg: #7d1f1f;
+  --title-bg: transparent;
+  --title-fg: #0000ee;
   --accent: #7d1f1f;
   --pt: 186, 186, 180;
   --pt-alpha: 1;
@@ -1802,10 +1864,12 @@ html[data-scheme="ghost"] {
   --ink: #242424;
   --soft: #a2a2a2;
   --link: #0000ee;
-  --hl-a-bg: transparent;
-  --hl-a-fg: #0000ee;
+  --hl-a-bg: #0000ee;
+  --hl-a-fg: #ffffff;
   --hl-b-bg: transparent;
   --hl-b-fg: #8b1a1a;
+  --title-bg: transparent;
+  --title-fg: #0000ee;
   --accent: #8b1a1a;
   --pt: 200, 200, 200;
   --pt-alpha: 1;
@@ -1815,10 +1879,12 @@ html[data-scheme="slate"] {
   --ink: #4a5058;
   --soft: #9aa1ab;
   --link: #0000ee;
-  --hl-a-bg: transparent;
-  --hl-a-fg: #0000ee;
+  --hl-a-bg: #0000ee;
+  --hl-a-fg: #ffffff;
   --hl-b-bg: transparent;
   --hl-b-fg: #8b1a1a;
+  --title-bg: transparent;
+  --title-fg: #0000ee;
   --accent: #2b5bff;
   --pt: 186, 190, 196;
   --pt-alpha: 1;
@@ -1828,10 +1894,12 @@ html[data-scheme="mist"] {
   --ink: #5b6270;
   --soft: #a6adb8;
   --link: #1a3fd0;
-  --hl-a-bg: transparent;
-  --hl-a-fg: #1a3fd0;
+  --hl-a-bg: #1a3fd0;
+  --hl-a-fg: #ffffff;
   --hl-b-bg: transparent;
   --hl-b-fg: #7d1f1f;
+  --title-bg: transparent;
+  --title-fg: #1a3fd0;
   --accent: #1a3fd0;
   --pt: 196, 201, 210;
   --pt-alpha: 1;
@@ -1841,10 +1909,12 @@ html[data-scheme="steel"] {
   --ink: #3f4650;
   --soft: #8b939e;
   --link: #0000ee;
-  --hl-a-bg: transparent;
-  --hl-a-fg: #0000ee;
+  --hl-a-bg: #0000ee;
+  --hl-a-fg: #ffffff;
   --hl-b-bg: transparent;
   --hl-b-fg: #8b1a1a;
+  --title-bg: transparent;
+  --title-fg: #0000ee;
   --accent: #1a4fd0;
   --pt: 176, 182, 190;
   --pt-alpha: 1;
@@ -1959,18 +2029,18 @@ html[data-backdrop="plain"] .blurfield { display: none; }
    Each only restyles the button itself, so the nav, the pickers and every
    inline control change together. */
 
-/* underline — no box at all; a button reads as a link. */
-html[data-btn="underline"] button {
-  border: none;
-  background: none;
-  padding: 0 1px;
-  color: var(--link);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+/* square — the flat box the site used before underlines became the default. */
+html[data-btn="square"] button {
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  color: var(--ink);
+  padding: 2px 7px;
+  margin: 0 2px 2px 0;
+  text-decoration: none;
 }
-html[data-btn="underline"] button:hover { color: var(--ink); background: none; }
-html[data-btn="underline"] .scheme-picker button.on,
-html[data-btn="underline"] button.on { color: var(--ink); font-weight: 700; }
+html[data-btn="square"] button:hover {
+  background: color-mix(in srgb, var(--ink) 8%, var(--bg));
+}
 
 /* bracket — the old terminal convention, [ like this ]. */
 html[data-btn="bracket"] button {

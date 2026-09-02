@@ -159,8 +159,13 @@ export default function Home() {
         </Editable>
       </p>
       <SectionArrange sectionKey="selected" items={arrItems(selectedBase)} />
-      {selected.map((p) => (
-        <ProjectBlock key={`sel-${p.slug}`} context="selected" p={p} />
+      {selected.map((p, i) => (
+        <ProjectBlock
+          key={`sel-${p.slug}`}
+          context="selected"
+          p={p}
+          eager={i === 0}
+        />
       ))}
       <SeeMore />
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { ytEmbed } from "@/lib/yt";
 import { editableText } from "@/content/editable-text";
+import { imageDims } from "@/content/project-images";
 import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 
 export interface RowImage {
@@ -37,6 +38,18 @@ const thumbOf = (src: string) =>
     : src;
 
 /**
+ * Intrinsic size for the file actually being rendered, falling back to the
+ * full-size original when a thumbnail has not been measured. Rows size images
+ * by height with width:auto, so without this the browser reserves no width and
+ * reflows the whole strip as each image arrives — the pop-in. Falls back to
+ * undefined, which simply restores the old behaviour for that one image.
+ */
+function dimsFor(src: string): { width: number; height: number } | undefined {
+  const d = imageDims[thumbOf(src)] ?? imageDims[src];
+  return d ? { width: d[0], height: d[1] } : undefined;
+}
+
+/**
  * Shared per-work row config. A project can be listed twice on the homepage
  * (selected works + its section), rendering twin rows for the same work. Both
  * twins read and write this one store entry, so edits made in either copy stay
@@ -67,6 +80,7 @@ export function ImageRow({
   sizeClass,
   title,
   oneOnMobile = false,
+  eager = false,
   resizeId,
   fallbackResizeId,
   rowSlug,
@@ -76,6 +90,9 @@ export function ImageRow({
   sizeClass: string; // "" | " size-m" | " size-l"
   title: string;
   oneOnMobile?: boolean;
+  /** Set on rows that render above the fold, so their images load with the
+   *  page instead of arriving after first paint. */
+  eager?: boolean;
   resizeId?: string;
   /** Older, un-contexted key to read saved settings from when the contexted
    *  resizeId has none saved yet (e.g. "the-xx-festival-tour" behind
@@ -304,7 +321,12 @@ export function ImageRow({
             <img
               src={asset(thumbOf(img.src))}
               alt={alt}
-              loading="lazy"
+              {...dimsFor(img.src)}
+              // The first row on a page is usually above the fold, and lazy
+              // loading it means it arrives after first paint — visible as a
+              // late pop even on a fast connection.
+              loading={eager ? "eager" : "lazy"}
+              fetchPriority={eager ? "high" : "auto"}
               decoding="async"
             />
           ) : null;
