@@ -45,7 +45,17 @@ export const TEXTURES: { id: string; label: string }[] = [
   { id: "velvet", label: "velvet" },
 ];
 
+/** Simulation grid size. Auto scales with the device. */
+export const RESOLUTIONS: { id: string; label: string }[] = [
+  { id: "auto", label: "auto" },
+  { id: "low", label: "low" },
+  { id: "med", label: "med" },
+  { id: "high", label: "high" },
+  { id: "max", label: "max" },
+];
+
 const BACK_KEY = "npjm-backdrop";
+const RES_KEY = "npjm-res";
 const TEX_KEY = "npjm-texture";
 const SPEED_KEY = "npjm-speed";
 const TINT_KEY = "npjm-tint";
@@ -60,6 +70,7 @@ const cache: Record<string, string | null> = {
   [TINT_KEY]: null,
   [SPEED_KEY]: null,
   [TEX_KEY]: null,
+  [RES_KEY]: null,
 };
 const listeners = new Set<() => void>();
 
@@ -101,10 +112,12 @@ const valid = (list: { id: string }[], v: string, fallback: string) =>
 const getBackdrop = () => valid(BACKDROPS, read(BACK_KEY, "cloud"), "cloud");
 const getTint = () => valid(TINTS, read(TINT_KEY, "ink"), "ink");
 const getTex = () => valid(TEXTURES, read(TEX_KEY, "mist"), "mist");
+const getRes = () => valid(RESOLUTIONS, read(RES_KEY, "auto"), "auto");
 const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "2"), "2");
 const serverBackdrop = () => "cloud";
 const serverTint = () => "ink";
 const serverTex = () => "mist";
+const serverRes = () => "auto";
 const serverSpeed = () => "2";
 
 /**
@@ -120,6 +133,7 @@ export function SchemePicker() {
   const backdrop = useSyncExternalStore(subscribe, getBackdrop, serverBackdrop);
   const tint = useSyncExternalStore(subscribe, getTint, serverTint);
   const texture = useSyncExternalStore(subscribe, getTex, serverTex);
+  const res = useSyncExternalStore(subscribe, getRes, serverRes);
   const speed = useSyncExternalStore(subscribe, getSpeed, serverSpeed);
 
   useEffect(() => {
@@ -127,8 +141,9 @@ export function SchemePicker() {
     el.dataset.backdrop = backdrop;
     el.dataset.tint = tint;
     el.dataset.texture = texture;
+    el.dataset.res = res;
     el.dataset.speed = speed;
-  }, [backdrop, tint, texture, speed]);
+  }, [backdrop, tint, texture, res, speed]);
 
   useEffect(() => {
     return () => {
@@ -136,6 +151,7 @@ export function SchemePicker() {
       delete el.dataset.backdrop;
       delete el.dataset.tint;
       delete el.dataset.texture;
+      delete el.dataset.res;
       delete el.dataset.speed;
       delete el.dataset.reset;
     };
@@ -166,6 +182,19 @@ export function SchemePicker() {
             className={texture === t.id ? "on" : undefined}
           >
             {t.label}
+          </button>
+        ))}
+      </div>
+      <div className="scheme-picker dot-picker">
+        <span className="scheme-label">detail</span>
+        {RESOLUTIONS.map((r) => (
+          <button
+            key={r.label}
+            onClick={() => write(RES_KEY, r.id)}
+            aria-pressed={res === r.id}
+            className={res === r.id ? "on" : undefined}
+          >
+            {r.label}
           </button>
         ))}
       </div>

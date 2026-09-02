@@ -116,23 +116,43 @@ const TINTS: Record<string, { lo: [number, number, number] | null; hi: [number, 
  *  grain a little static, which stops large soft areas looking like a gradient
  */
 /**
- * Surface treatment. Acts on the render and never on the simulation, so the
- * network underneath is identical and only its surface changes.
- *  blur  extra separable passes, which soften the strands
- *  glow  a heavily blurred copy added back, so bright paths bleed light
- *  grain a little static, which stops large soft areas looking like a gradient
+ * Surface treatment. The blur is a CSS filter on the canvas rather than
+ * passes over the buffer: mist alone was ten full-grid passes every frame,
+ * more work than the simulation itself, and the GPU does the same job for
+ * nothing. Only grain and gamma stay in JS, one cheap pass each.
  */
-const TEXTURES: Record<string, { blur: number; glow: number; grain: number; gamma: number }> = {
-  soft: { blur: 2, glow: 0, grain: 0, gamma: 1 },
-  mist: { blur: 5, glow: 0, grain: 0, gamma: 0.85 },
-  glow: { blur: 3, glow: 0.8, grain: 0, gamma: 1 },
-  bloom: { blur: 4, glow: 1.1, grain: 0, gamma: 0.9 },
-  grain: { blur: 3, glow: 0, grain: 0.14, gamma: 0.9 },
-  velvet: { blur: 6, glow: 0.55, grain: 0.07, gamma: 0.8 },
+const TEXTURES: Record<string, { filter: string; grain: number; gamma: number }> = {
+  mist: { filter: "blur(6px)", grain: 0, gamma: 0.85 },
+  soft: { filter: "blur(2.5px)", grain: 0, gamma: 1 },
+  glow: { filter: "blur(3px) contrast(1.25) brightness(1.06)", grain: 0, gamma: 1 },
+  bloom: { filter: "blur(5px) contrast(1.35) brightness(1.1)", grain: 0, gamma: 0.9 },
+  grain: { filter: "blur(1.5px)", grain: 0.14, gamma: 0.9 },
+  velvet: { filter: "blur(8px) contrast(0.92) brightness(1.04)", grain: 0.06, gamma: 0.8 },
 };
 
+/**
+ * Grid size, as the LONG edge. The old formula pinned width and let height
+ * follow the aspect ratio, so a portrait phone got 460x995 — 457k cells
+ * against a desktop's 118k, four times the work on the weaker device, which
+ * is exactly why it crawled there.
+ */
+const RESOLUTIONS: Record<string, number> = {
+  low: 300,
+  med: 440,
+  high: 620,
+  max: 860,
+};
 
-const RES = 460; // long edge of the simulation grid
+/** Auto picks by what the device is likely to sustain. */
+function autoResolution(): number {
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  const cores = navigator.hardwareConcurrency ?? 4;
+  if (coarse) return cores >= 8 ? RESOLUTIONS.med : RESOLUTIONS.low;
+  return cores >= 8 ? RESOLUTIONS.high : RESOLUTIONS.med;
+}
+
+
+
 
 export function GenerativeField() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -181,11 +201,11 @@ export function GenerativeField() {
     let needsRestart = false;
 
     let tex = TEXTURES.mist;
+    let resolution = autoResolution();
     let speed = 2;
     let lastReset = "";
     let tint = TINTS.ink;
     let disp = new Float32Array(0);
-    let dtmp = new Float32Array(0);
     let agents = new Float32Array(0);
     let trail = new Float32Array(0);
     let scratch = new Float32Array(0);
@@ -218,11 +238,34 @@ export function GenerativeField() {
       return (255 << 24) | (b << 16) | (g << 8) | r;
     };
 
+    /** Target grid for the current viewport and resolution setting. Measured
+     *  from the LAYOUT viewport: window.innerHeight tracks the collapsing URL
+     *  bar on a phone, so reading it here meant a tap resized the grid and
+     *  restarted the whole simulation. */
+    function gridSize(): [number, number] {
+      const de = document.documentElement;
+      let cw = de.clientWidth || window.innerWidth || 0;
+      let ch = de.clientHeight || window.innerHeight || 0;
+      // A hidden or backgrounded tab reports 0x0. Clamping that to 1x1 made
+      // the aspect ratio exactly 1 and built a square grid, which is both the
+      // wrong shape and needlessly large. Fall back to a normal landscape
+      // viewport instead and let the resize/visibility handlers correct it
+      // once the page is actually on screen.
+      if (cw < 2 || ch < 2) {
+        cw = 1440;
+        ch = 810;
+      }
+      const long = resolution;
+      return ch >= cw
+        ? [Math.max(1, Math.round(long * (cw / ch))), long]
+        : [long, Math.max(1, Math.round(long * (ch / cw)))];
+    }
+
     function start() {
       if (!cfg) cfg = PRESETS[DEFAULT];
-      const ar = window.innerHeight / Math.max(1, window.innerWidth);
-      W = RES;
-      H = Math.max(1, Math.round(RES * ar));
+      const [tw, th] = gridSize();
+      W = tw;
+      H = th;
       cv.width = W;
       cv.height = H;
       img = ctx.createImageData(W, H);
@@ -231,7 +274,6 @@ export function GenerativeField() {
       trail = new Float32Array(N);
       scratch = new Float32Array(N);
       disp = new Float32Array(N);
-      dtmp = new Float32Array(N);
       probe = new Float32Array(PROBE_CELLS + 8);
       sinceProbe = 0;
       stillCount = 0;
@@ -359,51 +401,6 @@ export function GenerativeField() {
       const n = tr.length;
       for (let i = 0; i < n; i++) disp[i] = tr[i] * inv;
 
-      // --- texture: acts on the rendered field, never on the simulation ----
-      for (let pss = 0; pss < tex.blur; pss++) {
-        for (let y = 0; y < H; y++) {
-          const row = y * W;
-          for (let x = 0; x < W; x++) {
-            dtmp[row + x] =
-              (disp[row + (x === 0 ? W - 1 : x - 1)] +
-                disp[row + x] +
-                disp[row + (x === W - 1 ? 0 : x + 1)]) / 3;
-          }
-        }
-        for (let x = 0; x < W; x++) {
-          for (let y = 0; y < H; y++) {
-            disp[y * W + x] =
-              (dtmp[(y === 0 ? H - 1 : y - 1) * W + x] +
-                dtmp[y * W + x] +
-                dtmp[(y === H - 1 ? 0 : y + 1) * W + x]) / 3;
-          }
-        }
-      }
-      if (tex.glow > 0) {
-        // A heavily blurred copy added back, so the strongest paths bleed.
-        dtmp.set(disp);
-        for (let pss = 0; pss < 4; pss++) {
-          for (let y = 0; y < H; y++) {
-            const row = y * W;
-            for (let x = 0; x < W; x++) {
-              scratch[row + x] =
-                (dtmp[row + (x === 0 ? W - 1 : x - 1)] +
-                  dtmp[row + x] +
-                  dtmp[row + (x === W - 1 ? 0 : x + 1)]) / 3;
-            }
-          }
-          for (let x = 0; x < W; x++) {
-            for (let y = 0; y < H; y++) {
-              dtmp[y * W + x] =
-                (scratch[(y === 0 ? H - 1 : y - 1) * W + x] +
-                  scratch[y * W + x] +
-                  scratch[(y === H - 1 ? 0 : y + 1) * W + x]) / 3;
-            }
-          }
-        }
-        const g = tex.glow;
-        for (let i = 0; i < n; i++) disp[i] += dtmp[i] * g;
-      }
       const gm = tex.gamma;
       const gr = tex.grain;
       for (let i = 0; i < n; i++) {
@@ -423,6 +420,13 @@ export function GenerativeField() {
       const de = document.documentElement.dataset;
       tint = TINTS[de.tint ?? "ink"] ?? TINTS.ink;
       tex = TEXTURES[de.texture ?? "mist"] ?? TEXTURES.mist;
+      cv.style.filter = tex.filter;
+      const rq = de.res ?? "auto";
+      const nextRes = rq === "auto" ? autoResolution() : RESOLUTIONS[rq] ?? autoResolution();
+      if (nextRes !== resolution) {
+        resolution = nextRes;
+        if (active) start();
+      }
       // Steps per displayed frame. Nothing about the simulation changes; it
       // simply advances further between paints, so a slow preset reaches the
       // state worth judging in seconds rather than a minute.
@@ -455,12 +459,23 @@ export function GenerativeField() {
         "data-theme",
         "data-tint",
         "data-texture",
+        "data-res",
         "data-speed",
         "data-reset",
       ],
     });
-    const onResize = () => { if (active) start(); };
+    const onResize = () => {
+      if (!active) return;
+      // Only rebuild when the grid would actually differ. A phone fires resize
+      // constantly as its toolbar slides, and restarting on each one wiped the
+      // network every time the screen was touched.
+      const [tw, th] = gridSize();
+      if (tw !== W || th !== H) start();
+    };
     window.addEventListener("resize", onResize);
+    // A tab restored from the background reports its real size only once it is
+    // visible again, so re-check the grid then as well.
+    document.addEventListener("visibilitychange", onResize);
 
     start();
     sync();
@@ -480,6 +495,7 @@ export function GenerativeField() {
       cancelAnimationFrame(raf);
       mo.disconnect();
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onResize);
     };
   }, []);
 
