@@ -176,6 +176,8 @@ export function GenerativeField() {
     // whatever the simulation was actually doing. Tracking the frame maximum
     // and exposing against it keeps contrast right for any parameters.
     let norm = 1;
+    let speed = 1;
+    let lastReset = "";
     let tint = TINTS.ink;
     let tex = TEXTURES.crisp;
     let disp = new Float32Array(0);
@@ -246,7 +248,7 @@ export function GenerativeField() {
       }
     }
 
-    function step() {
+    function step(render: boolean) {
       const a = agents, tr = trail, nx = scratch;
       const { sensorAngle: SA, rotate: RA, sensorDist: SO, step: SS } = cfg;
       const sense = (x: number, y: number, ang: number) => {
@@ -292,6 +294,7 @@ export function GenerativeField() {
           tr[y * W + x] = v * d;
         }
       }
+      if (!render) return;
       // Expose against the MEAN, not the maximum. Where agents happen to pile
       // up, a single cell can sit eight times above the network paths
       // themselves, so a max-based white point put the paths at a fifth of
@@ -299,6 +302,7 @@ export function GenerativeField() {
       // was doing. Measured: mean 1.6, p90 4.1, max 32.9. A white point at
       // ~3.2x mean lands just above p90, so paths render solid and the
       // background between them stays clear.
+      if (!render) return;
       // Expose against the MEAN, not the maximum. Where agents pile up a single
       // cell can sit eight times above the network paths themselves (measured:
       // mean 1.6, p90 4.1, max 32.9), so a max-based white point put the real
@@ -375,6 +379,11 @@ export function GenerativeField() {
       const de = document.documentElement.dataset;
       tint = TINTS[de.tint ?? "ink"] ?? TINTS.ink;
       tex = TEXTURES[de.texture ?? "crisp"] ?? TEXTURES.crisp;
+      // Steps per displayed frame. Nothing about the simulation changes; it
+      // simply advances further between paints, so a slow preset reaches the
+      // state worth judging in seconds rather than a minute.
+      const sp = Number(de.speed);
+      speed = Number.isFinite(sp) && sp >= 1 ? Math.min(16, Math.round(sp)) : 1;
       const raw = document.documentElement.dataset.backdrop ?? "";
       const next = raw.startsWith("gen-") ? raw.slice(4) : null;
       active = !!next && !!PRESETS[next];
@@ -382,6 +391,15 @@ export function GenerativeField() {
         name = next;
         cfg = PRESETS[next] ?? PRESETS[DEFAULT];
         start();
+        lastReset = de.reset ?? "";
+        return;
+      }
+      // Reset is a changing token rather than a flag, so pressing it twice in
+      // a row still restarts.
+      const rs = de.reset ?? "";
+      if (rs !== lastReset) {
+        lastReset = rs;
+        if (active) start();
       }
     };
     const mo = new MutationObserver(sync);
@@ -393,6 +411,8 @@ export function GenerativeField() {
         "data-theme",
         "data-tint",
         "data-texture",
+        "data-speed",
+        "data-reset",
       ],
     });
     const onResize = () => { if (active) start(); };
@@ -403,7 +423,8 @@ export function GenerativeField() {
 
     const draw = () => {
       if (active && buf && img && !reduced) {
-        step();
+        // Advance `speed` times, but only build the picture on the last one.
+        for (let i = 0; i < speed; i++) step(i === speed - 1);
         ctx.putImageData(img, 0, 0);
       }
       raf = requestAnimationFrame(draw);
