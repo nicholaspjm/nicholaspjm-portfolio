@@ -18,7 +18,7 @@ export const structure: {
 } = {
   "selected": [
     "the-xx-festival-tour",
-    "hybrid-2-0",
+    "hybrid-1-0",
     "nin-as-alive-as-you-need-me-to-be",
     "its-murph-weightless-tour",
     "a3-festival",
@@ -130,10 +130,10 @@ export const structure: {
       "title": "The Xx Festival Tour",
       "text": null
     },
-    "hybrid-2-0": {
+    "hybrid-1-0": {
       "section": null,
       "hidden": false,
-      "title": "Hybrid 2 0",
+      "title": "Hybrid 1 0",
       "text": null
     },
     "nin-as-alive-as-you-need-me-to-be": {

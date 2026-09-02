@@ -29,7 +29,7 @@ const thumbOf = (src: string) =>
 const COVERED_PERFORMANCES = new Set([
   "Pitch Music & Arts: Far from God, Close to Heaven", // pitch-far-from-god
   "A3 Festival, Main Stage", // a3-festival
-  "Platform Presents", // hybrid-2-0 was the work shown there
+  "Platform Presents", // hybrid-1-0 was the work shown there
 ]);
 
 const slugify = (s: string) =>

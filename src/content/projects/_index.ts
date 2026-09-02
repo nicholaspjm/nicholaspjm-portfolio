@@ -13,7 +13,7 @@ import { project as catAmongAnimals } from "./cat-among-animals";
 import { project as liveCoding } from "./live-coding";
 import { project as forTheCause } from "./for-the-cause";
 import { project as forTheCause2026 } from "./for-the-cause-2026";
-import { project as hybrid20 } from "./hybrid-2-0";
+import { project as hybrid10 } from "./hybrid-1-0";
 import { project as a3Festival } from "./a3-festival";
 import { project as abstractedOrganica } from "./abstracted-organica";
 import { project as cheahdxPurespace } from "./cheahdx-purespace";
@@ -40,7 +40,7 @@ export const projects: Project[] = [
   liveCoding,
   forTheCause,
   forTheCause2026,
-  hybrid20,
+  hybrid10,
   a3Festival,
   abstractedOrganica,
   cheahdxPurespace,

@@ -23,9 +23,5 @@ export const project: Project = {
         "Main-stage visual design and live performance at A3 Festival, 2025.",
       ],
     },
-    {
-      kind: "text",
-      paragraphs: ["Documentation and images coming soon."],
-    },
   ],
 };
