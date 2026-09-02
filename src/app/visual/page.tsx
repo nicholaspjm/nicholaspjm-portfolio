@@ -6,7 +6,7 @@ import { Editable } from "@/components/ui/editable";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Visual index — every image",
+  title: "Visual index: every image",
   description:
     "Every image from every project in one scattered field: projection, installation and live-visual work by Nicholas Marriott. Click through to the work.",
   path: "/visual/",
