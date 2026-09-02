@@ -28,6 +28,21 @@ export const SCHEMES: { id: string; label: string }[] = [
   { id: "sage", label: "sage" },
 ];
 
+/** Typefaces. "narrow" and "unified" are the mindyseu.com register — one
+ *  condensed grotesque at a tight leading; unified drops the separate
+ *  technical face entirely, as that site does. */
+export const FONTS: { id: string; label: string }[] = [
+  { id: "", label: "arial" },
+  { id: "narrow", label: "narrow" },
+  { id: "unified", label: "unified" },
+  { id: "helvetica", label: "helvetica" },
+  { id: "system", label: "system" },
+  { id: "times", label: "times" },
+  { id: "georgia", label: "georgia" },
+  { id: "verdana", label: "verdana" },
+  { id: "courier", label: "courier" },
+];
+
 /** Button treatments. The empty id is the site's flat square box. */
 export const BUTTONS: { id: string; label: string }[] = [
   { id: "", label: "underline" },
@@ -60,6 +75,7 @@ const KEY = "npjm-scheme";
 const DOT_KEY = "npjm-dot";
 const BACK_KEY = "npjm-backdrop";
 const BTN_KEY = "npjm-btn";
+const FONT_KEY = "npjm-font";
 
 // A tiny external store rather than useState seeded in an effect. The saved
 // scheme only exists on the client, so reading it during render would
@@ -71,6 +87,7 @@ const cache: Record<string, string | null> = {
   [DOT_KEY]: null,
   [BACK_KEY]: null,
   [BTN_KEY]: null,
+  [FONT_KEY]: null,
 };
 const listeners = new Set<() => void>();
 
@@ -103,10 +120,12 @@ const getScheme = () => read(KEY, "");
 const getDot = () => read(DOT_KEY, "1");
 const getBackdrop = () => read(BACK_KEY, "cloud");
 const getBtn = () => read(BTN_KEY, "");
+const getFont = () => read(FONT_KEY, "");
 const serverScheme = () => "";
 const serverDot = () => "1";
 const serverBackdrop = () => "cloud";
 const serverBtn = () => "";
+const serverFont = () => "";
 
 /**
  * Colour-scheme switcher, /preview only. Sets data-scheme on <html>, which
@@ -123,6 +142,7 @@ export function SchemePicker() {
     serverBackdrop,
   );
   const btn = useSyncExternalStore(subscribe, getBtn, serverBtn);
+  const font = useSyncExternalStore(subscribe, getFont, serverFont);
 
   useEffect(() => {
     const el = document.documentElement;
@@ -132,7 +152,9 @@ export function SchemePicker() {
     el.dataset.backdrop = backdrop;
     if (btn) el.dataset.btn = btn;
     else delete el.dataset.btn;
-  }, [scheme, dotSize, backdrop, btn]);
+    if (font) el.dataset.font = font;
+    else delete el.dataset.font;
+  }, [scheme, dotSize, backdrop, btn, font]);
 
   useEffect(() => {
     return () => {
@@ -141,6 +163,7 @@ export function SchemePicker() {
       delete el.dataset.dot;
       delete el.dataset.backdrop;
       delete el.dataset.btn;
+      delete el.dataset.font;
     };
   }, []);
 
@@ -150,7 +173,7 @@ export function SchemePicker() {
         <span className="scheme-label">colour</span>
         {SCHEMES.map((s) => (
           <button
-            key={s.id || "base"}
+            key={s.label}
             onClick={() => write(KEY, s.id)}
             aria-pressed={scheme === s.id}
             className={scheme === s.id ? "on" : undefined}
@@ -160,10 +183,23 @@ export function SchemePicker() {
         ))}
       </div>
       <div className="scheme-picker dot-picker">
+        <span className="scheme-label">type</span>
+        {FONTS.map((f) => (
+          <button
+            key={f.label}
+            onClick={() => write(FONT_KEY, f.id)}
+            aria-pressed={font === f.id}
+            className={font === f.id ? "on" : undefined}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+      <div className="scheme-picker dot-picker">
         <span className="scheme-label">buttons</span>
         {BUTTONS.map((b) => (
           <button
-            key={b.id || "square"}
+            key={b.label}
             onClick={() => write(BTN_KEY, b.id)}
             aria-pressed={btn === b.id}
             className={btn === b.id ? "on" : undefined}
@@ -176,7 +212,7 @@ export function SchemePicker() {
         <span className="scheme-label">behind</span>
         {BACKDROPS.map((b) => (
           <button
-            key={b.id}
+            key={b.label}
             onClick={() => write(BACK_KEY, b.id)}
             aria-pressed={backdrop === b.id}
             className={backdrop === b.id ? "on" : undefined}
@@ -189,7 +225,7 @@ export function SchemePicker() {
         <span className="scheme-label">dots</span>
         {DOTS.map((d) => (
           <button
-            key={d.id}
+            key={d.label}
             onClick={() => write(DOT_KEY, d.id)}
             aria-pressed={dotSize === d.id}
             className={dotSize === d.id ? "on" : undefined}
