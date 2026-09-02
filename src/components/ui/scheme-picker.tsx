@@ -21,13 +21,18 @@ export const FONTS: { id: string; label: string }[] = [
  *  simulation drawn by GenerativeField; the rest are the originals. */
 export const BACKDROPS: { id: string; label: string }[] = [
   { id: "cloud", label: "point cloud" },
-  { id: "gen-flow", label: "flow field" },
-  { id: "gen-physarum", label: "physarum" },
-  { id: "gen-dla", label: "dla" },
-  { id: "gen-reaction", label: "reaction" },
-  { id: "gen-feedback", label: "feedback" },
-  { id: "gen-moire", label: "moire" },
-  { id: "gen-contour", label: "contour" },
+  // Every "gen-" option is the same physarum simulation under different
+  // sensing and movement parameters. See generative-field.tsx for what each
+  // one changes.
+  { id: "gen-network", label: "network" },
+  { id: "gen-lattice", label: "lattice" },
+  { id: "gen-rivers", label: "rivers" },
+  { id: "gen-spiral", label: "spiral" },
+  { id: "gen-radial", label: "radial" },
+  { id: "gen-filament", label: "filament" },
+  { id: "gen-turbulent", label: "turbulent" },
+  { id: "gen-crystal", label: "crystal" },
+  { id: "gen-bloom", label: "bloom" },
   { id: "blur", label: "gaussian blur" },
   { id: "plain", label: "plain" },
 ];

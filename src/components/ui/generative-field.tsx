@@ -3,35 +3,99 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Real-time generative backdrops for /preview, in the register of the TD work
- * the site is about: agent systems, diffusion, feedback, interference.
+ * Physarum backdrops for /preview.
  *
- * Every mode runs on a small offscreen buffer and is scaled up by CSS. That is
- * the whole performance story: physarum and reaction-diffusion touch every
- * cell every frame, so at viewport resolution they would be hopeless in JS,
- * while at a few hundred pixels across they are cheap and the upscale reads as
- * softness rather than as pixels. Colour is pulled from the palette variables,
- * so a scheme change recolours the simulation.
+ * All of these are the same simulation: thousands of agents that sense three
+ * points ahead, steer toward the strongest trail, deposit behind themselves,
+ * and let the map blur and decay. Nothing about the pattern is drawn; the
+ * networks are what the feedback loop settles into. The presets below only
+ * change how the agents sense and move, and that is enough to take it from a
+ * fine mesh to a few thick channels to something that will not settle at all.
+ *
+ * It runs on a small offscreen buffer scaled up by CSS. That is the whole
+ * performance story: every agent and every cell is touched each frame, so at
+ * viewport resolution this would be hopeless in JS, while at a few hundred
+ * pixels across it is cheap and the upscale reads as softness. Colour comes
+ * from the palette variables, so a scheme change recolours the simulation.
  */
-type Mode =
-  | "flow"
-  | "physarum"
-  | "dla"
-  | "reaction"
-  | "feedback"
-  | "moire"
-  | "contour";
-
-/** Sim resolution per mode: how many cells each can afford per frame. */
-const RES: Record<Mode, number> = {
-  flow: 520,
-  physarum: 480,
-  dla: 420,
-  reaction: 260, // heaviest per cell, so the smallest grid
-  feedback: 480,
-  moire: 520,
-  contour: 300,
+type Preset = {
+  /** Agents as a fraction of cells. Density is the loudest control here. */
+  density: number;
+  /** Sensor half-angle: how wide apart the two side sensors sit. */
+  sensorAngle: number;
+  /** How hard an agent turns toward the side that smells strongest. */
+  rotate: number;
+  /** How far ahead it senses. Small reads texture, large reads structure. */
+  sensorDist: number;
+  /** Distance travelled per frame. */
+  step: number;
+  /** Trail left behind per step. Tuned against decay rather than chosen: the
+   *  steady-state ink is roughly density * deposit / (1 - decay), so a preset
+   *  that holds trails longer has to deposit proportionally less or the whole
+   *  map saturates to a flat field. Every preset here lands near the same
+   *  level as "network". */
+  deposit: number;
+  /** Trail retained per frame; the closer to 1, the longer paths persist. */
+  decay: number;
+  /** Random steer added every frame, in radians. */
+  jitter: number;
+  /** Constant turn added every frame, which curls the whole field. */
+  bias: number;
+  /** Where agents begin, which decides the large-scale shape. */
+  spawn: "scatter" | "centre" | "ring" | "edge";
 };
+
+const PRESETS: Record<string, Preset> = {
+  // The canonical parameters: an even mesh that keeps reorganising.
+  network: {
+    density: 0.12, sensorAngle: 0.5, rotate: 0.42, sensorDist: 7, step: 1.1,
+    deposit: 0.55, decay: 0.96, jitter: 0.0, bias: 0.0, spawn: "scatter",
+  },
+  // Short senses and short steps: fine capillaries rather than roads.
+  lattice: {
+    density: 0.2, sensorAngle: 0.42, rotate: 0.55, sensorDist: 3.2, step: 0.7,
+    deposit: 0.412, decay: 0.95, jitter: 0.02, bias: 0.0, spawn: "scatter",
+  },
+  // Sensing a long way ahead makes agents commit to existing paths, so the
+  // mesh consolidates into a few wide channels.
+  rivers: {
+    density: 0.12, sensorAngle: 0.62, rotate: 0.28, sensorDist: 18, step: 1.6,
+    deposit: 0.413, decay: 0.97, jitter: 0.0, bias: 0.0, spawn: "scatter",
+  },
+  // A constant turn on every agent; the network winds instead of branching.
+  spiral: {
+    density: 0.13, sensorAngle: 0.5, rotate: 0.4, sensorDist: 8, step: 1.2,
+    deposit: 0.444, decay: 0.965, jitter: 0.0, bias: 0.03, spawn: "centre",
+  },
+  // Released from one point with narrow sensors, so growth reads outward.
+  radial: {
+    density: 0.14, sensorAngle: 0.3, rotate: 0.25, sensorDist: 10, step: 1.35,
+    deposit: 0.412, decay: 0.965, jitter: 0.01, bias: 0.0, spawn: "centre",
+  },
+  // Sparse and persistent: single strands survive instead of a mesh.
+  filament: {
+    density: 0.07, sensorAngle: 0.55, rotate: 0.5, sensorDist: 12, step: 1.6,
+    deposit: 0.589, decay: 0.975, jitter: 0.0, bias: 0.0, spawn: "ring",
+  },
+  // Enough random steer that trails never quite consolidate.
+  turbulent: {
+    density: 0.16, sensorAngle: 0.72, rotate: 0.62, sensorDist: 6, step: 1.3,
+    deposit: 0.567, decay: 0.945, jitter: 0.25, bias: 0.0, spawn: "scatter",
+  },
+  // Wide sensors and a hard turn, with no noise: angular, almost drawn.
+  crystal: {
+    density: 0.11, sensorAngle: 1.0, rotate: 0.95, sensorDist: 9, step: 1.15,
+    deposit: 0.525, decay: 0.965, jitter: 0.0, bias: 0.0, spawn: "edge",
+  },
+  // Growing in from the frame rather than out from the middle.
+  bloom: {
+    density: 0.12, sensorAngle: 0.46, rotate: 0.36, sensorDist: 10, step: 1.25,
+    deposit: 0.413, decay: 0.97, jitter: 0.005, bias: -0.02, spawn: "edge",
+  },
+};
+
+
+const RES = 460; // long edge of the simulation grid
 
 export function GenerativeField() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -40,340 +104,170 @@ export function GenerativeField() {
     const canvas = ref.current;
     if (!canvas) return;
     const cv: HTMLCanvasElement = canvas;
-    const c2d = cv.getContext("2d", { willReadFrequently: true });
+    const c2d = cv.getContext("2d");
     if (!c2d) return;
     const ctx: CanvasRenderingContext2D = c2d;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let raf = 0;
-    let mode: Mode = "flow";
+    let name = "network";
+    let cfg = PRESETS.network;
     let W = 0, H = 0;
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
-
-    // Simulation state, allocated per mode on (re)start.
-    let agents: Float32Array | null = null;   // physarum: x, y, heading
-    let trail: Float32Array | null = null;    // physarum / dla deposit map
-    let next: Float32Array | null = null;     // physarum blur target
-    let gu: Float32Array | null = null;       // reaction: chemical U
-    let gv: Float32Array | null = null;       // reaction: chemical V
-    let walkers: Float32Array | null = null;  // dla: free particles
-    let parts: Float32Array | null = null;    // flow: x, y
-    let t = 0;
+    // Display normalisation. Trail values are unbounded and settle at a
+    // different level for every preset, while shade() clamps at 1 — so a
+    // fixed mapping saturated the whole map to flat ink and read as noise,
+    // whatever the simulation was actually doing. Tracking the frame maximum
+    // and exposing against it keeps contrast right for any parameters.
+    let norm = 1;
+    let agents = new Float32Array(0);
+    let trail = new Float32Array(0);
+    let scratch = new Float32Array(0);
+    let active = false;
 
     const palette = () => {
       const cs = getComputedStyle(document.documentElement);
-      const rgb = (cs.getPropertyValue("--pt").trim() || "0,0,0")
-        .split(",")
-        .map((v) => parseInt(v.trim(), 10) || 0);
-      const bgHex = (cs.getPropertyValue("--bg").trim() || "#ffffff").replace("#", "");
-      const acHex = (cs.getPropertyValue("--accent").trim() || "#0000ee").replace("#", "");
-      const hex = (h: string, i: number) =>
-        parseInt(h.length === 3 ? h[i].repeat(2) : h.slice(i * 2, i * 2 + 2), 16) || 0;
-      return {
-        ink: [rgb[0], rgb[1], rgb[2]] as [number, number, number],
-        bg: [hex(bgHex, 0), hex(bgHex, 1), hex(bgHex, 2)] as [number, number, number],
-        accent: [hex(acHex, 0), hex(acHex, 1), hex(acHex, 2)] as [number, number, number],
-      };
+      const pt = (cs.getPropertyValue("--pt").trim() || "0,0,0")
+        .split(",").map((v) => parseInt(v.trim(), 10) || 0);
+      const bg = (cs.getPropertyValue("--bg").trim() || "#ffffff").replace("#", "");
+      const h = (s: string, i: number) =>
+        parseInt(s.length === 3 ? s[i].repeat(2) : s.slice(i * 2, i * 2 + 2), 16) || 0;
+      return { ink: pt, bg: [h(bg, 0), h(bg, 1), h(bg, 2)] };
     };
     let col = palette();
 
-    /** Pack a 0..1 intensity into a pixel: background to ink, accent on top. */
-    const shade = (v: number, accent = 0) => {
+    const shade = (v: number) => {
       const k = v < 0 ? 0 : v > 1 ? 1 : v;
-      const a = accent < 0 ? 0 : accent > 1 ? 1 : accent;
-      const r = col.bg[0] + (col.ink[0] - col.bg[0]) * k + (col.accent[0] - col.bg[0]) * a;
-      const g = col.bg[1] + (col.ink[1] - col.bg[1]) * k + (col.accent[1] - col.bg[1]) * a;
-      const b = col.bg[2] + (col.ink[2] - col.bg[2]) * k + (col.accent[2] - col.bg[2]) * a;
-      return (
-        (255 << 24) |
-        ((b < 0 ? 0 : b > 255 ? 255 : b) << 16) |
-        ((g < 0 ? 0 : g > 255 ? 255 : g) << 8) |
-        (r < 0 ? 0 : r > 255 ? 255 : r)
-      );
+      const r = col.bg[0] + (col.ink[0] - col.bg[0]) * k;
+      const g = col.bg[1] + (col.ink[1] - col.bg[1]) * k;
+      const b = col.bg[2] + (col.ink[2] - col.bg[2]) * k;
+      return (255 << 24) | (b << 16) | (g << 8) | r;
     };
 
-    const rnd = () => Math.random();
-
     function start() {
-      const long = RES[mode];
       const ar = window.innerHeight / Math.max(1, window.innerWidth);
-      W = long;
-      H = Math.max(1, Math.round(long * ar));
+      W = RES;
+      H = Math.max(1, Math.round(RES * ar));
       cv.width = W;
       cv.height = H;
       img = ctx.createImageData(W, H);
       buf = new Uint32Array(img.data.buffer);
       const N = W * H;
-      t = 0;
-      agents = trail = next = gu = gv = walkers = parts = null;
+      trail = new Float32Array(N);
+      scratch = new Float32Array(N);
+      norm = 1;
 
-      if (mode === "physarum") {
-        const count = Math.min(24000, Math.round(N * 0.12));
-        agents = new Float32Array(count * 3);
-        for (let i = 0; i < count; i++) {
-          agents[i * 3] = rnd() * W;
-          agents[i * 3 + 1] = rnd() * H;
-          agents[i * 3 + 2] = rnd() * Math.PI * 2;
+      const count = Math.min(26000, Math.max(600, Math.round(N * cfg.density)));
+      agents = new Float32Array(count * 3);
+      const cx = W / 2, cy = H / 2;
+      for (let i = 0; i < count; i++) {
+        let x: number, y: number, a: number;
+        if (cfg.spawn === "centre") {
+          a = Math.random() * Math.PI * 2;
+          const r = Math.random() * Math.min(W, H) * 0.06;
+          x = cx + Math.cos(a) * r; y = cy + Math.sin(a) * r;
+        } else if (cfg.spawn === "ring") {
+          a = Math.random() * Math.PI * 2;
+          const r = Math.min(W, H) * (0.28 + Math.random() * 0.06);
+          x = cx + Math.cos(a) * r; y = cy + Math.sin(a) * r;
+          a += Math.PI / 2;
+        } else if (cfg.spawn === "edge") {
+          if (Math.random() < 0.5) { x = Math.random() * W; y = Math.random() < 0.5 ? 2 : H - 2; }
+          else { y = Math.random() * H; x = Math.random() < 0.5 ? 2 : W - 2; }
+          a = Math.atan2(cy - y, cx - x);
+        } else {
+          x = Math.random() * W; y = Math.random() * H; a = Math.random() * Math.PI * 2;
         }
-        trail = new Float32Array(N);
-        next = new Float32Array(N);
-      } else if (mode === "reaction") {
-        gu = new Float32Array(N).fill(1);
-        gv = new Float32Array(N);
-        // A few seeded blots; the pattern grows out of them.
-        for (let s = 0; s < 12; s++) {
-          const cx = (rnd() * 0.8 + 0.1) * W, cy = (rnd() * 0.8 + 0.1) * H;
-          for (let y = -4; y <= 4; y++)
-            for (let x = -4; x <= 4; x++) {
-              const px = ((cx + x) | 0), py = ((cy + y) | 0);
-              if (px > 0 && py > 0 && px < W && py < H) gv[py * W + px] = 1;
-            }
-        }
-      } else if (mode === "dla") {
-        trail = new Float32Array(N);
-        // Seed: a line along the bottom, so growth reads as something rising.
-        for (let x = 0; x < W; x++) trail[(H - 1) * W + x] = 1;
-        const count = 1400;
-        walkers = new Float32Array(count * 2);
-        for (let i = 0; i < count; i++) {
-          walkers[i * 2] = rnd() * W;
-          walkers[i * 2 + 1] = rnd() * H * 0.6;
-        }
-      } else if (mode === "flow") {
-        const count = 9000;
-        parts = new Float32Array(count * 2);
-        for (let i = 0; i < count; i++) {
-          parts[i * 2] = rnd() * W;
-          parts[i * 2 + 1] = rnd() * H;
-        }
-        trail = new Float32Array(N);
-      } else if (mode === "feedback") {
-        trail = new Float32Array(N);
+        agents[i * 3] = x; agents[i * 3 + 1] = y; agents[i * 3 + 2] = a;
       }
     }
 
-    // --- the simulations ----------------------------------------------------
-
-    /** Physarum: agents sense three points ahead, steer toward the strongest
-     *  trail, deposit behind them. The lattice is emergent, not authored. */
-    function stepPhysarum() {
-      const a = agents!, tr = trail!, nx = next!;
-      const SA = 0.5, RA = 0.42, SO = 7, SS = 1.1;
+    function step() {
+      const a = agents, tr = trail, nx = scratch;
+      const { sensorAngle: SA, rotate: RA, sensorDist: SO, step: SS } = cfg;
+      const sense = (x: number, y: number, ang: number) => {
+        let sx = (x + Math.cos(ang) * SO) | 0;
+        let sy = (y + Math.sin(ang) * SO) | 0;
+        sx = ((sx % W) + W) % W;
+        sy = ((sy % H) + H) % H;
+        return tr[sy * W + sx];
+      };
       for (let i = 0; i < a.length; i += 3) {
-        const x = a[i], y = a[i + 1], h = a[i + 2];
-        const sample = (ang: number) => {
-          const sx = ((x + Math.cos(ang) * SO) | 0 + W) % W;
-          const sy = ((y + Math.sin(ang) * SO) | 0 + H) % H;
-          return tr[(sy < 0 ? 0 : sy) * W + (sx < 0 ? 0 : sx)] || 0;
-        };
-        const f = sample(h), l = sample(h - SA), r = sample(h + SA);
-        let nh = h;
-        if (f < l && f < r) nh += (rnd() - 0.5) * RA * 2;
-        else if (l > r) nh -= RA;
-        else if (r > l) nh += RA;
-        let nxp = x + Math.cos(nh) * SS, nyp = y + Math.sin(nh) * SS;
-        if (nxp < 0) nxp += W; else if (nxp >= W) nxp -= W;
-        if (nyp < 0) nyp += H; else if (nyp >= H) nyp -= H;
-        a[i] = nxp; a[i + 1] = nyp; a[i + 2] = nh;
-        tr[(nyp | 0) * W + (nxp | 0)] += 0.55;
+        const x = a[i], y = a[i + 1];
+        let h = a[i + 2];
+        const f = sense(x, y, h), l = sense(x, y, h - SA), r = sense(x, y, h + SA);
+        if (f < l && f < r) h += (Math.random() - 0.5) * RA * 2;
+        else if (l > r) h -= RA;
+        else if (r > l) h += RA;
+        if (cfg.jitter) h += (Math.random() - 0.5) * cfg.jitter;
+        h += cfg.bias;
+        let px = x + Math.cos(h) * SS, py = y + Math.sin(h) * SS;
+        if (px < 0) px += W; else if (px >= W) px -= W;
+        if (py < 0) py += H; else if (py >= H) py -= H;
+        a[i] = px; a[i + 1] = py; a[i + 2] = h;
+        tr[(py | 0) * W + (px | 0)] += cfg.deposit;
       }
-      // Diffuse and decay: a 3-tap blur each axis is enough at this size.
+      // Separable 3-tap blur, then decay. Diffusion is what turns individual
+      // paths into a shared map the agents can all read.
       for (let y = 0; y < H; y++) {
         const row = y * W;
         for (let x = 0; x < W; x++) {
-          const l = tr[row + (x === 0 ? W - 1 : x - 1)];
-          const c = tr[row + x];
-          const r = tr[row + (x === W - 1 ? 0 : x + 1)];
-          nx[row + x] = (l + c + r) / 3;
+          nx[row + x] =
+            (tr[row + (x === 0 ? W - 1 : x - 1)] +
+              tr[row + x] +
+              tr[row + (x === W - 1 ? 0 : x + 1)]) / 3;
         }
       }
-      for (let x = 0; x < W; x++)
+      const d = cfg.decay;
+      for (let x = 0; x < W; x++) {
         for (let y = 0; y < H; y++) {
-          const u = nx[(y === 0 ? H - 1 : y - 1) * W + x];
-          const c = nx[y * W + x];
-          const d = nx[(y === H - 1 ? 0 : y + 1) * W + x];
-          tr[y * W + x] = ((u + c + d) / 3) * 0.96;
-        }
-      for (let i = 0; i < buf!.length; i++) buf![i] = shade(tr[i] * 0.85);
-    }
-
-    /** Gray-Scott reaction-diffusion: two chemicals, one feeding the other. */
-    function stepReaction() {
-      const u = gu!, v = gv!;
-      const DU = 0.16, DV = 0.08, F = 0.036, K = 0.062;
-      const u2 = new Float32Array(u.length), v2 = new Float32Array(v.length);
-      for (let y = 1; y < H - 1; y++) {
-        for (let x = 1; x < W - 1; x++) {
-          const i = y * W + x;
-          const lu =
-            u[i - 1] + u[i + 1] + u[i - W] + u[i + W] - 4 * u[i];
-          const lv =
-            v[i - 1] + v[i + 1] + v[i - W] + v[i + W] - 4 * v[i];
-          const uvv = u[i] * v[i] * v[i];
-          u2[i] = u[i] + DU * lu - uvv + F * (1 - u[i]);
-          v2[i] = v[i] + DV * lv + uvv - (K + F) * v[i];
+          const v =
+            (nx[(y === 0 ? H - 1 : y - 1) * W + x] +
+              nx[y * W + x] +
+              nx[(y === H - 1 ? 0 : y + 1) * W + x]) / 3;
+          tr[y * W + x] = v * d;
         }
       }
-      gu = u2; gv = v2;
-      for (let i = 0; i < buf!.length; i++) buf![i] = shade(v2[i] * 3.2);
+      // Expose against the MEAN, not the maximum. Where agents happen to pile
+      // up, a single cell can sit eight times above the network paths
+      // themselves, so a max-based white point put the paths at a fifth of
+      // the range and the whole map read as flat haze whatever the simulation
+      // was doing. Measured: mean 1.6, p90 4.1, max 32.9. A white point at
+      // ~3.2x mean lands just above p90, so paths render solid and the
+      // background between them stays clear.
+      let sum = 0;
+      for (let i = 0; i < tr.length; i++) sum += tr[i];
+      norm += (sum / tr.length - norm) * 0.06;
+      const inv = 1 / Math.max(norm * 3.2, 1e-3);
+      for (let i = 0; i < buf!.length; i++) buf![i] = shade(tr[i] * inv);
     }
 
-    /** DLA: walkers drift until they touch the aggregate, then freeze. */
-    function stepDla() {
-      const tr = trail!, w = walkers!;
-      for (let k = 0; k < 6; k++) {
-        for (let i = 0; i < w.length; i += 2) {
-          let x = w[i], y = w[i + 1];
-          x += (rnd() - 0.5) * 2.4;
-          y += (rnd() - 0.5) * 2.4 + 0.45; // slight downward bias
-          if (x < 1) x = 1; else if (x > W - 2) x = W - 2;
-          if (y < 1) y = 1;
-          if (y > H - 2) y = H - 2;
-          const idx = (y | 0) * W + (x | 0);
-          const touching =
-            tr[idx + 1] > 0 || tr[idx - 1] > 0 || tr[idx + W] > 0 || tr[idx - W] > 0;
-          if (touching) {
-            tr[idx] = 1;
-            w[i] = rnd() * W;
-            w[i + 1] = rnd() * H * 0.35;
-          } else {
-            w[i] = x; w[i + 1] = y;
-          }
-        }
-      }
-      for (let i = 0; i < buf!.length; i++) buf![i] = shade(tr[i]);
-      for (let i = 0; i < w.length; i += 2)
-        buf![(w[i + 1] | 0) * W + (w[i] | 0)] = shade(0.15, 0.35);
-    }
-
-    /** Flow field: particles advected through a curl-ish noise field, leaving
-     *  trails that decay. The closest of these to a plotter drawing. */
-    function stepFlow() {
-      const p = parts!, tr = trail!;
-      for (let i = 0; i < tr.length; i++) tr[i] *= 0.975;
-      const f = 0.008;
-      for (let i = 0; i < p.length; i += 2) {
-        const x = p[i], y = p[i + 1];
-        const ang =
-          Math.sin(y * f + t * 0.0016) * 2.2 +
-          Math.cos(x * f * 0.8 - t * 0.0011) * 2.2;
-        let nx2 = x + Math.cos(ang) * 1.4;
-        let ny2 = y + Math.sin(ang) * 1.4;
-        if (nx2 < 0) nx2 += W; else if (nx2 >= W) nx2 -= W;
-        if (ny2 < 0) ny2 += H; else if (ny2 >= H) ny2 -= H;
-        p[i] = nx2; p[i + 1] = ny2;
-        tr[(ny2 | 0) * W + (nx2 | 0)] = 1;
-      }
-      for (let i = 0; i < buf!.length; i++) buf![i] = shade(tr[i] * 0.9);
-    }
-
-    /** Feedback: the frame resampled through a slow zoom and rotation, with a
-     *  travelling source. The oldest trick in the TD book. */
-    function stepFeedback() {
-      const tr = trail!;
-      const cx = W / 2, cy = H / 2;
-      const zoom = 1.016, rot = 0.006;
-      const cosr = Math.cos(rot), sinr = Math.sin(rot);
-      const src = new Float32Array(tr);
-      for (let y = 0; y < H; y++) {
-        for (let x = 0; x < W; x++) {
-          const dx = (x - cx) / zoom, dy = (y - cy) / zoom;
-          const sx = (cx + dx * cosr - dy * sinr) | 0;
-          const sy = (cy + dx * sinr + dy * cosr) | 0;
-          tr[y * W + x] =
-            sx >= 0 && sy >= 0 && sx < W && sy < H ? src[sy * W + sx] * 0.982 : 0;
-        }
-      }
-      const bx = cx + Math.cos(t * 0.011) * W * 0.26;
-      const by = cy + Math.sin(t * 0.017) * H * 0.26;
-      for (let y = -3; y <= 3; y++)
-        for (let x = -3; x <= 3; x++) {
-          const px = (bx + x) | 0, py = (by + y) | 0;
-          if (px > 0 && py > 0 && px < W && py < H) tr[py * W + px] = 1;
-        }
-      for (let i = 0; i < buf!.length; i++) buf![i] = shade(tr[i]);
-    }
-
-    /** Moire: two rotating radial gratings beating against each other. */
-    function stepMoire() {
-      const cx1 = W * 0.42, cy1 = H * 0.45;
-      const cx2 = W * 0.58 + Math.sin(t * 0.004) * W * 0.06;
-      const cy2 = H * 0.55 + Math.cos(t * 0.005) * H * 0.06;
-      const k = 0.42;
-      for (let y = 0; y < H; y++)
-        for (let x = 0; x < W; x++) {
-          const d1 = Math.hypot(x - cx1, y - cy1);
-          const d2 = Math.hypot(x - cx2, y - cy2);
-          const v = (Math.sin(d1 * k) * Math.sin(d2 * k) + 1) / 2;
-          buf![y * W + x] = shade(v > 0.72 ? (v - 0.72) * 3.4 : 0);
-        }
-    }
-
-    /** Contour: domain-warped fbm sliced into isobands, which is what the
-     *  homepage hero used to be before the scan replaced it. */
-    function stepContour() {
-      const n = (x: number, y: number) =>
-        Math.sin(x * 1.7 + Math.cos(y * 1.3)) * Math.cos(y * 1.1 - Math.sin(x * 0.9));
-      for (let y = 0; y < H; y++)
-        for (let x = 0; x < W; x++) {
-          const u = x / W * 3, v = y / H * 3;
-          const wx = u + n(u * 0.7, v * 0.7) * 0.6 + t * 0.0009;
-          const wy = v + n(u * 0.9 + 3.1, v * 0.9) * 0.6;
-          let f = n(wx, wy) * 0.6 + n(wx * 2.1, wy * 2.1) * 0.3;
-          f = (f + 1) / 2;
-          const bands = 14;
-          const band = Math.abs((f * bands) % 1 - 0.5);
-          buf![y * W + x] = shade(band < 0.08 ? 1 - band / 0.08 : 0);
-        }
-    }
-
-    const STEP: Record<Mode, () => void> = {
-      flow: stepFlow,
-      physarum: stepPhysarum,
-      dla: stepDla,
-      reaction: stepReaction,
-      feedback: stepFeedback,
-      moire: stepMoire,
-      contour: stepContour,
-    };
-
-    const readMode = () => {
-      const raw = document.documentElement.dataset.backdrop ?? "";
-      const m = raw.startsWith("gen-") ? (raw.slice(4) as Mode) : null;
-      if (m && m !== mode && STEP[m]) {
-        mode = m;
-        start();
-      }
-      return !!m;
-    };
-
-    let active = false;
     const sync = () => {
       col = palette();
-      const was = mode;
-      active = readMode();
-      if (active && was === mode && !buf) start();
+      const raw = document.documentElement.dataset.backdrop ?? "";
+      const next = raw.startsWith("gen-") ? raw.slice(4) : null;
+      active = !!next && !!PRESETS[next];
+      if (active && next && next !== name) {
+        name = next;
+        cfg = PRESETS[next];
+        start();
+      }
     };
     const mo = new MutationObserver(sync);
     mo.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["data-backdrop", "data-scheme", "data-theme"],
     });
-    const onResize = () => {
-      if (active) start();
-    };
+    const onResize = () => { if (active) start(); };
     window.addEventListener("resize", onResize);
 
-    // Seed from the current attribute, then run.
-    mode = "flow";
     start();
     sync();
 
     const draw = () => {
-      if (active && buf && img) {
-        if (!reduced) t++;
-        STEP[mode]();
+      if (active && buf && img && !reduced) {
+        step();
         ctx.putImageData(img, 0, 0);
       }
       raf = requestAnimationFrame(draw);
