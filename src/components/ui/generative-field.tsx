@@ -158,8 +158,15 @@ export function GenerativeField() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let raf = 0;
-    let name = "network";
-    let cfg = PRESETS.network;
+    // Default must name a preset that exists. This previously said "network",
+    // left behind when the presets were replaced, so cfg was undefined and
+    // start() threw on cfg.density — which took the whole page down, not just
+    // the backdrop. The fallbacks below make an unknown key impossible to
+    // crash on again, whether it comes from a stale localStorage value or a
+    // future rename.
+    const DEFAULT = "filament";
+    let name = DEFAULT;
+    let cfg = PRESETS[DEFAULT];
     let W = 0, H = 0;
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
@@ -206,6 +213,7 @@ export function GenerativeField() {
     };
 
     function start() {
+      if (!cfg) cfg = PRESETS[DEFAULT];
       const ar = window.innerHeight / Math.max(1, window.innerWidth);
       W = RES;
       H = Math.max(1, Math.round(RES * ar));
@@ -372,7 +380,7 @@ export function GenerativeField() {
       active = !!next && !!PRESETS[next];
       if (active && next && next !== name) {
         name = next;
-        cfg = PRESETS[next];
+        cfg = PRESETS[next] ?? PRESETS[DEFAULT];
         start();
       }
     };
