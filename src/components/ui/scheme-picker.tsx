@@ -21,23 +21,47 @@ export const FONTS: { id: string; label: string }[] = [
  *  simulation drawn by GenerativeField; the rest are the originals. */
 export const BACKDROPS: { id: string; label: string }[] = [
   { id: "cloud", label: "point cloud" },
-  // Every "gen-" option is the same physarum simulation under different
-  // sensing and movement parameters. See generative-field.tsx for what each
-  // one changes.
-  { id: "gen-network", label: "network" },
-  { id: "gen-lattice", label: "lattice" },
-  { id: "gen-rivers", label: "rivers" },
-  { id: "gen-spiral", label: "spiral" },
-  { id: "gen-radial", label: "radial" },
+  // Every "gen-" option is the same physarum simulation released on a ring,
+  // which is what gives them all the soft-circle character. See
+  // generative-field.tsx for what each one varies.
   { id: "gen-filament", label: "filament" },
-  { id: "gen-turbulent", label: "turbulent" },
-  { id: "gen-crystal", label: "crystal" },
-  { id: "gen-bloom", label: "bloom" },
+  { id: "gen-halo", label: "halo" },
+  { id: "gen-orbit", label: "orbit" },
+  { id: "gen-corona", label: "corona" },
+  { id: "gen-nest", label: "nest" },
+  { id: "gen-wisp", label: "wisp" },
+  { id: "gen-drift", label: "drift" },
+  { id: "gen-coil", label: "coil" },
+  { id: "gen-aura", label: "aura" },
   { id: "blur", label: "gaussian blur" },
   { id: "plain", label: "plain" },
 ];
 
+/** Backdrop colour ramp. */
+export const TINTS: { id: string; label: string }[] = [
+  { id: "ink", label: "ink" },
+  { id: "blue", label: "blue" },
+  { id: "slate", label: "slate" },
+  { id: "warm", label: "warm" },
+  { id: "sage", label: "sage" },
+  { id: "violet", label: "violet" },
+  { id: "rose", label: "rose" },
+];
+
+/** Surface treatment. Acts on the render, not the simulation. */
+export const TEXTURES: { id: string; label: string }[] = [
+  { id: "crisp", label: "crisp" },
+  { id: "soft", label: "soft" },
+  { id: "mist", label: "mist" },
+  { id: "glow", label: "glow" },
+  { id: "bloom", label: "bloom" },
+  { id: "grain", label: "grain" },
+  { id: "velvet", label: "velvet" },
+];
+
 const BACK_KEY = "npjm-backdrop";
+const TINT_KEY = "npjm-tint";
+const TEX_KEY = "npjm-texture";
 const FONT_KEY = "npjm-font";
 
 // A tiny external store rather than useState seeded in an effect. The saved
@@ -45,7 +69,12 @@ const FONT_KEY = "npjm-font";
 // disagree with the server's HTML; useSyncExternalStore is built for exactly
 // that split: it renders the server snapshot, then swaps in the real one
 // without a hydration mismatch and without setting state from an effect.
-const cache: Record<string, string | null> = { [BACK_KEY]: null, [FONT_KEY]: null };
+const cache: Record<string, string | null> = {
+  [BACK_KEY]: null,
+  [FONT_KEY]: null,
+  [TINT_KEY]: null,
+  [TEX_KEY]: null,
+};
 const listeners = new Set<() => void>();
 
 function read(key: string, fallback: string) {
@@ -75,8 +104,12 @@ function subscribe(cb: () => void) {
 }
 const getBackdrop = () => read(BACK_KEY, "cloud");
 const getFont = () => read(FONT_KEY, "");
+const getTint = () => read(TINT_KEY, "ink");
+const getTex = () => read(TEX_KEY, "crisp");
 const serverBackdrop = () => "cloud";
 const serverFont = () => "";
+const serverTint = () => "ink";
+const serverTex = () => "crisp";
 
 /**
  * Preview controls: typeface and backdrop. Colour, button style and dot size
@@ -90,19 +123,25 @@ const serverFont = () => "";
 export function SchemePicker() {
   const backdrop = useSyncExternalStore(subscribe, getBackdrop, serverBackdrop);
   const font = useSyncExternalStore(subscribe, getFont, serverFont);
+  const tint = useSyncExternalStore(subscribe, getTint, serverTint);
+  const texture = useSyncExternalStore(subscribe, getTex, serverTex);
 
   useEffect(() => {
     const el = document.documentElement;
     el.dataset.backdrop = backdrop;
     if (font) el.dataset.font = font;
     else delete el.dataset.font;
-  }, [backdrop, font]);
+    el.dataset.tint = tint;
+    el.dataset.texture = texture;
+  }, [backdrop, font, tint, texture]);
 
   useEffect(() => {
     return () => {
       const el = document.documentElement;
       delete el.dataset.backdrop;
       delete el.dataset.font;
+      delete el.dataset.tint;
+      delete el.dataset.texture;
     };
   }, []);
 
@@ -118,6 +157,32 @@ export function SchemePicker() {
             className={font === f.id ? "on" : undefined}
           >
             {f.label}
+          </button>
+        ))}
+      </div>
+      <div className="scheme-picker dot-picker">
+        <span className="scheme-label">colour</span>
+        {TINTS.map((t) => (
+          <button
+            key={t.label}
+            onClick={() => write(TINT_KEY, t.id)}
+            aria-pressed={tint === t.id}
+            className={tint === t.id ? "on" : undefined}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <div className="scheme-picker dot-picker">
+        <span className="scheme-label">texture</span>
+        {TEXTURES.map((t) => (
+          <button
+            key={t.label}
+            onClick={() => write(TEX_KEY, t.id)}
+            aria-pressed={texture === t.id}
+            className={texture === t.id ? "on" : undefined}
+          >
+            {t.label}
           </button>
         ))}
       </div>

@@ -41,59 +41,107 @@ type Preset = {
   jitter: number;
   /** Constant turn added every frame, which curls the whole field. */
   bias: number;
-  /** Where agents begin, which decides the large-scale shape. */
-  spawn: "scatter" | "centre" | "ring" | "edge";
+  /** Ring radius as a fraction of the smaller viewport edge. Every preset
+   *  here is a variation on the same circular release, which is what gives
+   *  them all the soft-circle character. */
+  ringRadius: number;
+  /** How much the radius varies between agents; 0 is a hairline ring. */
+  ringSpread: number;
+  /** Launch along the ring (true) or straight out from the centre (false). */
+  tangential: boolean;
 };
 
 const PRESETS: Record<string, Preset> = {
-  // The canonical parameters: an even mesh that keeps reorganising.
-  network: {
-    density: 0.12, sensorAngle: 0.5, rotate: 0.42, sensorDist: 7, step: 1.1,
-    deposit: 0.55, decay: 0.96, jitter: 0.0, bias: 0.0, spawn: "scatter",
-  },
-  // Short senses and short steps: fine capillaries rather than roads.
-  lattice: {
-    density: 0.2, sensorAngle: 0.42, rotate: 0.55, sensorDist: 3.2, step: 0.7,
-    deposit: 0.412, decay: 0.95, jitter: 0.02, bias: 0.0, spawn: "scatter",
-  },
-  // Sensing a long way ahead makes agents commit to existing paths, so the
-  // mesh consolidates into a few wide channels.
-  rivers: {
-    density: 0.12, sensorAngle: 0.62, rotate: 0.28, sensorDist: 18, step: 1.6,
-    deposit: 0.413, decay: 0.97, jitter: 0.0, bias: 0.0, spawn: "scatter",
-  },
-  // A constant turn on every agent; the network winds instead of branching.
-  spiral: {
-    density: 0.13, sensorAngle: 0.5, rotate: 0.4, sensorDist: 8, step: 1.2,
-    deposit: 0.444, decay: 0.965, jitter: 0.0, bias: 0.03, spawn: "centre",
-  },
-  // Released from one point with narrow sensors, so growth reads outward.
-  radial: {
-    density: 0.14, sensorAngle: 0.3, rotate: 0.25, sensorDist: 10, step: 1.35,
-    deposit: 0.412, decay: 0.965, jitter: 0.01, bias: 0.0, spawn: "centre",
-  },
-  // Sparse and persistent: single strands survive instead of a mesh.
+  // The original: sparse strands on a ring, held long enough to survive.
   filament: {
     density: 0.07, sensorAngle: 0.55, rotate: 0.5, sensorDist: 12, step: 1.6,
-    deposit: 0.589, decay: 0.975, jitter: 0.0, bias: 0.0, spawn: "ring",
+    deposit: 0.589, decay: 0.975, jitter: 0.0, bias: 0.0,
+    ringRadius: 0.3, ringSpread: 0.05, tangential: true,
   },
-  // Enough random steer that trails never quite consolidate.
-  turbulent: {
-    density: 0.16, sensorAngle: 0.72, rotate: 0.62, sensorDist: 6, step: 1.3,
-    deposit: 0.567, decay: 0.945, jitter: 0.25, bias: 0.0, spawn: "scatter",
+  // Wider ring, fewer agents, longer memory. A thin open circle.
+  halo: {
+    density: 0.05, sensorAngle: 0.6, rotate: 0.44, sensorDist: 15, step: 1.8,
+    deposit: 0.594, decay: 0.982, jitter: 0.0, bias: 0.0,
+    ringRadius: 0.4, ringSpread: 0.03, tangential: true,
   },
-  // Wide sensors and a hard turn, with no noise: angular, almost drawn.
-  crystal: {
-    density: 0.11, sensorAngle: 1.0, rotate: 0.95, sensorDist: 9, step: 1.15,
-    deposit: 0.525, decay: 0.965, jitter: 0.0, bias: 0.0, spawn: "edge",
+  // A small constant turn, so the strands wind around the ring.
+  orbit: {
+    density: 0.07, sensorAngle: 0.52, rotate: 0.4, sensorDist: 12, step: 1.55,
+    deposit: 0.519, decay: 0.978, jitter: 0.0, bias: 0.012,
+    ringRadius: 0.32, ringSpread: 0.06, tangential: true,
   },
-  // Growing in from the frame rather than out from the middle.
-  bloom: {
-    density: 0.12, sensorAngle: 0.46, rotate: 0.36, sensorDist: 10, step: 1.25,
-    deposit: 0.413, decay: 0.97, jitter: 0.005, bias: -0.02, spawn: "edge",
+  // Launched outward instead of tangentially: rays rather than a rim.
+  corona: {
+    density: 0.06, sensorAngle: 0.48, rotate: 0.34, sensorDist: 14, step: 1.75,
+    deposit: 0.55, decay: 0.98, jitter: 0.01, bias: 0.0,
+    ringRadius: 0.22, ringSpread: 0.04, tangential: false,
+  },
+  // Tight radius and a harder turn; the strands tangle into a knot.
+  nest: {
+    density: 0.1, sensorAngle: 0.58, rotate: 0.58, sensorDist: 8, step: 1.25,
+    deposit: 0.462, decay: 0.972, jitter: 0.0, bias: 0.0,
+    ringRadius: 0.18, ringSpread: 0.08, tangential: true,
+  },
+  // The sparsest and most persistent. Almost nothing, drawn slowly.
+  wisp: {
+    density: 0.03, sensorAngle: 0.62, rotate: 0.46, sensorDist: 17, step: 2.0,
+    deposit: 0.66, decay: 0.988, jitter: 0.0, bias: 0.0,
+    ringRadius: 0.34, ringSpread: 0.1, tangential: true,
+  },
+  // A little noise in the steering, so the circle never quite closes.
+  drift: {
+    density: 0.06, sensorAngle: 0.55, rotate: 0.42, sensorDist: 12, step: 1.5,
+    deposit: 0.55, decay: 0.98, jitter: 0.06, bias: 0.0,
+    ringRadius: 0.36, ringSpread: 0.12, tangential: true,
+  },
+  // Winding the other way, tighter, so strands cross themselves.
+  coil: {
+    density: 0.075, sensorAngle: 0.5, rotate: 0.52, sensorDist: 10, step: 1.45,
+    deposit: 0.528, decay: 0.976, jitter: 0.0, bias: -0.022,
+    ringRadius: 0.26, ringSpread: 0.05, tangential: true,
+  },
+  // Widest and faintest: a ring at the edge of the frame.
+  aura: {
+    density: 0.045, sensorAngle: 0.66, rotate: 0.3, sensorDist: 18, step: 1.9,
+    deposit: 0.55, decay: 0.985, jitter: 0.0, bias: 0.006,
+    ringRadius: 0.44, ringSpread: 0.02, tangential: true,
   },
 };
 
+
+
+/**
+ * Backdrop colour. `lo` is where faint trails sit and `hi` where the strongest
+ * paths land, so a pair gives a duotone ramp rather than one colour fading to
+ * the page. `null` follows the palette's own --pt, which is what the rest of
+ * the site uses.
+ */
+const TINTS: Record<string, { lo: [number, number, number] | null; hi: [number, number, number] | null }> = {
+  ink: { lo: null, hi: null },
+  blue: { lo: [206, 216, 240], hi: [26, 63, 208] },
+  slate: { lo: [214, 218, 224], hi: [58, 68, 82] },
+  warm: { lo: [238, 224, 204], hi: [176, 92, 24] },
+  sage: { lo: [214, 226, 216], hi: [50, 96, 70] },
+  violet: { lo: [222, 214, 240], hi: [92, 48, 190] },
+  rose: { lo: [242, 216, 222], hi: [172, 44, 84] },
+};
+
+/**
+ * Texture. These act on the rendered field, never on the simulation, so the
+ * network underneath is identical and only its surface changes.
+ *  blur  extra separable passes, which soften the strands
+ *  glow  a heavily blurred copy added back, so bright paths bleed light
+ *  grain a little static, which stops large soft areas looking like a gradient
+ */
+const TEXTURES: Record<string, { blur: number; glow: number; grain: number; gamma: number }> = {
+  crisp: { blur: 0, glow: 0, grain: 0, gamma: 1 },
+  soft: { blur: 2, glow: 0, grain: 0, gamma: 1 },
+  mist: { blur: 5, glow: 0, grain: 0, gamma: 0.85 },
+  glow: { blur: 1, glow: 0.75, grain: 0, gamma: 1.1 },
+  bloom: { blur: 3, glow: 1.1, grain: 0, gamma: 0.9 },
+  grain: { blur: 1, glow: 0, grain: 0.16, gamma: 1 },
+  velvet: { blur: 4, glow: 0.55, grain: 0.08, gamma: 0.8 },
+};
 
 const RES = 460; // long edge of the simulation grid
 
@@ -121,6 +169,10 @@ export function GenerativeField() {
     // whatever the simulation was actually doing. Tracking the frame maximum
     // and exposing against it keeps contrast right for any parameters.
     let norm = 1;
+    let tint = TINTS.ink;
+    let tex = TEXTURES.crisp;
+    let disp = new Float32Array(0);
+    let dtmp = new Float32Array(0);
     let agents = new Float32Array(0);
     let trail = new Float32Array(0);
     let scratch = new Float32Array(0);
@@ -139,9 +191,17 @@ export function GenerativeField() {
 
     const shade = (v: number) => {
       const k = v < 0 ? 0 : v > 1 ? 1 : v;
-      const r = col.bg[0] + (col.ink[0] - col.bg[0]) * k;
-      const g = col.bg[1] + (col.ink[1] - col.bg[1]) * k;
-      const b = col.bg[2] + (col.ink[2] - col.bg[2]) * k;
+      // With a tint the ramp runs bg -> lo -> hi, so faint trails carry their
+      // own colour instead of just fading out.
+      const lo = tint.lo ?? col.bg;
+      const hi = tint.hi ?? col.ink;
+      const a = k < 0.5 ? k * 2 : 1;
+      const b2 = k < 0.5 ? 0 : (k - 0.5) * 2;
+      const mix = (i: number) => {
+        const base = col.bg[i] + (lo[i] - col.bg[i]) * a;
+        return base + (hi[i] - base) * b2;
+      };
+      const r = mix(0) | 0, g = mix(1) | 0, b = mix(2) | 0;
       return (255 << 24) | (b << 16) | (g << 8) | r;
     };
 
@@ -156,30 +216,25 @@ export function GenerativeField() {
       const N = W * H;
       trail = new Float32Array(N);
       scratch = new Float32Array(N);
+      disp = new Float32Array(N);
+      dtmp = new Float32Array(N);
       norm = 1;
 
       const count = Math.min(26000, Math.max(600, Math.round(N * cfg.density)));
       agents = new Float32Array(count * 3);
       const cx = W / 2, cy = H / 2;
+      const R = Math.min(W, H) * cfg.ringRadius;
+      const spread = Math.min(W, H) * cfg.ringSpread;
       for (let i = 0; i < count; i++) {
-        let x: number, y: number, a: number;
-        if (cfg.spawn === "centre") {
-          a = Math.random() * Math.PI * 2;
-          const r = Math.random() * Math.min(W, H) * 0.06;
-          x = cx + Math.cos(a) * r; y = cy + Math.sin(a) * r;
-        } else if (cfg.spawn === "ring") {
-          a = Math.random() * Math.PI * 2;
-          const r = Math.min(W, H) * (0.28 + Math.random() * 0.06);
-          x = cx + Math.cos(a) * r; y = cy + Math.sin(a) * r;
-          a += Math.PI / 2;
-        } else if (cfg.spawn === "edge") {
-          if (Math.random() < 0.5) { x = Math.random() * W; y = Math.random() < 0.5 ? 2 : H - 2; }
-          else { y = Math.random() * H; x = Math.random() < 0.5 ? 2 : W - 2; }
-          a = Math.atan2(cy - y, cx - x);
-        } else {
-          x = Math.random() * W; y = Math.random() * H; a = Math.random() * Math.PI * 2;
-        }
-        agents[i * 3] = x; agents[i * 3 + 1] = y; agents[i * 3 + 2] = a;
+        const a = Math.random() * Math.PI * 2;
+        const r = R + (Math.random() - 0.5) * 2 * spread;
+        agents[i * 3] = cx + Math.cos(a) * r;
+        agents[i * 3 + 1] = cy + Math.sin(a) * r;
+        // Tangential launch keeps the ring reading as a circle; radial throws
+        // the strands outward into rays instead.
+        agents[i * 3 + 2] = cfg.tangential
+          ? a + Math.PI / 2 + (Math.random() < 0.5 ? Math.PI : 0)
+          : a;
       }
     }
 
@@ -236,15 +291,82 @@ export function GenerativeField() {
       // was doing. Measured: mean 1.6, p90 4.1, max 32.9. A white point at
       // ~3.2x mean lands just above p90, so paths render solid and the
       // background between them stays clear.
+      // Expose against the MEAN, not the maximum. Where agents pile up a single
+      // cell can sit eight times above the network paths themselves (measured:
+      // mean 1.6, p90 4.1, max 32.9), so a max-based white point put the real
+      // structure at a fifth of the range and the map read as flat haze
+      // whatever the simulation was doing. ~3.2x mean lands just above p90.
       let sum = 0;
       for (let i = 0; i < tr.length; i++) sum += tr[i];
       norm += (sum / tr.length - norm) * 0.06;
       const inv = 1 / Math.max(norm * 3.2, 1e-3);
-      for (let i = 0; i < buf!.length; i++) buf![i] = shade(tr[i] * inv);
+      const n = tr.length;
+      for (let i = 0; i < n; i++) disp[i] = tr[i] * inv;
+
+      // --- texture: acts on the rendered field, never on the simulation ----
+      for (let pss = 0; pss < tex.blur; pss++) {
+        for (let y = 0; y < H; y++) {
+          const row = y * W;
+          for (let x = 0; x < W; x++) {
+            dtmp[row + x] =
+              (disp[row + (x === 0 ? W - 1 : x - 1)] +
+                disp[row + x] +
+                disp[row + (x === W - 1 ? 0 : x + 1)]) / 3;
+          }
+        }
+        for (let x = 0; x < W; x++) {
+          for (let y = 0; y < H; y++) {
+            disp[y * W + x] =
+              (dtmp[(y === 0 ? H - 1 : y - 1) * W + x] +
+                dtmp[y * W + x] +
+                dtmp[(y === H - 1 ? 0 : y + 1) * W + x]) / 3;
+          }
+        }
+      }
+      if (tex.glow > 0) {
+        // A heavily blurred copy added back, so the strongest paths bleed.
+        dtmp.set(disp);
+        for (let pss = 0; pss < 4; pss++) {
+          for (let y = 0; y < H; y++) {
+            const row = y * W;
+            for (let x = 0; x < W; x++) {
+              scratch[row + x] =
+                (dtmp[row + (x === 0 ? W - 1 : x - 1)] +
+                  dtmp[row + x] +
+                  dtmp[row + (x === W - 1 ? 0 : x + 1)]) / 3;
+            }
+          }
+          for (let x = 0; x < W; x++) {
+            for (let y = 0; y < H; y++) {
+              dtmp[y * W + x] =
+                (scratch[(y === 0 ? H - 1 : y - 1) * W + x] +
+                  scratch[y * W + x] +
+                  scratch[(y === H - 1 ? 0 : y + 1) * W + x]) / 3;
+            }
+          }
+        }
+        const g = tex.glow;
+        for (let i = 0; i < n; i++) disp[i] += dtmp[i] * g;
+      }
+      const gm = tex.gamma;
+      const gr = tex.grain;
+      for (let i = 0; i < n; i++) {
+        let v = disp[i];
+        if (gm !== 1) v = Math.pow(v < 0 ? 0 : v, gm);
+        if (gr > 0) {
+          // Cheap hash noise, deterministic per cell so it does not crawl.
+          const h = Math.sin((i % W) * 12.9898 + ((i / W) | 0) * 78.233) * 43758.5453;
+          v += (h - Math.floor(h) - 0.5) * gr;
+        }
+        buf![i] = shade(v);
+      }
     }
 
     const sync = () => {
       col = palette();
+      const de = document.documentElement.dataset;
+      tint = TINTS[de.tint ?? "ink"] ?? TINTS.ink;
+      tex = TEXTURES[de.texture ?? "crisp"] ?? TEXTURES.crisp;
       const raw = document.documentElement.dataset.backdrop ?? "";
       const next = raw.startsWith("gen-") ? raw.slice(4) : null;
       active = !!next && !!PRESETS[next];
@@ -257,7 +379,13 @@ export function GenerativeField() {
     const mo = new MutationObserver(sync);
     mo.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-backdrop", "data-scheme", "data-theme"],
+      attributeFilter: [
+        "data-backdrop",
+        "data-scheme",
+        "data-theme",
+        "data-tint",
+        "data-texture",
+      ],
     });
     const onResize = () => { if (active) start(); };
     window.addEventListener("resize", onResize);
