@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 /**
  * Physarum backdrops for /preview.
@@ -154,10 +155,18 @@ function autoResolution(): number {
 
 
 
+/** What the live site runs. /preview overrides all of this by attribute. */
+const LIVE = { tint: "ink", texture: "velvet", speed: 1 };
+
 export function GenerativeField() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const pathname = usePathname();
+  // /cv is a dense data sheet; a moving field behind it makes it hard to read.
+  const hide = pathname === "/cv" || pathname === "/cv/";
+  const isPreview = pathname.startsWith("/preview");
 
   useEffect(() => {
+    if (hide) return;
     const canvas = ref.current;
     if (!canvas) return;
     const cv: HTMLCanvasElement = canvas;
@@ -174,8 +183,15 @@ export function GenerativeField() {
     // crash on again, whether it comes from a stale localStorage value or a
     // future rename.
     const DEFAULT = "halo";
-    let name = DEFAULT;
-    let cfg = PRESETS[DEFAULT];
+    // On the live site the preset is chosen at random on each landing, so the
+    // background is not the same drawing every visit. It stays put for the
+    // duration: a settle-restart re-runs the same one rather than switching
+    // character underneath someone mid-read.
+    const keys = Object.keys(PRESETS);
+    let name = isPreview
+      ? DEFAULT
+      : keys[Math.floor(Math.random() * keys.length)] ?? DEFAULT;
+    let cfg = PRESETS[name] ?? PRESETS[DEFAULT];
     let W = 0, H = 0;
     let img: ImageData | null = null;
     let buf: Uint32Array | null = null;
@@ -200,11 +216,11 @@ export function GenerativeField() {
     let stillCount = 0;
     let needsRestart = false;
 
-    let tex = TEXTURES.mist;
+    let tex = TEXTURES[isPreview ? "mist" : LIVE.texture] ?? TEXTURES.mist;
     let resolution = autoResolution();
-    let speed = 2;
+    let speed = isPreview ? 2 : LIVE.speed;
     let lastReset = "";
-    let tint = TINTS.ink;
+    let tint = TINTS[LIVE.tint] ?? TINTS.ink;
     let disp = new Float32Array(0);
     let agents = new Float32Array(0);
     let trail = new Float32Array(0);
@@ -417,6 +433,13 @@ export function GenerativeField() {
 
     const sync = () => {
       col = palette();
+      if (!isPreview) {
+        // Live: fixed settings, always running. Only the palette is re-read,
+        // so a light/dark switch still recolours the field.
+        cv.style.filter = tex.filter;
+        active = true;
+        return;
+      }
       const de = document.documentElement.dataset;
       tint = TINTS[de.tint ?? "ink"] ?? TINTS.ink;
       tex = TEXTURES[de.texture ?? "mist"] ?? TEXTURES.mist;
@@ -497,7 +520,8 @@ export function GenerativeField() {
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onResize);
     };
-  }, []);
+  }, [hide, isPreview]);
 
+  if (hide) return null;
   return <canvas ref={ref} className="genfield" aria-hidden />;
 }

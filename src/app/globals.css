@@ -1987,14 +1987,16 @@ html[data-scheme="steel"] {
   .blurfield .bf { animation: none; }
 }
 
-/* Backdrop switch. The live site sets no data-backdrop at all, so the default
-   has to be the point cloud alone; the alternatives opt in. */
+/* Backdrop switch. The generative field is the site background now, so it is
+   what shows when no data-backdrop is set; /preview opts into the others. */
+.genfield { display: block; }
 .blurfield,
-.genfield { display: none; }
+.ptcloud { display: none; }
+html[data-backdrop="cloud"] .ptcloud { display: block; }
+html[data-backdrop="cloud"] .genfield,
+html[data-backdrop="plain"] .genfield { display: none; }
 html[data-backdrop="blur"] .blurfield { display: block; }
-html[data-backdrop="blur"] .ptcloud,
-html[data-backdrop="plain"] .ptcloud { display: none; }
-html[data-backdrop^="gen-"] .ptcloud { display: none; }
+html[data-backdrop="blur"] .genfield { display: none; }
 html[data-backdrop^="gen-"] .genfield { display: block; }
 
 /* The simulations run on a few hundred pixels and are scaled up here, so the

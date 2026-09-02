@@ -9,7 +9,6 @@ import { InfoSheet } from "@/components/ui/info-sheet";
 import { Editable } from "@/components/ui/editable";
 import { ScrollLine } from "@/components/ui/scroll-line";
 import { BlurField } from "@/components/ui/blur-field";
-import { GenerativeField } from "@/components/ui/generative-field";
 import { SchemePicker } from "@/components/ui/scheme-picker";
 import {
   arrange,
@@ -58,7 +57,6 @@ export default function PreviewPage() {
       <h1 className="sr-only">visual test</h1>
       <ScrollLine />
       <BlurField />
-      <GenerativeField />
 
       {/* TOP NAV — as on home ------------------------------------------- */}
       <div className="topnav">

@@ -3,6 +3,7 @@ import { site } from "@/content/site";
 import { Chrome } from "@/components/layout/chrome";
 import { Readout } from "@/components/ui/readout";
 import { PointCloud } from "@/components/ui/point-cloud";
+import { GenerativeField } from "@/components/ui/generative-field";
 import { PreviewZone } from "@/components/ui/preview-zone";
 import { DarkToggle } from "@/components/ui/dark-toggle";
 import { EditBar } from "@/components/ui/edit-bar";
@@ -67,6 +68,7 @@ export default function RootLayout({
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body className="min-h-full bg-paper text-ink">
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        <GenerativeField />
         <PointCloud />
         <Chrome>{children}</Chrome>
         <Readout />

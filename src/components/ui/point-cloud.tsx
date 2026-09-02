@@ -14,7 +14,10 @@ export function PointCloud() {
   const ref = useRef<HTMLCanvasElement>(null);
   // The /cv page is a dense data sheet; the point cloud makes it hard to read.
   const pathname = usePathname();
-  const hide = pathname === "/cv" || pathname === "/cv/";
+  // The generative field is the site background now. The scan survives only as
+  // the "point cloud" option on /preview, so everywhere else this neither
+  // renders nor fetches its 419KB of points.
+  const hide = !pathname.startsWith("/preview");
   // On /preview the scan is bent into shapes that are plainly not a room.
   const morph = pathname.startsWith("/preview");
 
@@ -110,7 +113,7 @@ export function PointCloud() {
     // 0.84 balance and slightly better coverage — the best of a sweep over
     // the whole revolution.
     let rotY = 4.6;
-    let rotX = -0.5;
+    const rotX = -0.5;
     let targetParX = 0;
     let targetParY = 0;
     let parX = 0;
