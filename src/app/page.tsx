@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     // "creative technologist" is what the practice is called; "TouchDesigner"
     // is what people type. 23 of 25 works here are TouchDesigner pieces, so
     // leading with it is the honest description as well as the findable one.
-    absolute: "Nicholas Marriott: TouchDesigner & new media artist, Melbourne",
+    absolute: "Nicholas Marriott, TouchDesigner & new media artist, Melbourne",
   },
 };
 
@@ -65,7 +65,7 @@ export default function Home() {
           engines still need one, so it is here for them and for screen
           readers, carrying the terms the practice should be found by. */}
       <h1 className="sr-only">
-        Nicholas Marriott (nicholaspjm): TouchDesigner, projection and new
+        Nicholas Marriott (nicholaspjm), TouchDesigner, projection and new
         media artist in Naarm / Melbourne
       </h1>
       {/* TOP NAV: evenly spread row of plain buttons --------------------- */}

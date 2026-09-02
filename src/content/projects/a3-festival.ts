@@ -4,7 +4,7 @@ import type { Project } from "@/types/content";
 // `unlisted` to surface it in the installation & performance list as well.
 export const project: Project = {
   slug: "a3-festival",
-  title: "A3 Festival",
+  title: "A3 Festival 2025",
   section: "installation",
   year: "2025",
   date: "2025",

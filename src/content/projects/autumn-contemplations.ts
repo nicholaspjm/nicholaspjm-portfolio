@@ -6,8 +6,8 @@ export const project: Project = {
   slug: "autumn-contemplations",
   title: "Autumn Contemplations",
   section: "sketch",
-  year: "2026",
-  date: "2026",
+  year: "2024",
+  date: "2024",
   credits: ["Personal work"],
   weight: 0.5,
   summary:

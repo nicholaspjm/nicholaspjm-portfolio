@@ -14,7 +14,7 @@ import { CVSheet, type CVRow } from "@/components/ui/cv-sheet";
 import { Editable } from "@/components/ui/editable";
 
 export const metadata: Metadata = pageMeta({
-  title: "CV: exhibitions, festivals, commissions & teaching",
+  title: "CV of exhibitions, festivals, commissions & teaching",
   description:
     "Curriculum vitae for Nicholas Marriott: installations, festival and live-visual commissions, awards, press, teaching and education.",
   path: "/cv/",

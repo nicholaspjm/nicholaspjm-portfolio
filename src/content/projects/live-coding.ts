@@ -2,15 +2,15 @@ import type { Project } from "@/types/content";
 
 export const project: Project = {
   slug: "live-coding",
-  title: "Live Visual Coding",
+  title: "Live AV Performances",
   section: "installation",
   year: "2025",
-  date: "2025, Naarm / Melbourne",
-  credits: ["Six12, with Steve Pan", "Pop Pop, with Cy_", "Odd Chaos"],
+  date: "2024-2025, Naarm / Melbourne",
+  credits: ["dshut", "Six12", "Oddany Gallery"],
   weight: 0.6,
   summary:
-    "Live-coded visual performances, including Six12 with Steve Pan, Odd Chaos, and Pop Pop with Cy_.",
-  role: "Live coding, visual performance",
+    "A series of live audiovisual performances across 2024 and 2025, at dshut, Six12 and Oddany Gallery: sound and visuals built live in front of an audience.",
+  role: "Live audiovisual performance",
   categories: ["Performance", "Live Coding"],
   tags: ["TouchDesigner", "GLSL", "Live Coding"],
   images: [
@@ -26,13 +26,13 @@ export const project: Project = {
       kind: "text",
       lead: true,
       paragraphs: [
-        "Live coding is the use of code in real time as both a creative tool and a performance medium. It produces visuals that shift and evolve spontaneously with music, touch, or environment, blurring the line between programming and performance.",
+        "A series of live audiovisual performances across 2024 and 2025, at dshut, Six12 and Oddany Gallery. An exploration of constructing sound and visuals together in real time, in front of an audience, with nothing prepared in advance.",
       ],
     },
     {
       kind: "text",
       paragraphs: [
-        "I craft all my visuals live so they can respond dynamically, while the audience sees the code unfold alongside the visuals and sound. The renders and clips here are from recent performances that featured live coding, including Six12 with Steve Pan, Odd Chaos, and Pop Pop with Cy_.",
+        "Everything is built live, so the visuals respond to the sound as it happens and the audience watches the construction itself rather than a finished piece. The renders and clips here are from across the series.",
       ],
     },
     {

@@ -234,6 +234,11 @@ a.extra, .extra {
   font-size: 12px;
   margin: 0.5em 0 0.8em;
 }
+.sort-label {
+  color: var(--soft);
+}
+/* The native dropdown is gone; these are the same buttons as everywhere else.
+   Rule kept only so any stray select still matches the page. */
 .sort-row select {
   font-family: var(--font-data);
   font-size: 12px;
@@ -2024,11 +2029,28 @@ html[data-scheme="steel"] {
   .blurfield .bf { animation: none; }
 }
 
-/* Backdrop switch: only one of the two is ever drawn. */
+/* Backdrop switch. The live site sets no data-backdrop at all, so the default
+   has to be the point cloud alone; the alternatives opt in. */
+.blurfield,
+.genfield { display: none; }
+html[data-backdrop="blur"] .blurfield { display: block; }
 html[data-backdrop="blur"] .ptcloud,
 html[data-backdrop="plain"] .ptcloud { display: none; }
-html[data-backdrop="cloud"] .blurfield,
-html[data-backdrop="plain"] .blurfield { display: none; }
+html[data-backdrop^="gen-"] .ptcloud { display: none; }
+html[data-backdrop^="gen-"] .genfield { display: block; }
+
+/* The simulations run on a few hundred pixels and are scaled up here, so the
+   upscale is what softens them. auto (not pixelated) keeps that smooth. */
+.genfield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  image-rendering: auto;
+}
 
 /* ---- /preview: button styles ------------------------------------------ */
 /* Alternatives to the flat square box, chosen with the "buttons" switch.
@@ -2160,4 +2182,48 @@ html[data-font="courier"] {
   --font-body: "Courier New", Courier, monospace;
   --font-data: "Courier New", Courier, monospace;
   --lh-body: 1.35;
+}
+
+/* ---- project page body media ------------------------------------------ */
+/* Sized to its own proportions inside a cap. The old full-bleed box with a
+   forced ratio cropped anything that did not match and, on a phone, scaled a
+   640px source across the whole screen, which is what read as low quality.
+   max-height keeps a single image or clip from owning the viewport. */
+.blockmedia {
+  margin: 1.2em 0 1.6em;
+  padding: 0;
+  line-height: 0;
+}
+.blockmedia img,
+.blockmedia video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 68vh;
+  background: var(--bg);
+}
+.blockmedia figcaption {
+  line-height: 1.35;
+  font-size: 11px;
+  color: var(--soft);
+  margin-top: 4px;
+}
+
+/* Galleries, same rule on small screens. Stretching to width:100% there was
+   the single worst offender: it upscaled every thumbnail to the full width of
+   the phone. Natural width, bounded, is sharper and calmer. */
+@media (max-width: 700px) {
+  .gallery-item img,
+  .gallery-item video,
+  .gallery-item .yt {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 62vh;
+  }
+  .gallery-item .yt {
+    width: 100%; /* an iframe has no intrinsic size to fall back on */
+    height: auto;
+  }
 }

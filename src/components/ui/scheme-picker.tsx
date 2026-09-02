@@ -2,33 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 
-/** The palettes on offer. The empty id is the site's own blue-yellow base. */
-export const SCHEMES: { id: string; label: string }[] = [
-  // Variations on the original blue-yellow first, then the departures.
-  { id: "", label: "paper" },
-  { id: "original", label: "original" },
-  // Grey on white, blue underlined links, maroon accent — the register of
-  // the reference sheets. paper / xerox / ghost are the closest matches.
-  { id: "xerox", label: "xerox" },
-  { id: "ghost", label: "ghost" },
-  { id: "slate", label: "slate" },
-  { id: "mist", label: "mist" },
-  { id: "steel", label: "steel" },
-  { id: "ink", label: "ink" },
-  { id: "red", label: "red" },
-  { id: "green", label: "green" },
-  { id: "violet", label: "violet" },
-  { id: "orange", label: "orange" },
-  { id: "cream", label: "cream" },
-  { id: "cool", label: "cool" },
-  { id: "mono", label: "mono" },
-  { id: "noir", label: "noir" },
-  { id: "amber", label: "amber" },
-  { id: "blueprint", label: "blueprint" },
-  { id: "sage", label: "sage" },
-];
-
-/** Typefaces. "narrow" and "unified" are the mindyseu.com register — one
+/** Typefaces. "narrow" and "unified" are the mindyseu.com register: one
  *  condensed grotesque at a tight leading; unified drops the separate
  *  technical face entirely, as that site does. */
 export const FONTS: { id: string; label: string }[] = [
@@ -43,52 +17,30 @@ export const FONTS: { id: string; label: string }[] = [
   { id: "courier", label: "courier" },
 ];
 
-/** Button treatments. The empty id is the site's flat square box. */
-export const BUTTONS: { id: string; label: string }[] = [
-  { id: "", label: "underline" },
-  { id: "square", label: "square" },
-  { id: "bracket", label: "bracket" },
-  { id: "hairline", label: "hairline" },
-  { id: "solid", label: "solid" },
-  { id: "shadow", label: "shadow" },
-  { id: "mono", label: "mono" },
-  { id: "pill", label: "pill" },
-];
-
-/** What sits behind the page. */
+/** What sits behind the page. Everything prefixed "gen-" is a real-time
+ *  simulation drawn by GenerativeField; the rest are the originals. */
 export const BACKDROPS: { id: string; label: string }[] = [
   { id: "cloud", label: "point cloud" },
+  { id: "gen-flow", label: "flow field" },
+  { id: "gen-physarum", label: "physarum" },
+  { id: "gen-dla", label: "dla" },
+  { id: "gen-reaction", label: "reaction" },
+  { id: "gen-feedback", label: "feedback" },
+  { id: "gen-moire", label: "moire" },
+  { id: "gen-contour", label: "contour" },
   { id: "blur", label: "gaussian blur" },
   { id: "plain", label: "plain" },
 ];
 
-/** Dot sizes offered for the point cloud, in CSS pixels. */
-export const DOTS: { id: string; label: string }[] = [
-  { id: "0.5", label: "fine" },
-  { id: "0.75", label: "small" },
-  { id: "1", label: "default" },
-  { id: "1.5", label: "bold" },
-  { id: "2", label: "heavy" },
-];
-
-const KEY = "npjm-scheme";
-const DOT_KEY = "npjm-dot";
 const BACK_KEY = "npjm-backdrop";
-const BTN_KEY = "npjm-btn";
 const FONT_KEY = "npjm-font";
 
 // A tiny external store rather than useState seeded in an effect. The saved
-// scheme only exists on the client, so reading it during render would
+// choice only exists on the client, so reading it during render would
 // disagree with the server's HTML; useSyncExternalStore is built for exactly
-// that split — it renders the server snapshot, then swaps in the real one
+// that split: it renders the server snapshot, then swaps in the real one
 // without a hydration mismatch and without setting state from an effect.
-const cache: Record<string, string | null> = {
-  [KEY]: null,
-  [DOT_KEY]: null,
-  [BACK_KEY]: null,
-  [BTN_KEY]: null,
-  [FONT_KEY]: null,
-};
+const cache: Record<string, string | null> = { [BACK_KEY]: null, [FONT_KEY]: null };
 const listeners = new Set<() => void>();
 
 function read(key: string, fallback: string) {
@@ -106,7 +58,7 @@ function write(key: string, next: string) {
   try {
     localStorage.setItem(key, next);
   } catch {
-    /* private mode — the choice just won't persist */
+    /* private mode: the choice just won't persist */
   }
   listeners.forEach((l) => l());
 }
@@ -116,53 +68,35 @@ function subscribe(cb: () => void) {
     listeners.delete(cb);
   };
 }
-const getScheme = () => read(KEY, "");
-const getDot = () => read(DOT_KEY, "1");
 const getBackdrop = () => read(BACK_KEY, "cloud");
-const getBtn = () => read(BTN_KEY, "");
 const getFont = () => read(FONT_KEY, "");
-const serverScheme = () => "";
-const serverDot = () => "1";
 const serverBackdrop = () => "cloud";
-const serverBtn = () => "";
 const serverFont = () => "";
 
 /**
- * Colour-scheme switcher, /preview only. Sets data-scheme on <html>, which
- * the palettes in globals.css key off. The choice is remembered so a scheme
- * survives a reload while it is being lived with, and is cleared on unmount
- * so it can never leak onto the live pages.
+ * Preview controls: typeface and backdrop. Colour, button style and dot size
+ * have been settled on the live site (paper, underline, 1px) and their pickers
+ * are gone; the palettes themselves stay in globals.css, inert without the
+ * data attribute, in case they are wanted again.
+ *
+ * Both choices are written to <html> as data attributes and cleared on
+ * unmount, so nothing can leak onto the live pages.
  */
 export function SchemePicker() {
-  const scheme = useSyncExternalStore(subscribe, getScheme, serverScheme);
-  const dotSize = useSyncExternalStore(subscribe, getDot, serverDot);
-  const backdrop = useSyncExternalStore(
-    subscribe,
-    getBackdrop,
-    serverBackdrop,
-  );
-  const btn = useSyncExternalStore(subscribe, getBtn, serverBtn);
+  const backdrop = useSyncExternalStore(subscribe, getBackdrop, serverBackdrop);
   const font = useSyncExternalStore(subscribe, getFont, serverFont);
 
   useEffect(() => {
     const el = document.documentElement;
-    if (scheme) el.dataset.scheme = scheme;
-    else delete el.dataset.scheme;
-    el.dataset.dot = dotSize;
     el.dataset.backdrop = backdrop;
-    if (btn) el.dataset.btn = btn;
-    else delete el.dataset.btn;
     if (font) el.dataset.font = font;
     else delete el.dataset.font;
-  }, [scheme, dotSize, backdrop, btn, font]);
+  }, [backdrop, font]);
 
   useEffect(() => {
     return () => {
       const el = document.documentElement;
-      delete el.dataset.scheme;
-      delete el.dataset.dot;
       delete el.dataset.backdrop;
-      delete el.dataset.btn;
       delete el.dataset.font;
     };
   }, []);
@@ -170,19 +104,6 @@ export function SchemePicker() {
   return (
     <>
       <div className="scheme-picker">
-        <span className="scheme-label">colour</span>
-        {SCHEMES.map((s) => (
-          <button
-            key={s.label}
-            onClick={() => write(KEY, s.id)}
-            aria-pressed={scheme === s.id}
-            className={scheme === s.id ? "on" : undefined}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
-      <div className="scheme-picker dot-picker">
         <span className="scheme-label">type</span>
         {FONTS.map((f) => (
           <button
@@ -196,19 +117,6 @@ export function SchemePicker() {
         ))}
       </div>
       <div className="scheme-picker dot-picker">
-        <span className="scheme-label">buttons</span>
-        {BUTTONS.map((b) => (
-          <button
-            key={b.label}
-            onClick={() => write(BTN_KEY, b.id)}
-            aria-pressed={btn === b.id}
-            className={btn === b.id ? "on" : undefined}
-          >
-            {b.label}
-          </button>
-        ))}
-      </div>
-      <div className="scheme-picker dot-picker">
         <span className="scheme-label">behind</span>
         {BACKDROPS.map((b) => (
           <button
@@ -218,19 +126,6 @@ export function SchemePicker() {
             className={backdrop === b.id ? "on" : undefined}
           >
             {b.label}
-          </button>
-        ))}
-      </div>
-      <div className="scheme-picker dot-picker">
-        <span className="scheme-label">dots</span>
-        {DOTS.map((d) => (
-          <button
-            key={d.label}
-            onClick={() => write(DOT_KEY, d.id)}
-            aria-pressed={dotSize === d.id}
-            className={dotSize === d.id ? "on" : undefined}
-          >
-            {d.label}
           </button>
         ))}
       </div>

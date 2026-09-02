@@ -13,17 +13,28 @@ export interface WorkItem {
   year: string;
   summary: string;
   categories: string[];
+  /** No dedicated page: the row is listed but not a link. Performances and
+   *  tools that never got written up still belong in the index. */
+  unlinked?: boolean;
 }
 
 type Sort = "newest" | "oldest" | "a-z";
+
+/** Sort options as buttons, matching every other control on the site. */
+const SORTS: { id: Sort; label: string }[] = [
+  { id: "newest", label: "newest first" },
+  { id: "oldest", label: "oldest first" },
+  { id: "a-z", label: "a to z" },
+];
 
 /** The 23 raw project categories condensed into four filter groups. A project
  *  matches a group when any of its categories is in the group; everything is
  *  always reachable under "all". Old links with raw categories (from detail
  *  page tags) still work via the fallback below. */
-const GROUPS: { label: string; cats: string[] }[] = [
+const GROUPS: { id: string; label: string; cats: string[] }[] = [
   {
-    label: "live",
+    id: "live",
+    label: "visual / live performance",
     cats: [
       "Live Visuals",
       "Festival",
@@ -36,14 +47,17 @@ const GROUPS: { label: string; cats: string[] }[] = [
     ],
   },
   {
+    id: "mv",
     label: "music video & vfx",
     cats: ["Music Video", "VFX", "Commercial"],
   },
   {
+    id: "installation",
     label: "installation",
     cats: ["Installation", "Interactive", "Projection Mapping", "Exhibition"],
   },
   {
+    id: "personal",
     label: "personal & tools",
     cats: ["Personal", "Tool", "Real-time", "Design"],
   },
@@ -64,10 +78,16 @@ function Rows({ items }: { items: WorkItem[] }) {
     <ul>
       {items.map((p) => (
         <li key={p.slug}>
-          <em>{p.year}.</em>{" "}
-          <Link className="ptitle" href={`/work/${p.slug}`}>
-            {editableText[`work.${p.slug}.title`] ?? p.title}
-          </Link>
+          {p.year && <em>{p.year}. </em>}
+          {p.unlinked ? (
+            <span className="ptitle unlinked">
+              {editableText[`work.${p.slug}.title`] ?? p.title}
+            </span>
+          ) : (
+            <Link className="ptitle" href={`/work/${p.slug}`}>
+              {editableText[`work.${p.slug}.title`] ?? p.title}
+            </Link>
+          )}
           {". "}
           {editableText[`work.${p.slug}.summary`] ?? p.summary}{" "}
           <span className="foot">({p.categories.join(" / ")})</span>
@@ -86,14 +106,17 @@ function SortRow({
 }) {
   return (
     <p className="sort-row">
-      <label>
-        order by{" "}
-        <select value={sort} onChange={(e) => onChange(e.target.value as Sort)}>
-          <option value="newest">newest first</option>
-          <option value="oldest">oldest first</option>
-          <option value="a-z">a to z</option>
-        </select>
-      </label>
+      <span className="sort-label">order by</span>{" "}
+      {SORTS.map((s) => (
+        <button
+          key={s.id}
+          onClick={() => onChange(s.id)}
+          aria-pressed={sort === s.id}
+          className={sort === s.id ? "on" : undefined}
+        >
+          {s.label}
+        </button>
+      ))}
     </p>
   );
 }
@@ -105,7 +128,9 @@ function ListBody({ projects }: { projects: WorkItem[] }) {
   const filter = search.get("cat") ?? undefined;
   const [sort, setSort] = useState<Sort>("newest");
 
-  const group = filter ? GROUPS.find((g) => g.label === filter) : undefined;
+  const group = filter
+    ? GROUPS.find((g) => g.id === filter || g.label === filter)
+    : undefined;
   const filtered = !filter
     ? projects
     : group
@@ -144,7 +169,7 @@ export function WorkIndex({ projects }: { projects: WorkItem[] }) {
         {GROUPS.map((g) => (
           <NavButton
             key={g.label}
-            href={`/work?cat=${encodeURIComponent(g.label)}`}
+            href={`/work?cat=${encodeURIComponent(g.id)}`}
           >
             {g.label}
           </NavButton>

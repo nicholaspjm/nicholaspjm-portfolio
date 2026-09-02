@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { interleave } from "@/lib/interleave";
 import { getListedProjects } from "@/lib/projects";
 import { NavButton } from "@/components/ui/nav-button";
 import { VisualField, type VisualItem } from "@/components/ui/visual-field";
@@ -6,7 +7,7 @@ import { Editable } from "@/components/ui/editable";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Visual index: every image",
+  title: "Visual index of every image",
   description:
     "Every image from every project in one scattered field: projection, installation and live-visual work by Nicholas Marriott. Click through to the work.",
   path: "/visual/",
@@ -14,18 +15,22 @@ export const metadata: Metadata = pageMeta({
 
 export default function VisualPage() {
   // Everything a work carries: photos, gifs, local clips, YouTube embeds.
-  const items: VisualItem[] = getListedProjects().flatMap((p) =>
-    (p.images ?? [])
-      .filter((img) => img.src || img.video || img.youtube)
-      .map((img) => ({
-        src: img.src,
-        video: img.video,
-        youtube: img.youtube,
-        start: img.start,
-        slug: p.slug,
-        title: p.title,
-        year: p.year,
-      })),
+  // One list per work, then round-robined, so a project's images are spread
+  // through the field instead of sitting together in a block.
+  const items: VisualItem[] = interleave(
+    getListedProjects().map((p) =>
+      (p.images ?? [])
+        .filter((img) => img.src || img.video || img.youtube)
+        .map((img) => ({
+          src: img.src,
+          video: img.video,
+          youtube: img.youtube,
+          start: img.start,
+          slug: p.slug,
+          title: p.title,
+          year: p.year,
+        })),
+    ),
   );
 
   return (
