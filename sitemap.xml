@@ -43,12 +43,6 @@
 <priority>0.8</priority>
 </url>
 <url>
-<loc>https://nicholaspjm.com/work/autumn-contemplations/</loc>
-<lastmod>2026-09-02</lastmod>
-<changefreq>yearly</changefreq>
-<priority>0.8</priority>
-</url>
-<url>
 <loc>https://nicholaspjm.com/work/odetari-dont-die/</loc>
 <lastmod>2026-09-02</lastmod>
 <changefreq>yearly</changefreq>
@@ -182,6 +176,12 @@
 </url>
 <url>
 <loc>https://nicholaspjm.com/work/atmos-norla-dome/</loc>
+<lastmod>2026-09-02</lastmod>
+<changefreq>yearly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://nicholaspjm.com/work/autumn-contemplations/</loc>
 <lastmod>2026-09-02</lastmod>
 <changefreq>yearly</changefreq>
 <priority>0.8</priority>
