@@ -117,14 +117,34 @@ const PRESETS: Record<string, Preset> = {
  * the site uses.
  */
 const TINTS: Record<string, { lo: [number, number, number] | null; hi: [number, number, number] | null }> = {
+  // Follows the palette's own --pt, like the rest of the site.
   ink: { lo: null, hi: null },
-  blue: { lo: [206, 216, 240], hi: [26, 63, 208] },
-  slate: { lo: [214, 218, 224], hi: [58, 68, 82] },
-  warm: { lo: [238, 224, 204], hi: [176, 92, 24] },
-  sage: { lo: [214, 226, 216], hi: [50, 96, 70] },
-  violet: { lo: [222, 214, 240], hi: [92, 48, 190] },
-  rose: { lo: [242, 216, 222], hi: [172, 44, 84] },
+  // Grey, kept light: the field stays furniture.
+  silver: { lo: [228, 228, 228], hi: [142, 142, 142] },
+  // Grey at full strength, closest to the live point cloud.
+  graphite: { lo: [210, 210, 210], hi: [43, 43, 43] },
+  // Grey with a cool cast, halfway to the blue.
+  steel: { lo: [220, 223, 230], hi: [89, 97, 110] },
+  // The site's own highlighter yellow.
+  yellow: { lo: [255, 244, 184], hi: [255, 224, 0] },
+  // Yellow held back to a metal rather than a marker.
+  gold: { lo: [242, 230, 192], hi: [200, 148, 12] },
+  // The dark end of the yellows, nearly brown.
+  ochre: { lo: [236, 225, 200], hi: [138, 106, 16] },
+  // The site's own link blue.
+  blue: { lo: [206, 215, 245], hi: [0, 0, 238] },
+  // Lighter, more atmospheric blue.
+  azure: { lo: [216, 233, 248], hi: [26, 111, 208] },
+  // Blue at its darkest, close to ink.
+  navy: { lo: [204, 211, 224], hi: [10, 26, 92] },
+  // The site's pair: blue in the faint trails, yellow where they concentrate.
+  blueyellow: { lo: [206, 215, 245], hi: [255, 224, 0] },
+  // Grey field, blue only where the paths are strongest.
+  greyblue: { lo: [222, 222, 222], hi: [0, 0, 238] },
+  // Grey field, yellow at the peaks.
+  greyyellow: { lo: [222, 222, 222], hi: [255, 224, 0] },
 };
+
 
 /**
  * Texture. These act on the rendered field, never on the simulation, so the

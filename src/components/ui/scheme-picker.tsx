@@ -40,12 +40,18 @@ export const BACKDROPS: { id: string; label: string }[] = [
 /** Backdrop colour ramp. */
 export const TINTS: { id: string; label: string }[] = [
   { id: "ink", label: "ink" },
+  { id: "silver", label: "silver" },
+  { id: "graphite", label: "graphite" },
+  { id: "steel", label: "steel" },
+  { id: "yellow", label: "yellow" },
+  { id: "gold", label: "gold" },
+  { id: "ochre", label: "ochre" },
   { id: "blue", label: "blue" },
-  { id: "slate", label: "slate" },
-  { id: "warm", label: "warm" },
-  { id: "sage", label: "sage" },
-  { id: "violet", label: "violet" },
-  { id: "rose", label: "rose" },
+  { id: "azure", label: "azure" },
+  { id: "navy", label: "navy" },
+  { id: "blueyellow", label: "blueyellow" },
+  { id: "greyblue", label: "greyblue" },
+  { id: "greyyellow", label: "greyyellow" },
 ];
 
 /** Surface treatment. Acts on the render, not the simulation. */
