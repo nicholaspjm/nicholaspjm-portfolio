@@ -24,14 +24,10 @@ export const BACKDROPS: { id: string; label: string }[] = [
   // Every "gen-" option is the same physarum simulation released on a ring,
   // which is what gives them all the soft-circle character. See
   // generative-field.tsx for what each one varies.
-  { id: "gen-filament", label: "filament" },
   { id: "gen-halo", label: "halo" },
-  { id: "gen-orbit", label: "orbit" },
   { id: "gen-corona", label: "corona" },
-  { id: "gen-nest", label: "nest" },
   { id: "gen-wisp", label: "wisp" },
   { id: "gen-drift", label: "drift" },
-  { id: "gen-coil", label: "coil" },
   { id: "gen-aura", label: "aura" },
   { id: "blur", label: "gaussian blur" },
   { id: "plain", label: "plain" },
@@ -40,29 +36,9 @@ export const BACKDROPS: { id: string; label: string }[] = [
 /** Backdrop colour ramp. */
 export const TINTS: { id: string; label: string }[] = [
   { id: "ink", label: "ink" },
-  { id: "silver", label: "silver" },
   { id: "graphite", label: "graphite" },
-  { id: "steel", label: "steel" },
   { id: "yellow", label: "yellow" },
-  { id: "gold", label: "gold" },
-  { id: "ochre", label: "ochre" },
   { id: "blue", label: "blue" },
-  { id: "azure", label: "azure" },
-  { id: "navy", label: "navy" },
-  { id: "blueyellow", label: "blueyellow" },
-  { id: "greyblue", label: "greyblue" },
-  { id: "greyyellow", label: "greyyellow" },
-];
-
-/** Surface treatment. Acts on the render, not the simulation. */
-export const TEXTURES: { id: string; label: string }[] = [
-  { id: "crisp", label: "crisp" },
-  { id: "soft", label: "soft" },
-  { id: "mist", label: "mist" },
-  { id: "glow", label: "glow" },
-  { id: "bloom", label: "bloom" },
-  { id: "grain", label: "grain" },
-  { id: "velvet", label: "velvet" },
 ];
 
 /** Steps per displayed frame, for fast-forwarding a slow preset. */
@@ -77,7 +53,6 @@ export const SPEEDS: { id: string; label: string }[] = [
 const BACK_KEY = "npjm-backdrop";
 const SPEED_KEY = "npjm-speed";
 const TINT_KEY = "npjm-tint";
-const TEX_KEY = "npjm-texture";
 const FONT_KEY = "npjm-font";
 
 // A tiny external store rather than useState seeded in an effect. The saved
@@ -89,7 +64,6 @@ const cache: Record<string, string | null> = {
   [BACK_KEY]: null,
   [FONT_KEY]: null,
   [TINT_KEY]: null,
-  [TEX_KEY]: null,
   [SPEED_KEY]: null,
 };
 const listeners = new Set<() => void>();
@@ -132,12 +106,10 @@ const valid = (list: { id: string }[], v: string, fallback: string) =>
 const getBackdrop = () => valid(BACKDROPS, read(BACK_KEY, "cloud"), "cloud");
 const getFont = () => valid(FONTS, read(FONT_KEY, ""), "");
 const getTint = () => valid(TINTS, read(TINT_KEY, "ink"), "ink");
-const getTex = () => valid(TEXTURES, read(TEX_KEY, "crisp"), "crisp");
 const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "1"), "1");
 const serverBackdrop = () => "cloud";
 const serverFont = () => "";
 const serverTint = () => "ink";
-const serverTex = () => "crisp";
 const serverSpeed = () => "1";
 
 /**
@@ -153,7 +125,6 @@ export function SchemePicker() {
   const backdrop = useSyncExternalStore(subscribe, getBackdrop, serverBackdrop);
   const font = useSyncExternalStore(subscribe, getFont, serverFont);
   const tint = useSyncExternalStore(subscribe, getTint, serverTint);
-  const texture = useSyncExternalStore(subscribe, getTex, serverTex);
   const speed = useSyncExternalStore(subscribe, getSpeed, serverSpeed);
 
   useEffect(() => {
@@ -162,9 +133,8 @@ export function SchemePicker() {
     if (font) el.dataset.font = font;
     else delete el.dataset.font;
     el.dataset.tint = tint;
-    el.dataset.texture = texture;
     el.dataset.speed = speed;
-  }, [backdrop, font, tint, texture, speed]);
+  }, [backdrop, font, tint, speed]);
 
   useEffect(() => {
     return () => {
@@ -172,7 +142,6 @@ export function SchemePicker() {
       delete el.dataset.backdrop;
       delete el.dataset.font;
       delete el.dataset.tint;
-      delete el.dataset.texture;
       delete el.dataset.speed;
       delete el.dataset.reset;
     };
@@ -201,19 +170,6 @@ export function SchemePicker() {
             onClick={() => write(TINT_KEY, t.id)}
             aria-pressed={tint === t.id}
             className={tint === t.id ? "on" : undefined}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-      <div className="scheme-picker dot-picker">
-        <span className="scheme-label">texture</span>
-        {TEXTURES.map((t) => (
-          <button
-            key={t.label}
-            onClick={() => write(TEX_KEY, t.id)}
-            aria-pressed={texture === t.id}
-            className={texture === t.id ? "on" : undefined}
           >
             {t.label}
           </button>

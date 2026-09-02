@@ -52,35 +52,19 @@ type Preset = {
 };
 
 const PRESETS: Record<string, Preset> = {
-  // The original: sparse strands on a ring, held long enough to survive.
-  filament: {
-    density: 0.07, sensorAngle: 0.55, rotate: 0.5, sensorDist: 12, step: 1.6,
-    deposit: 0.589, decay: 0.975, jitter: 0.0, bias: 0.0,
-    ringRadius: 0.3, ringSpread: 0.05, tangential: true,
-  },
-  // Wider ring, fewer agents, longer memory. A thin open circle.
+  // Wide, sparse ring. Steps further and turns harder than it did, so the
+  // ring splits within seconds instead of a minute.
   halo: {
-    density: 0.05, sensorAngle: 0.6, rotate: 0.44, sensorDist: 15, step: 1.8,
-    deposit: 0.594, decay: 0.982, jitter: 0.0, bias: 0.0,
+    density: 0.05, sensorAngle: 0.6, rotate: 0.52, sensorDist: 15, step: 2.3,
+    deposit: 0.858, decay: 0.974, jitter: 0.0, bias: 0.0,
     ringRadius: 0.4, ringSpread: 0.03, tangential: true,
   },
-  // A small constant turn, so the strands wind around the ring.
-  orbit: {
-    density: 0.07, sensorAngle: 0.52, rotate: 0.4, sensorDist: 12, step: 1.55,
-    deposit: 0.519, decay: 0.978, jitter: 0.0, bias: 0.012,
-    ringRadius: 0.32, ringSpread: 0.06, tangential: true,
-  },
-  // Launched outward instead of tangentially: rays rather than a rim.
+  // Launched outward rather than along the ring: rays, not a rim. Slowed
+  // to roughly half the step it had, with a longer memory to match.
   corona: {
-    density: 0.06, sensorAngle: 0.48, rotate: 0.34, sensorDist: 14, step: 1.75,
-    deposit: 0.55, decay: 0.98, jitter: 0.01, bias: 0.0,
+    density: 0.06, sensorAngle: 0.48, rotate: 0.34, sensorDist: 14, step: 1.05,
+    deposit: 0.385, decay: 0.986, jitter: 0.01, bias: 0.0,
     ringRadius: 0.22, ringSpread: 0.04, tangential: false,
-  },
-  // Tight radius and a harder turn; the strands tangle into a knot.
-  nest: {
-    density: 0.1, sensorAngle: 0.58, rotate: 0.58, sensorDist: 8, step: 1.25,
-    deposit: 0.462, decay: 0.972, jitter: 0.0, bias: 0.0,
-    ringRadius: 0.18, ringSpread: 0.08, tangential: true,
   },
   // The sparsest and most persistent. Almost nothing, drawn slowly.
   wisp: {
@@ -94,12 +78,6 @@ const PRESETS: Record<string, Preset> = {
     deposit: 0.55, decay: 0.98, jitter: 0.06, bias: 0.0,
     ringRadius: 0.36, ringSpread: 0.12, tangential: true,
   },
-  // Winding the other way, tighter, so strands cross themselves.
-  coil: {
-    density: 0.075, sensorAngle: 0.5, rotate: 0.52, sensorDist: 10, step: 1.45,
-    deposit: 0.528, decay: 0.976, jitter: 0.0, bias: -0.022,
-    ringRadius: 0.26, ringSpread: 0.05, tangential: true,
-  },
   // Widest and faintest: a ring at the edge of the frame.
   aura: {
     density: 0.045, sensorAngle: 0.66, rotate: 0.3, sensorDist: 18, step: 1.9,
@@ -107,6 +85,7 @@ const PRESETS: Record<string, Preset> = {
     ringRadius: 0.44, ringSpread: 0.02, tangential: true,
   },
 };
+
 
 
 
@@ -119,31 +98,14 @@ const PRESETS: Record<string, Preset> = {
 const TINTS: Record<string, { lo: [number, number, number] | null; hi: [number, number, number] | null }> = {
   // Follows the palette's own --pt, like the rest of the site.
   ink: { lo: null, hi: null },
-  // Grey, kept light: the field stays furniture.
-  silver: { lo: [228, 228, 228], hi: [142, 142, 142] },
   // Grey at full strength, closest to the live point cloud.
   graphite: { lo: [210, 210, 210], hi: [43, 43, 43] },
-  // Grey with a cool cast, halfway to the blue.
-  steel: { lo: [220, 223, 230], hi: [89, 97, 110] },
   // The site's own highlighter yellow.
   yellow: { lo: [255, 244, 184], hi: [255, 224, 0] },
-  // Yellow held back to a metal rather than a marker.
-  gold: { lo: [242, 230, 192], hi: [200, 148, 12] },
-  // The dark end of the yellows, nearly brown.
-  ochre: { lo: [236, 225, 200], hi: [138, 106, 16] },
   // The site's own link blue.
   blue: { lo: [206, 215, 245], hi: [0, 0, 238] },
-  // Lighter, more atmospheric blue.
-  azure: { lo: [216, 233, 248], hi: [26, 111, 208] },
-  // Blue at its darkest, close to ink.
-  navy: { lo: [204, 211, 224], hi: [10, 26, 92] },
-  // The site's pair: blue in the faint trails, yellow where they concentrate.
-  blueyellow: { lo: [206, 215, 245], hi: [255, 224, 0] },
-  // Grey field, blue only where the paths are strongest.
-  greyblue: { lo: [222, 222, 222], hi: [0, 0, 238] },
-  // Grey field, yellow at the peaks.
-  greyyellow: { lo: [222, 222, 222], hi: [255, 224, 0] },
 };
+
 
 
 /**
@@ -153,15 +115,13 @@ const TINTS: Record<string, { lo: [number, number, number] | null; hi: [number, 
  *  glow  a heavily blurred copy added back, so bright paths bleed light
  *  grain a little static, which stops large soft areas looking like a gradient
  */
-const TEXTURES: Record<string, { blur: number; glow: number; grain: number; gamma: number }> = {
-  crisp: { blur: 0, glow: 0, grain: 0, gamma: 1 },
-  soft: { blur: 2, glow: 0, grain: 0, gamma: 1 },
-  mist: { blur: 5, glow: 0, grain: 0, gamma: 0.85 },
-  glow: { blur: 1, glow: 0.75, grain: 0, gamma: 1.1 },
-  bloom: { blur: 3, glow: 1.1, grain: 0, gamma: 0.9 },
-  grain: { blur: 1, glow: 0, grain: 0.16, gamma: 1 },
-  velvet: { blur: 4, glow: 0.55, grain: 0.08, gamma: 0.8 },
-};
+/**
+ * The surface treatment, applied always. This was a row of options; mist was
+ * the one worth keeping, so it is simply how the field is rendered now.
+ * Acts on the render and never on the simulation.
+ */
+const TEXTURE = { blur: 5, glow: 0, grain: 0, gamma: 0.85 };
+
 
 const RES = 460; // long edge of the simulation grid
 
@@ -184,7 +144,7 @@ export function GenerativeField() {
     // the backdrop. The fallbacks below make an unknown key impossible to
     // crash on again, whether it comes from a stale localStorage value or a
     // future rename.
-    const DEFAULT = "filament";
+    const DEFAULT = "halo";
     let name = DEFAULT;
     let cfg = PRESETS[DEFAULT];
     let W = 0, H = 0;
@@ -196,10 +156,24 @@ export function GenerativeField() {
     // whatever the simulation was actually doing. Tracking the frame maximum
     // and exposing against it keeps contrast right for any parameters.
     let norm = 1;
+    // --- settle detection --------------------------------------------------
+    // These networks reach an arrangement they will not leave, and then the
+    // page is showing a still image. Rather than watch for that by eye, sample
+    // a scattering of cells every so often and compare with the previous
+    // sample; once successive samples stop differing, the pattern has locked
+    // and the preset restarts from its ring.
+    const PROBE_CELLS = 1500;
+    const PROBE_EVERY = 45; // frames between samples
+    const STILL_ENOUGH = 0.015; // relative change below which nothing is moving
+    const STILL_REPEATS = 3; // consecutive quiet samples before restarting
+    let probe = new Float32Array(0);
+    let sinceProbe = 0;
+    let stillCount = 0;
+    let needsRestart = false;
+
     let speed = 1;
     let lastReset = "";
     let tint = TINTS.ink;
-    let tex = TEXTURES.crisp;
     let disp = new Float32Array(0);
     let dtmp = new Float32Array(0);
     let agents = new Float32Array(0);
@@ -248,6 +222,10 @@ export function GenerativeField() {
       scratch = new Float32Array(N);
       disp = new Float32Array(N);
       dtmp = new Float32Array(N);
+      probe = new Float32Array(PROBE_CELLS + 8);
+      sinceProbe = 0;
+      stillCount = 0;
+      needsRestart = false;
       norm = 1;
 
       const count = Math.min(26000, Math.max(600, Math.round(N * cfg.density)));
@@ -314,6 +292,24 @@ export function GenerativeField() {
           tr[y * W + x] = v * d;
         }
       }
+      // Sample on the rendered frame only, so a fast-forward does not trip the
+      // detector simply by taking more steps between checks.
+      if (render && ++sinceProbe >= PROBE_EVERY) {
+        sinceProbe = 0;
+        const stride = Math.max(1, (tr.length / PROBE_CELLS) | 0);
+        let diff = 0, mag = 0, k = 0;
+        for (let i = 0; i < tr.length && k < probe.length; i += stride, k++) {
+          diff += Math.abs(tr[i] - probe[k]);
+          mag += tr[i];
+          probe[k] = tr[i];
+        }
+        // Relative, so it does not depend on how much ink a preset carries.
+        const moved = mag > 1e-6 ? diff / mag : 1;
+        stillCount = moved < STILL_ENOUGH ? stillCount + 1 : 0;
+        // Restart from draw() rather than here: start() reallocates the very
+        // arrays this function is reading.
+        if (stillCount >= STILL_REPEATS) needsRestart = true;
+      }
       if (!render) return;
       // Expose against the MEAN, not the maximum. Where agents happen to pile
       // up, a single cell can sit eight times above the network paths
@@ -322,6 +318,24 @@ export function GenerativeField() {
       // was doing. Measured: mean 1.6, p90 4.1, max 32.9. A white point at
       // ~3.2x mean lands just above p90, so paths render solid and the
       // background between them stays clear.
+      // Sample on the rendered frame only, so a fast-forward does not trip the
+      // detector simply by taking more steps between checks.
+      if (render && ++sinceProbe >= PROBE_EVERY) {
+        sinceProbe = 0;
+        const stride = Math.max(1, (tr.length / PROBE_CELLS) | 0);
+        let diff = 0, mag = 0, k = 0;
+        for (let i = 0; i < tr.length && k < probe.length; i += stride, k++) {
+          diff += Math.abs(tr[i] - probe[k]);
+          mag += tr[i];
+          probe[k] = tr[i];
+        }
+        // Relative, so it does not depend on how much ink a preset carries.
+        const moved = mag > 1e-6 ? diff / mag : 1;
+        stillCount = moved < STILL_ENOUGH ? stillCount + 1 : 0;
+        // Restart from draw() rather than here: start() reallocates the very
+        // arrays this function is reading.
+        if (stillCount >= STILL_REPEATS) needsRestart = true;
+      }
       if (!render) return;
       // Expose against the MEAN, not the maximum. Where agents pile up a single
       // cell can sit eight times above the network paths themselves (measured:
@@ -336,7 +350,7 @@ export function GenerativeField() {
       for (let i = 0; i < n; i++) disp[i] = tr[i] * inv;
 
       // --- texture: acts on the rendered field, never on the simulation ----
-      for (let pss = 0; pss < tex.blur; pss++) {
+      for (let pss = 0; pss < TEXTURE.blur; pss++) {
         for (let y = 0; y < H; y++) {
           const row = y * W;
           for (let x = 0; x < W; x++) {
@@ -355,7 +369,7 @@ export function GenerativeField() {
           }
         }
       }
-      if (tex.glow > 0) {
+      if (TEXTURE.glow > 0) {
         // A heavily blurred copy added back, so the strongest paths bleed.
         dtmp.set(disp);
         for (let pss = 0; pss < 4; pss++) {
@@ -377,11 +391,11 @@ export function GenerativeField() {
             }
           }
         }
-        const g = tex.glow;
+        const g = TEXTURE.glow;
         for (let i = 0; i < n; i++) disp[i] += dtmp[i] * g;
       }
-      const gm = tex.gamma;
-      const gr = tex.grain;
+      const gm = TEXTURE.gamma;
+      const gr = TEXTURE.grain;
       for (let i = 0; i < n; i++) {
         let v = disp[i];
         if (gm !== 1) v = Math.pow(v < 0 ? 0 : v, gm);
@@ -398,7 +412,6 @@ export function GenerativeField() {
       col = palette();
       const de = document.documentElement.dataset;
       tint = TINTS[de.tint ?? "ink"] ?? TINTS.ink;
-      tex = TEXTURES[de.texture ?? "crisp"] ?? TEXTURES.crisp;
       // Steps per displayed frame. Nothing about the simulation changes; it
       // simply advances further between paints, so a slow preset reaches the
       // state worth judging in seconds rather than a minute.
@@ -430,7 +443,6 @@ export function GenerativeField() {
         "data-scheme",
         "data-theme",
         "data-tint",
-        "data-texture",
         "data-speed",
         "data-reset",
       ],
@@ -446,6 +458,7 @@ export function GenerativeField() {
         // Advance `speed` times, but only build the picture on the last one.
         for (let i = 0; i < speed; i++) step(i === speed - 1);
         ctx.putImageData(img, 0, 0);
+        if (needsRestart) start();
       }
       raf = requestAnimationFrame(draw);
     };
