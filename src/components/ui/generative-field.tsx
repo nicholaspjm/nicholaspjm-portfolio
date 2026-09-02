@@ -116,11 +116,20 @@ const TINTS: Record<string, { lo: [number, number, number] | null; hi: [number, 
  *  grain a little static, which stops large soft areas looking like a gradient
  */
 /**
- * The surface treatment, applied always. This was a row of options; mist was
- * the one worth keeping, so it is simply how the field is rendered now.
- * Acts on the render and never on the simulation.
+ * Surface treatment. Acts on the render and never on the simulation, so the
+ * network underneath is identical and only its surface changes.
+ *  blur  extra separable passes, which soften the strands
+ *  glow  a heavily blurred copy added back, so bright paths bleed light
+ *  grain a little static, which stops large soft areas looking like a gradient
  */
-const TEXTURE = { blur: 5, glow: 0, grain: 0, gamma: 0.85 };
+const TEXTURES: Record<string, { blur: number; glow: number; grain: number; gamma: number }> = {
+  soft: { blur: 2, glow: 0, grain: 0, gamma: 1 },
+  mist: { blur: 5, glow: 0, grain: 0, gamma: 0.85 },
+  glow: { blur: 3, glow: 0.8, grain: 0, gamma: 1 },
+  bloom: { blur: 4, glow: 1.1, grain: 0, gamma: 0.9 },
+  grain: { blur: 3, glow: 0, grain: 0.14, gamma: 0.9 },
+  velvet: { blur: 6, glow: 0.55, grain: 0.07, gamma: 0.8 },
+};
 
 
 const RES = 460; // long edge of the simulation grid
@@ -171,7 +180,8 @@ export function GenerativeField() {
     let stillCount = 0;
     let needsRestart = false;
 
-    let speed = 1;
+    let tex = TEXTURES.mist;
+    let speed = 2;
     let lastReset = "";
     let tint = TINTS.ink;
     let disp = new Float32Array(0);
@@ -350,7 +360,7 @@ export function GenerativeField() {
       for (let i = 0; i < n; i++) disp[i] = tr[i] * inv;
 
       // --- texture: acts on the rendered field, never on the simulation ----
-      for (let pss = 0; pss < TEXTURE.blur; pss++) {
+      for (let pss = 0; pss < tex.blur; pss++) {
         for (let y = 0; y < H; y++) {
           const row = y * W;
           for (let x = 0; x < W; x++) {
@@ -369,7 +379,7 @@ export function GenerativeField() {
           }
         }
       }
-      if (TEXTURE.glow > 0) {
+      if (tex.glow > 0) {
         // A heavily blurred copy added back, so the strongest paths bleed.
         dtmp.set(disp);
         for (let pss = 0; pss < 4; pss++) {
@@ -391,11 +401,11 @@ export function GenerativeField() {
             }
           }
         }
-        const g = TEXTURE.glow;
+        const g = tex.glow;
         for (let i = 0; i < n; i++) disp[i] += dtmp[i] * g;
       }
-      const gm = TEXTURE.gamma;
-      const gr = TEXTURE.grain;
+      const gm = tex.gamma;
+      const gr = tex.grain;
       for (let i = 0; i < n; i++) {
         let v = disp[i];
         if (gm !== 1) v = Math.pow(v < 0 ? 0 : v, gm);
@@ -412,11 +422,12 @@ export function GenerativeField() {
       col = palette();
       const de = document.documentElement.dataset;
       tint = TINTS[de.tint ?? "ink"] ?? TINTS.ink;
+      tex = TEXTURES[de.texture ?? "mist"] ?? TEXTURES.mist;
       // Steps per displayed frame. Nothing about the simulation changes; it
       // simply advances further between paints, so a slow preset reaches the
       // state worth judging in seconds rather than a minute.
       const sp = Number(de.speed);
-      speed = Number.isFinite(sp) && sp >= 1 ? Math.min(16, Math.round(sp)) : 1;
+      speed = Number.isFinite(sp) && sp >= 1 ? Math.min(16, Math.round(sp)) : 2;
       const raw = document.documentElement.dataset.backdrop ?? "";
       const next = raw.startsWith("gen-") ? raw.slice(4) : null;
       active = !!next && !!PRESETS[next];
@@ -443,6 +454,7 @@ export function GenerativeField() {
         "data-scheme",
         "data-theme",
         "data-tint",
+        "data-texture",
         "data-speed",
         "data-reset",
       ],

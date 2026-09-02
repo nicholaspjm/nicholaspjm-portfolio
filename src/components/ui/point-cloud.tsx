@@ -118,6 +118,10 @@ export function PointCloud() {
     let impulse = 0; // kick from page interactions
 
     const onMove = (e: MouseEvent) => {
+      // The preview backdrops are meant to be watched, not driven. On a phone
+      // the scroll coupling below made the cloud lurch with every thumb
+      // movement, which read as the page fighting back.
+      if (morph) return;
       targetParX = (e.clientX / window.innerWidth - 0.5) * 0.5;
       targetParY = (e.clientY / window.innerHeight - 0.5) * 0.38;
     };
@@ -311,7 +315,7 @@ export function PointCloud() {
 
       if (!reduced) rotY += 0.0012 + impulse * 0.02;
       impulse *= 0.94;
-      const scrollT = window.scrollY * 0.0011; // scrolling visibly spins it
+      const scrollT = morph ? 0 : window.scrollY * 0.0011; // scroll spins it, except on /preview
 
       parX += (targetParX - parX) * 0.05;
       parY += (targetParY - parY) * 0.05;

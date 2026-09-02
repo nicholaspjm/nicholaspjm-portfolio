@@ -2,21 +2,6 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 
-/** Typefaces. "narrow" and "unified" are the mindyseu.com register: one
- *  condensed grotesque at a tight leading; unified drops the separate
- *  technical face entirely, as that site does. */
-export const FONTS: { id: string; label: string }[] = [
-  { id: "", label: "arial" },
-  { id: "narrow", label: "narrow" },
-  { id: "unified", label: "unified" },
-  { id: "helvetica", label: "helvetica" },
-  { id: "system", label: "system" },
-  { id: "times", label: "times" },
-  { id: "georgia", label: "georgia" },
-  { id: "verdana", label: "verdana" },
-  { id: "courier", label: "courier" },
-];
-
 /** What sits behind the page. Everything prefixed "gen-" is a real-time
  *  simulation drawn by GenerativeField; the rest are the originals. */
 export const BACKDROPS: { id: string; label: string }[] = [
@@ -50,10 +35,20 @@ export const SPEEDS: { id: string; label: string }[] = [
   { id: "16", label: "16x" },
 ];
 
+/** Surface treatment. Acts on the render, not the simulation. */
+export const TEXTURES: { id: string; label: string }[] = [
+  { id: "mist", label: "mist" },
+  { id: "soft", label: "soft" },
+  { id: "glow", label: "glow" },
+  { id: "bloom", label: "bloom" },
+  { id: "grain", label: "grain" },
+  { id: "velvet", label: "velvet" },
+];
+
 const BACK_KEY = "npjm-backdrop";
+const TEX_KEY = "npjm-texture";
 const SPEED_KEY = "npjm-speed";
 const TINT_KEY = "npjm-tint";
-const FONT_KEY = "npjm-font";
 
 // A tiny external store rather than useState seeded in an effect. The saved
 // choice only exists on the client, so reading it during render would
@@ -62,9 +57,9 @@ const FONT_KEY = "npjm-font";
 // without a hydration mismatch and without setting state from an effect.
 const cache: Record<string, string | null> = {
   [BACK_KEY]: null,
-  [FONT_KEY]: null,
   [TINT_KEY]: null,
   [SPEED_KEY]: null,
+  [TEX_KEY]: null,
 };
 const listeners = new Set<() => void>();
 
@@ -104,13 +99,13 @@ const valid = (list: { id: string }[], v: string, fallback: string) =>
   list.some((o) => o.id === v) ? v : fallback;
 
 const getBackdrop = () => valid(BACKDROPS, read(BACK_KEY, "cloud"), "cloud");
-const getFont = () => valid(FONTS, read(FONT_KEY, ""), "");
 const getTint = () => valid(TINTS, read(TINT_KEY, "ink"), "ink");
-const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "1"), "1");
+const getTex = () => valid(TEXTURES, read(TEX_KEY, "mist"), "mist");
+const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "2"), "2");
 const serverBackdrop = () => "cloud";
-const serverFont = () => "";
 const serverTint = () => "ink";
-const serverSpeed = () => "1";
+const serverTex = () => "mist";
+const serverSpeed = () => "2";
 
 /**
  * Preview controls: typeface and backdrop. Colour, button style and dot size
@@ -123,25 +118,24 @@ const serverSpeed = () => "1";
  */
 export function SchemePicker() {
   const backdrop = useSyncExternalStore(subscribe, getBackdrop, serverBackdrop);
-  const font = useSyncExternalStore(subscribe, getFont, serverFont);
   const tint = useSyncExternalStore(subscribe, getTint, serverTint);
+  const texture = useSyncExternalStore(subscribe, getTex, serverTex);
   const speed = useSyncExternalStore(subscribe, getSpeed, serverSpeed);
 
   useEffect(() => {
     const el = document.documentElement;
     el.dataset.backdrop = backdrop;
-    if (font) el.dataset.font = font;
-    else delete el.dataset.font;
     el.dataset.tint = tint;
+    el.dataset.texture = texture;
     el.dataset.speed = speed;
-  }, [backdrop, font, tint, speed]);
+  }, [backdrop, tint, texture, speed]);
 
   useEffect(() => {
     return () => {
       const el = document.documentElement;
       delete el.dataset.backdrop;
-      delete el.dataset.font;
       delete el.dataset.tint;
+      delete el.dataset.texture;
       delete el.dataset.speed;
       delete el.dataset.reset;
     };
@@ -150,19 +144,6 @@ export function SchemePicker() {
   return (
     <>
       <div className="scheme-picker">
-        <span className="scheme-label">type</span>
-        {FONTS.map((f) => (
-          <button
-            key={f.label}
-            onClick={() => write(FONT_KEY, f.id)}
-            aria-pressed={font === f.id}
-            className={font === f.id ? "on" : undefined}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-      <div className="scheme-picker dot-picker">
         <span className="scheme-label">colour</span>
         {TINTS.map((t) => (
           <button
@@ -170,6 +151,19 @@ export function SchemePicker() {
             onClick={() => write(TINT_KEY, t.id)}
             aria-pressed={tint === t.id}
             className={tint === t.id ? "on" : undefined}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <div className="scheme-picker dot-picker">
+        <span className="scheme-label">texture</span>
+        {TEXTURES.map((t) => (
+          <button
+            key={t.label}
+            onClick={() => write(TEX_KEY, t.id)}
+            aria-pressed={texture === t.id}
+            className={texture === t.id ? "on" : undefined}
           >
             {t.label}
           </button>
