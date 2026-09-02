@@ -4,18 +4,22 @@
    Palette — stock mindyseu white. Work detail pages override via .bluepage.
    ------------------------------------------------------------------------ */
 :root {
-  /* Base = blue-yellow: white ground, black text, blue links + section
-     titles, yellow featured highlight, solid small black point-cloud dots. */
+  /* Base = "paper": white ground, near-black text, old-browser blue for
+     links (underlined, see the `a` rule), project and section titles as blue
+     TYPE rather than blue blocks, the yellow highlighter kept as the one
+     secondary, and the point cloud ghosted back to pale grey so it reads as
+     a watermark under the text. The previous blue-yellow palette is still
+     available on /preview as the "original" scheme. */
   --bg: #ffffff;
-  --ink: #000000;
-  --soft: #666666;
-  --link: #0000ff;
-  --hl-a-bg: #0000ff;   /* section/project titles */
-  --hl-a-fg: #ffffff;
-  --hl-b-bg: #ffe000;   /* featured highlight */
-  --hl-b-fg: #000000;
-  --accent: #0000ff;    /* scanline, live dots */
-  --pt: 0, 0, 0;        /* pointcloud rgb — solid black */
+  --ink: #111111;
+  --soft: #8e8e8e;
+  --link: #0000ee;
+  --hl-a-bg: transparent;  /* section/project titles: type, not a block */
+  --hl-a-fg: #0000ee;
+  --hl-b-bg: #ffe000;      /* featured highlight — unchanged */
+  --hl-b-fg: #111111;
+  --accent: #0000ee;       /* scanline, live dots */
+  --pt: 178, 178, 178;     /* pointcloud rgb — ghosted grey */
   --pt-alpha: 1;
   color-scheme: light;
 }
@@ -65,7 +69,9 @@ body {
   font-size: 16px;
   color: var(--ink);
   background-color: var(--bg);
-  padding-right: 22px; /* room for the vertical work-timeline rail */
+  /* The work rail that used to occupy a 22px gutter here is gone; the
+     right edge now matches the 8px body margin on the left. */
+  padding-right: 8px;
   /* technical grid — faint plotter paper with + crosses at intersections */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpath d='M0 0H120M0 0V120' stroke='%23000000' stroke-opacity='0.045' stroke-width='1'/%3E%3Cpath d='M-4 0H4M0 -4V4' stroke='%23000000' stroke-opacity='0.16' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 120px 120px;
@@ -97,7 +103,12 @@ li { margin: 0; }
 
 a {
   color: var(--link);
-  text-decoration: none;
+  /* The underline is part of the look now, not an oversight. Blocks that are
+     links wrapping a whole paragraph opt out below and re-underline only the
+     bit that reads as the link. */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
 }
 a:hover {
   color: var(--ink);
@@ -165,7 +176,7 @@ a.extra, .extra {
 .sa-row button {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  padding: 0 6px;
+  padding: 1px 6px; /* shared compact control size */
 }
 .sa-row button:disabled { opacity: 0.3; }
 .sa-title { margin-left: 4px; }
@@ -297,6 +308,11 @@ button {
   background: var(--bg);
   color: var(--ink);
   cursor: pointer;
+  /* A wrapped label makes a double-height button sitting in a row of
+     single-height ones, which is what read as inconsistent padding across
+     pages. Rows already wrap, so a long label pushes the whole button to the
+     next line instead of splitting itself. */
+  white-space: nowrap;
 }
 button:hover {
   background: color-mix(in srgb, var(--ink) 8%, var(--bg));
@@ -386,7 +402,7 @@ button:active {
 .img-ctl button {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  padding: 1px 6px;
+  padding: 1px 6px; /* shared compact control size */
   border: 0;
   background: #fff;
   color: #000;
@@ -523,7 +539,7 @@ button:active {
 .gallery-ctl button {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  padding: 1px 5px;
+  padding: 1px 6px; /* shared compact control size */
   border: 0;
   background: #fff;
   color: #000;
@@ -595,7 +611,7 @@ html::-webkit-scrollbar {
 
 .readout {
   position: fixed;
-  right: 26px;
+  right: 12px; /* was 26px, clearing the old rail */
   bottom: 6px;
   display: flex;
   flex-direction: column;
@@ -643,12 +659,11 @@ html::-webkit-scrollbar {
   pointer-events: none;
 }
 
-/* Light/dark toggle — top-right, clear of the rail */
 /* Top-right toggle cluster (dark mode). */
 .top-toggles {
   position: fixed;
   top: 8px;
-  right: 26px;
+  right: 12px; /* was 26px, clearing the old rail */
   z-index: 85;
   display: flex;
   gap: 4px;
@@ -845,6 +860,26 @@ html::-webkit-scrollbar {
    scoped to .entry (a real link) so non-clickable previewable rows (awards,
    performances) don't recolour on hover. .work-hover mirrors :hover so hovering
    a work's image lights up its entry exactly as hovering the text does. */
+/* A project entry is one link wrapping a title AND its description. Only the
+   title should read as the link — underlining the whole block drags a rule
+   under two lines of prose, which is what a paragraph looks like when it has
+   been mistaken for a hyperlink. Same for the tool rows and any entry
+   wrapping an image. */
+.entry,
+.entry:hover,
+.tool-list a,
+.mini-visual a,
+.img-row a,
+.gallery a {
+  text-decoration: none;
+}
+.entry .ptitle,
+.tool-list .tool-name {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
 .entry {
   display: block;
   color: var(--ink);
@@ -1076,7 +1111,7 @@ html[data-preview] .scatter-field { opacity: 0; }
 .vblob-ctl button {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  padding: 2px 8px;
+  padding: 1px 6px; /* shared compact control size */
   border: 0;
   background: var(--ink);
   color: var(--bg);
@@ -1101,7 +1136,7 @@ html[data-preview] .scatter-field { opacity: 0; }
   z-index: 2;
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  padding: 2px 8px;
+  padding: 1px 6px; /* shared compact control size */
   border: 0;
   background: var(--ink);
   color: var(--bg);
@@ -1191,7 +1226,7 @@ html[data-preview] .scatter-field { opacity: 0; }
   all: revert;
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  padding: 0 5px;
+  padding: 1px 6px; /* shared compact control size */
   cursor: pointer;
 }
 .img-resize button.on {
@@ -1353,10 +1388,17 @@ html[data-preview] .scatter-field { opacity: 0; }
   all: revert;
   font-family: Arial, sans-serif;
   font-size: 13px;
+  /* Matches the line-height every other button gets, which is the last 3px
+     of the difference that left the tabs sitting short. */
+  line-height: 1.35;
   border: 1px solid color-mix(in srgb, var(--ink) 30%, var(--bg));
-  border-top: none;
-  border-radius: 0 0 6px 6px;
-  padding: 5px 18px;
+  /* Square, like every other control. The rounded tab was the last rounded
+     thing on the site and sat on its own padding scale. The top border is
+     kept but made transparent: dropping it outright shaved a pixel off the
+     box and left the tabs shorter than every other button on the site. */
+  border-top-color: transparent;
+  border-radius: 0;
+  padding: 2px 12px;
   margin: 0;
   background: color-mix(in srgb, var(--ink) 8%, var(--bg));
   color: var(--ink);
@@ -1368,8 +1410,10 @@ html[data-preview] .scatter-field { opacity: 0; }
 .sheet-tabs .tab.active {
   background: var(--bg);
   font-weight: 700;
-  border-bottom: 3px solid var(--hl-a-bg);
-  padding-bottom: 3px;
+  /* The active marker used to be a 3px rule plus 3px of padding, which made
+     the selected tab taller than its neighbours. Same box, heavier edge. */
+  border-bottom-color: var(--link);
+  box-shadow: inset 0 -3px 0 0 var(--link);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1581,10 +1625,6 @@ html[data-scheme="sage"] {
   background: var(--ink);
 }
 
-/* On /preview the work rail is gone, so the gutter it reserved goes too. */
-body:has(.preview-page) {
-  padding-right: 8px;
-}
 
 /* ---- /preview: variations on the base palette -------------------------- */
 /* Riffs on the original blue-yellow rather than departures from it: white or
@@ -1699,6 +1739,23 @@ html[data-scheme="noir"] {
 /* Dot-size control sits with the palette picker. */
 .dot-picker { margin-top: -0.6em; }
 
+/* The palette the site used before "paper" became the default, kept so the
+   two can be compared side by side. */
+html[data-scheme="original"] {
+  --bg: #ffffff;
+  --ink: #000000;
+  --soft: #666666;
+  --link: #0000ff;
+  --hl-a-bg: #0000ff;
+  --hl-a-fg: #ffffff;
+  --hl-b-bg: #ffe000;
+  --hl-b-fg: #000000;
+  --accent: #0000ff;
+  --pt: 0, 0, 0;
+  --pt-alpha: 1;
+}
+html[data-scheme="original"] a { text-decoration: none; }
+
 /* ---- /preview: grey on white, blue underline -------------------------- */
 /* Cut to the grammar of the reference sheets: a near-white ground, forms
    ghosted back to pale grey so they read as watermark rather than image,
@@ -1793,27 +1850,6 @@ html[data-scheme="steel"] {
   --pt-alpha: 1;
 }
 
-/* The underline is the point, not an oversight — these schemes want the
-   old-web link, and the site strips it everywhere by default. */
-html[data-scheme="paper"] a,
-html[data-scheme="xerox"] a,
-html[data-scheme="ghost"] a,
-html[data-scheme="slate"] a,
-html[data-scheme="mist"] a,
-html[data-scheme="steel"] a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-thickness: 1px;
-}
-/* Buttons and the nav keep their box; only running text gets the rule. */
-html[data-scheme="paper"] button,
-html[data-scheme="xerox"] button,
-html[data-scheme="ghost"] button,
-html[data-scheme="slate"] button,
-html[data-scheme="mist"] button,
-html[data-scheme="steel"] button {
-  text-decoration: none;
-}
 
 /* ---- /preview: Gaussian blur backdrop ---------------------------------- */
 .blurfield {
@@ -1825,57 +1861,88 @@ html[data-scheme="steel"] button {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
+  /* Published by blur-field.tsx each frame: eased pointer offset, scroll
+     progress, and a decaying pulse. The blobs read them from here, so one
+     style write drives the whole field. */
+  --bf-x: 0;
+  --bf-y: 0;
+  --bf-s: 0;
+  --bf-p: 0;
 }
 .blurfield .bf {
   position: absolute;
   display: block;
   border-radius: 50%;
-  /* One big blur per blob. Kept on its own layer and only ever transformed,
-     so the expensive rasterisation happens once rather than every frame. */
   filter: blur(110px);
   will-change: transform;
   /* Kept faint on purpose: this sits directly behind body copy, and a
-     saturated wash at full strength turns the text into an effort. */
-  opacity: 0.26;
+     saturated wash at full strength turns the text into an effort. The pulse
+     lifts it briefly when an entry is hovered. */
+  opacity: calc(0.26 + var(--bf-p) * 0.16);
+  transition: opacity 220ms linear;
 }
+/* Each blob takes the pointer at a different depth and drifts on its own
+   clock, so the field parallaxes rather than sliding as one sheet. */
 .bf-1 {
   width: 46vw; height: 46vw; min-width: 320px; min-height: 320px;
   top: -6vh; left: 8vw;
   background: var(--accent);
+  transform: translate3d(
+    calc(var(--bf-x) * 13vw),
+    calc(var(--bf-y) * 9vh + var(--bf-s) * -14vh),
+    0
+  ) scale(calc(1 + var(--bf-p) * 0.12));
   animation: bf-drift-a 34s ease-in-out infinite alternate;
 }
 .bf-2 {
   width: 40vw; height: 40vw; min-width: 280px; min-height: 280px;
   top: 26vh; left: 46vw;
   background: var(--link);
-  opacity: 0.2;
+  opacity: calc(0.2 + var(--bf-p) * 0.14);
+  transform: translate3d(
+    calc(var(--bf-x) * -9vw),
+    calc(var(--bf-y) * -7vh + var(--bf-s) * 18vh),
+    0
+  ) scale(calc(1.05 - var(--bf-p) * 0.08));
   animation: bf-drift-b 44s ease-in-out infinite alternate;
 }
 .bf-3 {
   width: 34vw; height: 34vw; min-width: 240px; min-height: 240px;
   top: 58vh; left: 14vw;
   background: var(--hl-b-bg);
-  opacity: 0.5;
+  opacity: calc(0.5 + var(--bf-p) * 0.2);
+  transform: translate3d(
+    calc(var(--bf-x) * 20vw),
+    calc(var(--bf-y) * 14vh + var(--bf-s) * -26vh),
+    0
+  );
   animation: bf-drift-c 39s ease-in-out infinite alternate;
 }
 .bf-4 {
   width: 28vw; height: 28vw; min-width: 200px; min-height: 200px;
   top: 8vh; left: 68vw;
   background: var(--ink);
-  opacity: 0.1;
+  opacity: calc(0.1 + var(--bf-p) * 0.06);
+  transform: translate3d(
+    calc(var(--bf-x) * -24vw),
+    calc(var(--bf-y) * -18vh + var(--bf-s) * 10vh),
+    0
+  );
   animation: bf-drift-b 52s ease-in-out infinite alternate-reverse;
 }
+/* The keyframes ride on top of the pointer transform via composition — each
+   blob keeps drifting even when the pointer is still. */
 @keyframes bf-drift-a {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(9vw, 11vh, 0) scale(1.18); }
+  from { translate: 0 0; }
+  to   { translate: 9vw 11vh; }
 }
 @keyframes bf-drift-b {
-  from { transform: translate3d(0, 0, 0) scale(1.1); }
-  to   { transform: translate3d(-12vw, 8vh, 0) scale(0.9); }
+  from { translate: 0 0; }
+  to   { translate: -12vw 8vh; }
 }
 @keyframes bf-drift-c {
-  from { transform: translate3d(0, 0, 0) scale(0.95); }
-  to   { transform: translate3d(10vw, -12vh, 0) scale(1.25); }
+  from { translate: 0 0; }
+  to   { translate: 10vw -12vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .blurfield .bf { animation: none; }
@@ -1886,3 +1953,92 @@ html[data-backdrop="blur"] .ptcloud,
 html[data-backdrop="plain"] .ptcloud { display: none; }
 html[data-backdrop="cloud"] .blurfield,
 html[data-backdrop="plain"] .blurfield { display: none; }
+
+/* ---- /preview: button styles ------------------------------------------ */
+/* Alternatives to the flat square box, chosen with the "buttons" switch.
+   Each only restyles the button itself, so the nav, the pickers and every
+   inline control change together. */
+
+/* underline — no box at all; a button reads as a link. */
+html[data-btn="underline"] button {
+  border: none;
+  background: none;
+  padding: 0 1px;
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+html[data-btn="underline"] button:hover { color: var(--ink); background: none; }
+html[data-btn="underline"] .scheme-picker button.on,
+html[data-btn="underline"] button.on { color: var(--ink); font-weight: 700; }
+
+/* bracket — the old terminal convention, [ like this ]. */
+html[data-btn="bracket"] button {
+  border: none;
+  background: none;
+  padding: 0 2px;
+  color: var(--link);
+}
+html[data-btn="bracket"] button::before { content: "["; color: var(--soft); }
+html[data-btn="bracket"] button::after { content: "]"; color: var(--soft); }
+html[data-btn="bracket"] button:hover { color: var(--ink); background: none; }
+html[data-btn="bracket"] button.on { color: var(--ink); font-weight: 700; }
+
+/* solid — filled ink block, reversed out. */
+html[data-btn="solid"] button {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+html[data-btn="solid"] button:hover {
+  background: var(--link);
+  border-color: var(--link);
+  color: var(--bg);
+}
+html[data-btn="solid"] button.on { background: var(--link); border-color: var(--link); }
+
+/* hairline — a rule under the label only, no box. */
+html[data-btn="hairline"] button {
+  border: none;
+  border-bottom: 1px solid var(--ink);
+  background: none;
+  padding: 1px 3px;
+  color: var(--ink);
+}
+html[data-btn="hairline"] button:hover { border-bottom-color: var(--link); color: var(--link); background: none; }
+html[data-btn="hairline"] button.on { border-bottom-width: 3px; }
+
+/* pill — the one rounded option, for comparison. */
+html[data-btn="pill"] button {
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--bg);
+  padding: 2px 10px;
+}
+html[data-btn="pill"] button.on { background: var(--ink); color: var(--bg); }
+
+/* mono — everything in the data typeface, uppercase and tracked out. */
+html[data-btn="mono"] button {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--soft);
+  background: none;
+  padding: 2px 6px;
+}
+html[data-btn="mono"] button:hover { border-color: var(--ink); background: none; }
+html[data-btn="mono"] button.on { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+
+/* shadow — flat box with a hard offset shadow, no blur. */
+html[data-btn="shadow"] button {
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  box-shadow: 2px 2px 0 0 var(--ink);
+  margin: 0 4px 4px 0;
+}
+html[data-btn="shadow"] button:active {
+  box-shadow: 0 0 0 0 var(--ink);
+  transform: translate(2px, 2px);
+}
+html[data-btn="shadow"] button.on { box-shadow: 2px 2px 0 0 var(--link); }

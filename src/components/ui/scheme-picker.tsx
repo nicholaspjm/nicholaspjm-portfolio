@@ -5,10 +5,10 @@ import { useEffect, useSyncExternalStore } from "react";
 /** The palettes on offer. The empty id is the site's own blue-yellow base. */
 export const SCHEMES: { id: string; label: string }[] = [
   // Variations on the original blue-yellow first, then the departures.
-  { id: "", label: "base" },
+  { id: "", label: "paper" },
+  { id: "original", label: "original" },
   // Grey on white, blue underlined links, maroon accent — the register of
   // the reference sheets. paper / xerox / ghost are the closest matches.
-  { id: "paper", label: "paper" },
   { id: "xerox", label: "xerox" },
   { id: "ghost", label: "ghost" },
   { id: "slate", label: "slate" },
@@ -26,6 +26,18 @@ export const SCHEMES: { id: string; label: string }[] = [
   { id: "amber", label: "amber" },
   { id: "blueprint", label: "blueprint" },
   { id: "sage", label: "sage" },
+];
+
+/** Button treatments. The empty id is the site's flat square box. */
+export const BUTTONS: { id: string; label: string }[] = [
+  { id: "", label: "square" },
+  { id: "underline", label: "underline" },
+  { id: "bracket", label: "bracket" },
+  { id: "hairline", label: "hairline" },
+  { id: "solid", label: "solid" },
+  { id: "shadow", label: "shadow" },
+  { id: "mono", label: "mono" },
+  { id: "pill", label: "pill" },
 ];
 
 /** What sits behind the page. */
@@ -47,6 +59,7 @@ export const DOTS: { id: string; label: string }[] = [
 const KEY = "npjm-scheme";
 const DOT_KEY = "npjm-dot";
 const BACK_KEY = "npjm-backdrop";
+const BTN_KEY = "npjm-btn";
 
 // A tiny external store rather than useState seeded in an effect. The saved
 // scheme only exists on the client, so reading it during render would
@@ -57,6 +70,7 @@ const cache: Record<string, string | null> = {
   [KEY]: null,
   [DOT_KEY]: null,
   [BACK_KEY]: null,
+  [BTN_KEY]: null,
 };
 const listeners = new Set<() => void>();
 
@@ -88,9 +102,11 @@ function subscribe(cb: () => void) {
 const getScheme = () => read(KEY, "");
 const getDot = () => read(DOT_KEY, "1");
 const getBackdrop = () => read(BACK_KEY, "cloud");
+const getBtn = () => read(BTN_KEY, "");
 const serverScheme = () => "";
 const serverDot = () => "1";
 const serverBackdrop = () => "cloud";
+const serverBtn = () => "";
 
 /**
  * Colour-scheme switcher, /preview only. Sets data-scheme on <html>, which
@@ -106,6 +122,7 @@ export function SchemePicker() {
     getBackdrop,
     serverBackdrop,
   );
+  const btn = useSyncExternalStore(subscribe, getBtn, serverBtn);
 
   useEffect(() => {
     const el = document.documentElement;
@@ -113,7 +130,9 @@ export function SchemePicker() {
     else delete el.dataset.scheme;
     el.dataset.dot = dotSize;
     el.dataset.backdrop = backdrop;
-  }, [scheme, dotSize, backdrop]);
+    if (btn) el.dataset.btn = btn;
+    else delete el.dataset.btn;
+  }, [scheme, dotSize, backdrop, btn]);
 
   useEffect(() => {
     return () => {
@@ -121,6 +140,7 @@ export function SchemePicker() {
       delete el.dataset.scheme;
       delete el.dataset.dot;
       delete el.dataset.backdrop;
+      delete el.dataset.btn;
     };
   }, []);
 
@@ -136,6 +156,19 @@ export function SchemePicker() {
             className={scheme === s.id ? "on" : undefined}
           >
             {s.label}
+          </button>
+        ))}
+      </div>
+      <div className="scheme-picker dot-picker">
+        <span className="scheme-label">buttons</span>
+        {BUTTONS.map((b) => (
+          <button
+            key={b.id || "square"}
+            onClick={() => write(BTN_KEY, b.id)}
+            aria-pressed={btn === b.id}
+            className={btn === b.id ? "on" : undefined}
+          >
+            {b.label}
           </button>
         ))}
       </div>

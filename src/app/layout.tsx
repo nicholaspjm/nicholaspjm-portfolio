@@ -4,7 +4,6 @@ import { Chrome } from "@/components/layout/chrome";
 import { Readout } from "@/components/ui/readout";
 import { PointCloud } from "@/components/ui/point-cloud";
 import { PreviewZone } from "@/components/ui/preview-zone";
-import { SideSlider } from "@/components/ui/side-slider";
 import { DarkToggle } from "@/components/ui/dark-toggle";
 import { EditBar } from "@/components/ui/edit-bar";
 import { Analytics } from "@/components/layout/analytics";
@@ -70,7 +69,6 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <PointCloud />
         <Chrome>{children}</Chrome>
-        <SideSlider />
         <Readout />
         <PreviewZone />
         <div className="top-toggles">
