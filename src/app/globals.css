@@ -1502,48 +1502,6 @@ html[data-preview] .scatter-field { opacity: 0; }
   color: #bbb;
 }
 
-/* ---- /preview experiment: folded categories ---------------------------- */
-/* The fold head reproduces the label paragraph the live page renders (same
-   0.4em paragraph rhythm; any marginTop comes inline from the page, exactly
-   as on home), so the folded page keeps the live vertical rhythm. The body
-   animates via grid-template-rows 0fr -> 1fr, so no heights are measured;
-   overflow:hidden on .fold-inner also contains the children's margins, which
-   is what lets a closed section sit at exactly label height. */
-.fold-head {
-  margin: 0 0 0.4em 0;
-  font: inherit;
-}
-.fold-head button {
-  all: unset;
-  font: inherit;
-  cursor: pointer;
-}
-.fold-head button:hover span,
-.fold-head button:focus-visible span {
-  text-decoration: underline;
-}
-.fold-head button:focus-visible {
-  outline: 1px solid var(--ink);
-  outline-offset: 3px;
-}
-.fold-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 340ms ease;
-}
-.fold.open .fold-body {
-  grid-template-rows: 1fr;
-}
-.fold-inner {
-  overflow: hidden;
-  min-height: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  .fold-body {
-    transition: none;
-  }
-}
-
 /* /preview only: plain ground — the plotter grid comes off the body (scoped
    with :has since body is outside the page tree), leaving the morphing point
    cloud as the only thing behind the text. Everything else lays out exactly

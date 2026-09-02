@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { getListedProjects, getProjectBySlug } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
-import { editableText } from "@/content/editable-text";
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { InfoSheet } from "@/components/ui/info-sheet";
 import { Editable } from "@/components/ui/editable";
-import { Fold } from "@/components/ui/fold";
 import { ScrollLine } from "@/components/ui/scroll-line";
 import { BlurField } from "@/components/ui/blur-field";
 import { GenerativeField } from "@/components/ui/generative-field";
@@ -38,9 +36,6 @@ export const metadata: Metadata = {
   title: "visual test",
   robots: { index: false, follow: false },
 };
-
-/** A section label as saved in the studio, falling back to the default. */
-const label = (id: string, fallback: string) => editableText[id] ?? fallback;
 
 export default function PreviewPage() {
   const all = getListedProjects();
@@ -151,101 +146,113 @@ export default function PreviewPage() {
 
       <div className="spacer-v" aria-hidden />
 
-      {/* SECTIONS — home's order, labels and dividers; bodies folded ----- */}
-      <Fold
-        label={label("label.selected", "selected works")}
-        headStyle={{ marginTop: "1.4em" }}
-        defaultOpen
-      >
-        {selected.map((p, i) => (
-          <ProjectBlock
-            key={`sel-${p.slug}`}
-            context="selected"
-            p={p}
-            eager={i === 0}
-          />
-        ))}
-        <SeeMore />
-      </Fold>
+      {/* SECTIONS — exactly as home renders them, labels and dividers alike.
+          These used to be folded shut until clicked; that experiment is over,
+          so the page is now the live homepage with only the backdrop under
+          test. */}
+      <p style={{ marginTop: "1.4em" }}>
+        <Editable id="label.selected" as="span" className="extra">
+          selected works
+        </Editable>
+      </p>
+      {selected.map((p, i) => (
+        <ProjectBlock
+          key={`sel-${p.slug}`}
+          context="selected"
+          p={p}
+          eager={i === 0}
+        />
+      ))}
+      <SeeMore />
 
       <NoiseRule />
 
-      <Fold
-        label={label("label.commissions", "visual")}
-        headStyle={{ marginTop: "1.4em" }}
-      >
-        {commissioned.map((p) => (
-          <ProjectBlock key={p.slug} context="section" p={p} />
-        ))}
-        <SectionFoot id="foot.visual">
-          Further commissions and collaborations include work with MTLA Studio,
-          1080p Studios, Phase 3 Concepts, and Lyrical Lemonade.
-        </SectionFoot>
-        <SeeMore />
-      </Fold>
+      <p style={{ marginTop: "1.4em" }}>
+        <Editable id="label.commissions" as="span" className="extra">
+          visual
+        </Editable>
+      </p>
+      {commissioned.map((p) => (
+        <ProjectBlock key={p.slug} context="section" p={p} />
+      ))}
+      <SectionFoot id="foot.visual">
+        Further commissions and collaborations include work with MTLA Studio,
+        1080p Studios, Phase 3 Concepts, and Lyrical Lemonade.
+      </SectionFoot>
+      <SeeMore />
 
       <NoiseRule />
 
-      <Fold label={label("label.installation", "installation & performance")}>
-        {installations.map((p) => (
-          <ProjectBlock key={p.slug} context="section" p={p} />
-        ))}
-        <PerfList />
-        <SectionFoot id="foot.installation">
-          Work has also been presented at Concordia, Pythia, Atmos, Thread,
-          Step Count, Mach1, 1800Play, TOPIA, Ode, and Order Up.
-        </SectionFoot>
-        <SeeMore />
-      </Fold>
+      <p>
+        <Editable id="label.installation" as="span" className="extra">
+          installation &amp; performance
+        </Editable>
+      </p>
+      {installations.map((p) => (
+        <ProjectBlock key={p.slug} context="section" p={p} />
+      ))}
+      <PerfList />
+      <SectionFoot id="foot.installation">
+        Work has also been presented at Concordia, Pythia, Atmos, Thread, Step
+        Count, Mach1, 1800Play, TOPIA, Ode, and Order Up.
+      </SectionFoot>
+      <SeeMore />
 
       <NoiseRule char="/" />
 
-      <Fold label={label("label.sketches", "personal explorations")}>
-        {explorations.map((p) => (
-          <ProjectBlock key={p.slug} context="section" p={p} />
-        ))}
-        <SeeMore />
-      </Fold>
+      <p>
+        <Editable id="label.sketches" as="span" className="extra">
+          personal explorations
+        </Editable>
+      </p>
+      {explorations.map((p) => (
+        <ProjectBlock key={p.slug} context="section" p={p} />
+      ))}
+      <SeeMore />
 
       <NoiseRule />
 
-      <Fold label={label("label.tools", "public tools")}>
-        <ToolsList />
-      </Fold>
+      <p id="tools">
+        <Editable id="label.tools" as="span" className="extra">
+          public tools
+        </Editable>
+      </p>
+      <ToolsList />
 
-      <Fold
-        label={label("label.teaching", "teaching and talks")}
-        variant="static"
-        headStyle={{ marginTop: "2.2em" }}
-      >
-        <TeachingList />
-        <SeeMore href="/cv" />
-        <p style={{ marginTop: "0.5em" }}>
-          <NavButton href="https://youtube.com/@nicholaspjm" external>
-            youtube
-          </NavButton>
-        </p>
-      </Fold>
+      <p style={{ marginTop: "2.2em" }}>
+        <Editable id="label.teaching" as="span" className="static-label">
+          teaching and talks
+        </Editable>
+      </p>
+      <TeachingList />
+      <SeeMore href="/cv" />
+      <p style={{ marginTop: "0.5em" }}>
+        <NavButton href="https://youtube.com/@nicholaspjm" external>
+          youtube
+        </NavButton>
+      </p>
 
-      <Fold
-        label={label("label.awards", "awards & press")}
-        variant="static"
-        headStyle={{ marginTop: "2.2em" }}
-      >
-        <AwardsPressList />
-        <SectionFoot id="foot.awards">
-          Selected recognition and coverage shown here; further features and
-          interviews are catalogued alongside the practice history.
-        </SectionFoot>
-      </Fold>
+      <p style={{ marginTop: "2.2em" }}>
+        <Editable id="label.awards" as="span" className="static-label">
+          awards &amp; press
+        </Editable>
+      </p>
+      <AwardsPressList />
+      <SectionFoot id="foot.awards">
+        Selected recognition and coverage shown here; further features and
+        interviews are catalogued alongside the practice history.
+      </SectionFoot>
 
       <p>
         <br />
       </p>
 
-      <Fold label={label("label.education", "education")} variant="static">
-        <EducationList />
-      </Fold>
+      <p>
+        <Editable id="label.education" as="span" className="static-label">
+          education
+        </Editable>
+      </p>
+      <EducationList />
 
       <p>
         <br />
