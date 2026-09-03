@@ -59,7 +59,20 @@ export const RESOLUTIONS: { id: string; label: string }[] = [
   { id: "max", label: "max" },
 ];
 
+/** The technical face: the "now" mark, readout, captions, foot, CV sheet. */
+export const DATAFACES: { id: string; label: string }[] = [
+  { id: "courier", label: "courier" },
+  { id: "mono", label: "mono" },
+  { id: "menlo", label: "menlo" },
+  { id: "andale", label: "andale" },
+  { id: "lucida", label: "lucida" },
+  { id: "narrow", label: "narrow" },
+  { id: "georgia", label: "georgia" },
+  { id: "unified", label: "unified" },
+];
+
 const BACK_KEY = "npjm-backdrop";
+const DATA_KEY = "npjm-dataface";
 const RES_KEY = "npjm-res";
 const TEX_KEY = "npjm-texture";
 const SPEED_KEY = "npjm-speed";
@@ -76,6 +89,7 @@ const cache: Record<string, string | null> = {
   [SPEED_KEY]: null,
   [TEX_KEY]: null,
   [RES_KEY]: null,
+  [DATA_KEY]: null,
 };
 const listeners = new Set<() => void>();
 
@@ -117,11 +131,13 @@ const valid = (list: { id: string }[], v: string, fallback: string) =>
 const getBackdrop = () => valid(BACKDROPS, read(BACK_KEY, "cloud"), "cloud");
 const getTint = () => valid(TINTS, read(TINT_KEY, "ink"), "ink");
 const getTex = () => valid(TEXTURES, read(TEX_KEY, "mist"), "mist");
+const getDataface = () => valid(DATAFACES, read(DATA_KEY, "courier"), "courier");
 const getRes = () => valid(RESOLUTIONS, read(RES_KEY, "auto"), "auto");
 const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "auto"), "auto");
 const serverBackdrop = () => "cloud";
 const serverTint = () => "ink";
 const serverTex = () => "mist";
+const serverDataface = () => "courier";
 const serverRes = () => "auto";
 const serverSpeed = () => "auto";
 
@@ -138,6 +154,7 @@ export function SchemePicker() {
   const backdrop = useSyncExternalStore(subscribe, getBackdrop, serverBackdrop);
   const tint = useSyncExternalStore(subscribe, getTint, serverTint);
   const texture = useSyncExternalStore(subscribe, getTex, serverTex);
+  const dataface = useSyncExternalStore(subscribe, getDataface, serverDataface);
   const res = useSyncExternalStore(subscribe, getRes, serverRes);
   const speed = useSyncExternalStore(subscribe, getSpeed, serverSpeed);
 
@@ -146,9 +163,10 @@ export function SchemePicker() {
     el.dataset.backdrop = backdrop;
     el.dataset.tint = tint;
     el.dataset.texture = texture;
+    el.dataset.dataface = dataface;
     el.dataset.res = res;
     el.dataset.speed = speed;
-  }, [backdrop, tint, texture, res, speed]);
+  }, [backdrop, tint, texture, dataface, res, speed]);
 
   useEffect(() => {
     return () => {
@@ -156,6 +174,7 @@ export function SchemePicker() {
       delete el.dataset.backdrop;
       delete el.dataset.tint;
       delete el.dataset.texture;
+      delete el.dataset.dataface;
       delete el.dataset.res;
       delete el.dataset.speed;
       delete el.dataset.reset;
@@ -187,6 +206,19 @@ export function SchemePicker() {
             className={texture === t.id ? "on" : undefined}
           >
             {t.label}
+          </button>
+        ))}
+      </div>
+      <div className="scheme-picker dot-picker">
+        <span className="scheme-label">second font</span>
+        {DATAFACES.map((f) => (
+          <button
+            key={f.label}
+            onClick={() => write(DATA_KEY, f.id)}
+            aria-pressed={dataface === f.id}
+            className={dataface === f.id ? "on" : undefined}
+          >
+            {f.label}
           </button>
         ))}
       </div>

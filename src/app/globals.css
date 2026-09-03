@@ -2189,3 +2189,34 @@ html[data-font="courier"] {
     height: auto;
   }
 }
+
+/* ---- /preview: the secondary face ------------------------------------- */
+/* --font-data is the technical register: the "now" mark, the corner readout,
+   captions, the foot line and the CV sheet. Everything already reads it, so
+   these only redefine the variable. System stacks throughout, so there is
+   nothing to download and no flash of unstyled text. */
+html[data-dataface="mono"] {
+  --font-data: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+html[data-dataface="menlo"] {
+  --font-data: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+}
+html[data-dataface="andale"] {
+  --font-data: "Andale Mono", "Courier New", monospace;
+}
+html[data-dataface="lucida"] {
+  --font-data: "Lucida Console", "Lucida Sans Typewriter", monospace;
+}
+/* Condensed sans rather than a typewriter: still clearly a second voice, but
+   it sits closer to the body type. */
+html[data-dataface="narrow"] {
+  --font-data: "Arial Narrow", "Helvetica Neue Condensed", Arial, sans-serif;
+}
+/* A serif for the technical bits, which reads as editorial rather than data. */
+html[data-dataface="georgia"] {
+  --font-data: Georgia, "Times New Roman", serif;
+}
+/* No second face at all: the mindyseu approach, one family for everything. */
+html[data-dataface="unified"] {
+  --font-data: var(--font-body);
+}
