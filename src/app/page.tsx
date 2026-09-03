@@ -7,6 +7,7 @@ import { editableText } from "@/content/editable-text";
 import type { Project } from "@/types/content";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
+import { ImageWarmer } from "@/components/ui/image-warmer";
 import { InfoSheet } from "@/components/ui/info-sheet";
 import { Editable } from "@/components/ui/editable";
 import { SectionArrange } from "@/components/ui/section-arrange";
@@ -64,6 +65,7 @@ export default function Home() {
       {/* The index has no visible title — the work is the title. Search
           engines still need one, so it is here for them and for screen
           readers, carrying the terms the practice should be found by. */}
+      <ImageWarmer />
       <h1 className="sr-only">
         Nicholas Marriott (nicholaspjm), TouchDesigner, projection and new
         media artist in Naarm / Melbourne
