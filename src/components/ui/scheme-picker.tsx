@@ -14,6 +14,10 @@ export const BACKDROPS: { id: string; label: string }[] = [
   { id: "gen-wisp", label: "wisp" },
   { id: "gen-drift", label: "drift" },
   { id: "gen-aura", label: "aura" },
+  { id: "gen-veil", label: "veil" },
+  { id: "gen-lace", label: "lace" },
+  { id: "gen-comet", label: "comet" },
+  { id: "gen-nebula", label: "nebula" },
   { id: "blur", label: "gaussian blur" },
   { id: "plain", label: "plain" },
 ];
@@ -28,6 +32,7 @@ export const TINTS: { id: string; label: string }[] = [
 
 /** Steps per displayed frame, for fast-forwarding a slow preset. */
 export const SPEEDS: { id: string; label: string }[] = [
+  { id: "auto", label: "auto" },
   { id: "1", label: "1x" },
   { id: "2", label: "2x" },
   { id: "4", label: "4x" },
@@ -113,12 +118,12 @@ const getBackdrop = () => valid(BACKDROPS, read(BACK_KEY, "cloud"), "cloud");
 const getTint = () => valid(TINTS, read(TINT_KEY, "ink"), "ink");
 const getTex = () => valid(TEXTURES, read(TEX_KEY, "mist"), "mist");
 const getRes = () => valid(RESOLUTIONS, read(RES_KEY, "auto"), "auto");
-const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "2"), "2");
+const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "auto"), "auto");
 const serverBackdrop = () => "cloud";
 const serverTint = () => "ink";
 const serverTex = () => "mist";
 const serverRes = () => "auto";
-const serverSpeed = () => "2";
+const serverSpeed = () => "auto";
 
 /**
  * Preview controls: typeface and backdrop. Colour, button style and dot size

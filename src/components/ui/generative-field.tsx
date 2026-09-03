@@ -50,42 +50,87 @@ type Preset = {
   ringSpread: number;
   /** Launch along the ring (true) or straight out from the centre (false). */
   tangential: boolean;
+  /** Steps per displayed frame this preset wants. These settle at very
+   *  different rates: aura needs 16x to reach its structure in reasonable
+   *  time, while corona and wisp are worth watching arrive at 1x. The speed
+   *  control on /preview overrides it; "auto" hands it back. */
+  speed: number;
 };
 
 const PRESETS: Record<string, Preset> = {
-  // Wide, sparse ring. Steps further and turns harder than it did, so the
-  // ring splits within seconds instead of a minute.
+  // Wide, sparse ring that splits as it turns. Runs at 2x, which is where the
+  // split happens soon enough to watch.
   halo: {
     density: 0.05, sensorAngle: 0.6, rotate: 0.52, sensorDist: 15, step: 2.3,
     deposit: 0.858, decay: 0.974, jitter: 0.0, bias: 0.0,
     ringRadius: 0.4, ringSpread: 0.03, tangential: true,
+    speed: 2,
   },
-  // Launched outward rather than along the ring: rays, not a rim. Slowed
-  // to roughly half the step it had, with a longer memory to match.
+  // Launched outward rather than along the ring: rays, not a rim. Deliberately
+  // slow, so 1x.
   corona: {
     density: 0.06, sensorAngle: 0.48, rotate: 0.34, sensorDist: 14, step: 1.05,
     deposit: 0.385, decay: 0.986, jitter: 0.01, bias: 0.0,
     ringRadius: 0.22, ringSpread: 0.04, tangential: false,
+    speed: 1,
   },
-  // The sparsest and most persistent. Almost nothing, drawn slowly.
+  // The sparsest and most persistent. Almost nothing, drawn slowly, and worth
+  // leaving at 1x for it.
   wisp: {
     density: 0.03, sensorAngle: 0.62, rotate: 0.46, sensorDist: 17, step: 2.0,
     deposit: 0.66, decay: 0.988, jitter: 0.0, bias: 0.0,
     ringRadius: 0.34, ringSpread: 0.1, tangential: true,
+    speed: 1,
   },
   // A little noise in the steering, so the circle never quite closes.
   drift: {
     density: 0.06, sensorAngle: 0.55, rotate: 0.42, sensorDist: 12, step: 1.5,
     deposit: 0.55, decay: 0.98, jitter: 0.06, bias: 0.0,
     ringRadius: 0.36, ringSpread: 0.12, tangential: true,
+    speed: 2,
   },
-  // Widest and faintest: a ring at the edge of the frame.
+  // Widest and faintest: a ring at the edge of the frame. Its structure takes a
+  // long time to arrive, hence 16x.
   aura: {
     density: 0.045, sensorAngle: 0.66, rotate: 0.3, sensorDist: 18, step: 1.9,
     deposit: 0.55, decay: 0.985, jitter: 0.0, bias: 0.006,
     ringRadius: 0.44, ringSpread: 0.02, tangential: true,
+    speed: 16,
+  },
+  // A wide band rather than a line: the ring is given real thickness, so it
+  // reads as a curtain drawn across the frame.
+  veil: {
+    density: 0.03, sensorAngle: 0.7, rotate: 0.26, sensorDist: 20, step: 1.7,
+    deposit: 0.715, decay: 0.987, jitter: 0.0, bias: 0.004,
+    ringRadius: 0.46, ringSpread: 0.16, tangential: true,
+    speed: 8,
+  },
+  // Short senses and a hard turn, so the strands interlace instead of running
+  // parallel. The densest of the set.
+  lace: {
+    density: 0.11, sensorAngle: 0.4, rotate: 0.62, sensorDist: 6, step: 1.0,
+    deposit: 0.42, decay: 0.972, jitter: 0.0, bias: 0.0,
+    ringRadius: 0.3, ringSpread: 0.07, tangential: true,
+    speed: 2,
+  },
+  // Very few agents taking very long steps, held almost indefinitely, so each
+  // one draws a single long trail.
+  comet: {
+    density: 0.022, sensorAngle: 0.58, rotate: 0.34, sensorDist: 16, step: 2.4,
+    deposit: 0.675, decay: 0.991, jitter: 0.0, bias: 0.01,
+    ringRadius: 0.38, ringSpread: 0.04, tangential: true,
+    speed: 4,
+  },
+  // Spread so wide it fills a disc rather than tracing a ring, then finds its
+  // own structure inside it.
+  nebula: {
+    density: 0.05, sensorAngle: 0.64, rotate: 0.36, sensorDist: 14, step: 1.6,
+    deposit: 0.528, decay: 0.984, jitter: 0.02, bias: 0.0,
+    ringRadius: 0.24, ringSpread: 0.3, tangential: true,
+    speed: 4,
   },
 };
+
 
 
 
@@ -156,7 +201,7 @@ function autoResolution(): number {
 
 
 /** What the live site runs. /preview overrides all of this by attribute. */
-const LIVE = { tint: "ink", texture: "velvet", speed: 1 };
+const LIVE = { tint: "ink", texture: "velvet" };
 
 export function GenerativeField() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -218,7 +263,7 @@ export function GenerativeField() {
 
     let tex = TEXTURES[isPreview ? "mist" : LIVE.texture] ?? TEXTURES.mist;
     let resolution = autoResolution();
-    let speed = isPreview ? 2 : LIVE.speed;
+    let speed = cfg.speed;
     let lastReset = "";
     let tint = TINTS[LIVE.tint] ?? TINTS.ink;
     let disp = new Float32Array(0);
@@ -434,9 +479,11 @@ export function GenerativeField() {
     const sync = () => {
       col = palette();
       if (!isPreview) {
-        // Live: fixed settings, always running. Only the palette is re-read,
-        // so a light/dark switch still recolours the field.
+        // Live: fixed settings, always running, at whatever pace the randomly
+        // chosen preset asks for. Only the palette is re-read, so a light/dark
+        // switch still recolours the field.
         cv.style.filter = tex.filter;
+        speed = cfg.speed;
         active = true;
         return;
       }
@@ -453,14 +500,19 @@ export function GenerativeField() {
       // Steps per displayed frame. Nothing about the simulation changes; it
       // simply advances further between paints, so a slow preset reaches the
       // state worth judging in seconds rather than a minute.
+      // "auto" (and anything unrecognised) hands the choice back to the
+      // preset, which is the sensible default now that they settle at such
+      // different rates.
       const sp = Number(de.speed);
-      speed = Number.isFinite(sp) && sp >= 1 ? Math.min(16, Math.round(sp)) : 2;
+      speed = Number.isFinite(sp) && sp >= 1 ? Math.min(16, Math.round(sp)) : cfg.speed;
       const raw = document.documentElement.dataset.backdrop ?? "";
       const next = raw.startsWith("gen-") ? raw.slice(4) : null;
       active = !!next && !!PRESETS[next];
       if (active && next && next !== name) {
         name = next;
         cfg = PRESETS[next] ?? PRESETS[DEFAULT];
+        const spNow = Number(document.documentElement.dataset.speed);
+        if (!(Number.isFinite(spNow) && spNow >= 1)) speed = cfg.speed;
         start();
         lastReset = de.reset ?? "";
         return;
