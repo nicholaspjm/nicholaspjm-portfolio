@@ -16,7 +16,7 @@ import { useEffect } from "react";
  * the browser caches them, and the real lazy load is then served from cache
  * instantly. If any of it fails the page behaves exactly as it did before.
  */
-export function ImageWarmer({ limit = 48 }: { limit?: number }) {
+export function ImageWarmer({ limit = 96 }: { limit?: number }) {
   useEffect(() => {
     // Never spend someone's metered or slow connection on images they may
     // never scroll to.
@@ -33,10 +33,14 @@ export function ImageWarmer({ limit = 48 }: { limit?: number }) {
 
     const warm = () => {
       if (cancelled) return;
-      const urls = [...document.querySelectorAll<HTMLImageElement>("img[loading='lazy']")]
-        .map((el) => el.currentSrc || el.src)
-        .filter(Boolean)
-        .slice(0, limit);
+      const imgs = [...document.querySelectorAll<HTMLImageElement>("img[loading='lazy']")]
+        .map((el) => el.currentSrc || el.src);
+      // Video posters as well. The clips themselves are far too large to
+      // prefetch (the homepage alone references 49, and the library is 205MB),
+      // but their posters are what actually gets painted, and those are small.
+      const postersOnPage = [...document.querySelectorAll<HTMLVideoElement>("video[poster]")]
+        .map((el) => el.poster);
+      const urls = [...imgs, ...postersOnPage].filter(Boolean).slice(0, limit);
 
       // A few at a time, in document order, so the ones just below the fold
       // land first and the fetches never crowd out anything the page still

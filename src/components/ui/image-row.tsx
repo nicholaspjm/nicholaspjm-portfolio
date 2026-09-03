@@ -5,7 +5,7 @@ import Link from "next/link";
 import { asset } from "@/lib/asset";
 import { ytEmbed } from "@/lib/yt";
 import { editableText } from "@/content/editable-text";
-import { imageDims } from "@/content/project-images";
+import { imageDims, videoDims, videoPosters } from "@/content/project-images";
 import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 
 export interface RowImage {
@@ -310,6 +310,21 @@ export function ImageRow({
             <video
               className="vid"
               src={asset(img.video)}
+              // A first-frame still, so the clip is a picture from the moment
+              // the row is laid out rather than a black rectangle waiting for
+              // enough of a 200MB library to arrive. The file itself still
+              // streams only once the observer above plays it.
+              poster={
+                videoPosters[img.video]
+                  ? asset(videoPosters[img.video])
+                  : undefined
+              }
+              {...(videoDims[img.video]
+                ? {
+                    width: videoDims[img.video][0],
+                    height: videoDims[img.video][1],
+                  }
+                : {})}
               muted
               loop
               playsInline
