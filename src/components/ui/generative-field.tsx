@@ -127,7 +127,7 @@ const PRESETS: Record<string, Preset> = {
     density: 0.05, sensorAngle: 0.64, rotate: 0.36, sensorDist: 14, step: 1.6,
     deposit: 0.528, decay: 0.984, jitter: 0.02, bias: 0.0,
     ringRadius: 0.24, ringSpread: 0.3, tangential: true,
-    speed: 4,
+    speed: 1,
   },
 };
 

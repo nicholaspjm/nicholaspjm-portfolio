@@ -61,8 +61,8 @@ export const RESOLUTIONS: { id: string; label: string }[] = [
 
 /** The technical face: the "now" mark, readout, captions, foot, CV sheet. */
 export const DATAFACES: { id: string; label: string }[] = [
-  { id: "courier", label: "courier" },
   { id: "mono", label: "mono" },
+  { id: "courier", label: "courier" },
   { id: "menlo", label: "menlo" },
   { id: "andale", label: "andale" },
   { id: "lucida", label: "lucida" },
@@ -131,13 +131,13 @@ const valid = (list: { id: string }[], v: string, fallback: string) =>
 const getBackdrop = () => valid(BACKDROPS, read(BACK_KEY, "cloud"), "cloud");
 const getTint = () => valid(TINTS, read(TINT_KEY, "ink"), "ink");
 const getTex = () => valid(TEXTURES, read(TEX_KEY, "mist"), "mist");
-const getDataface = () => valid(DATAFACES, read(DATA_KEY, "courier"), "courier");
+const getDataface = () => valid(DATAFACES, read(DATA_KEY, "mono"), "mono");
 const getRes = () => valid(RESOLUTIONS, read(RES_KEY, "auto"), "auto");
 const getSpeed = () => valid(SPEEDS, read(SPEED_KEY, "auto"), "auto");
 const serverBackdrop = () => "cloud";
 const serverTint = () => "ink";
 const serverTex = () => "mist";
-const serverDataface = () => "courier";
+const serverDataface = () => "mono";
 const serverRes = () => "auto";
 const serverSpeed = () => "auto";
 

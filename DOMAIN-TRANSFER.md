@@ -1,107 +1,61 @@
-# Moving nicholaspjm.com from Cargo to Cloudflare
+# nicholaspjm.com: how the domain moved
 
-Checked against the registry on 30 July 2026.
-**Re-verified against live DNS on 25 August 2026 — nothing has changed.**
-`nicholaspjm.com` still answers on `ns1/ns2.cargo.site`, still resolves to
-Cargo's `3.215.100.79` / `3.234.189.133`, and the Google Workspace `MX`
-(`1 SMTP.GOOGLE.com`) and the `google-site-verification` TXT are both intact.
-Every step below is still accurate as written.
+Done. This is a record of what happened, not a plan. Verified against live DNS
+and the registry on 3 September 2026.
 
-## What the registry says
+## Where it ended up
 
-- **Registrar:** eNom (Cargo resells through them).
-- **Status: `active`, with no transfer lock.** Nothing is holding the domain.
-- **Registered 12 Jan 2026, expires 12 Jan 2027.** Well past the 60 day
-  minimum age, so it is transferable now. A transfer adds a year, pushing
-  expiry to Jan 2028.
-- DNS is still on Cargo's nameservers (`NS1.CARGO.SITE`, `NS2.CARGO.SITE`),
-  so the old Cargo site is still what loads at the domain.
-- **Google Workspace email is on this domain** (MX points to
-  `SMTP.GOOGLE.com`). This is the one real risk: move nameservers without
-  recreating that record and `contact@nicholaspjm.com` stops receiving mail.
+- **Registrar: GoDaddy**, transferred 26 August 2026. Expiry moved from
+  January 2027 to **12 January 2028**, since a transfer adds a year.
+- **DNS: Cloudflare** (`ollie.ns.cloudflare.com`, `pablo.ns.cloudflare.com`).
+- **The site** is served from Cloudflare at the domain root, and mirrored on
+  GitHub Pages at `nicholaspjm.github.io/nicholaspjm-portfolio`. Every push to
+  `main` deploys to both.
+- **Mail survived.** The Google Workspace `MX` (`1 SMTP.GOOGLE.com`) and the
+  `google-site-verification` TXT are both intact.
+- The registry shows GoDaddy's usual locks (delete, renew, transfer and update
+  prohibited). Normal after a transfer; they have to be lifted before the
+  domain can move again.
 
-## Two separate jobs
+## What the earlier plan got wrong
 
-Only one of them needs the auth code:
+The original steps here said to point the nameservers at Cloudflare first and
+transfer the registration afterwards, because Cloudflare Registrar will not
+accept a domain that is not already on its DNS.
 
-- **Pointing the domain** makes the new site live at nicholaspjm.com. Free,
-  no auth code, minutes of work.
-- **Transferring the registration** is what the auth code is for. Roughly
-  US$11, moves billing off Cargo, can be done right after or weeks later.
+That was unworkable. Cargo issues an auth code and considers the domain
+released, but it does not hand over DNS control, so the nameservers could not
+be changed while the domain was still there. Cloudflare Registrar therefore
+could not be the destination at all: it needs the nameservers moved first, and
+they could not be moved first.
 
-So the site can go live first, and the transfer can be a separate errand.
+The way through was to ignore Cloudflare Registrar and transfer the
+registration to a registrar that accepts an auth code regardless of where the
+nameservers point, then set them to Cloudflare afterwards. GoDaddy took it.
 
-## Part A: get the site live on the domain
+## Worth remembering
 
-1. Cloudflare dashboard, **Add a site**, enter `nicholaspjm.com`, choose the
-   Free plan.
-2. Cloudflare scans the existing DNS. **Stop here and check the imported list
-   contains:**
-   - `MX` record: `1 SMTP.GOOGLE.com` (the email, add manually if missing)
-   - `TXT`: `google-site-verification=HrKANtZj7-GiQ1KadP9jU9iMQk_LLU5XpWQQN7tVynY`
-   - The `cargo-domain=purchased` TXT and the two Cargo A records
-     (`3.234.189.133`, `3.215.100.79`) can be deleted, since the Worker
-     replaces them.
-3. Copy the two Cloudflare nameservers it gives.
-4. In **Cargo's domain settings**, replace `NS1.CARGO.SITE` and
-   `NS2.CARGO.SITE` with those two.
-5. Back in Cloudflare click **Check nameservers** and wait for the zone to
-   read **Active** (usually minutes, up to 24 hours).
-6. Open the **nicholaspjm-portfolio Worker**, then **Settings, Domains &
-   Routes, Add, Custom domain**, and enter `nicholaspjm.com`. Add
-   `www.nicholaspjm.com` too for both. Cloudflare creates the DNS record and
-   the HTTPS certificate itself.
-7. Load `https://nicholaspjm.com`. The new site should be there.
+- **The MX record is the only part that can cause real damage.** Everything
+  else is a website being briefly wrong; that is mail not arriving. It is
+  intact now, but any future nameserver change has to carry it across, and the
+  check is simply to send yourself a message afterwards.
+- **The auth code is spent.** It was consumed by the transfer and is useless
+  now, so an old copy sitting in an inbox is not a live credential.
+- **Do not build the `gh-pages` branch.** It holds the built output and has no
+  `package.json`, so any build run against it fails on `npm run build`. This
+  bit once: Cloudflare picked it up and the failure looked like a broken
+  deploy. Branch control is set to production `main` with non-production
+  builds disabled.
 
-## Part B: move the registration (uses the auth code)
+## Still outstanding
 
-8. Only once the zone shows **Active**, go to **Domain Registration, Transfer
-   Domains**. Cloudflare requires the domain to be on its DNS first, which is
-   why Part A comes first.
-9. Select `nicholaspjm.com`, paste the auth code from Cargo's email, and pay.
-   Cloudflare charges at cost with no markup, and the year is added to the
-   existing expiry.
-10. Completion ranges from about five minutes to a few days. After that Cargo
-    has no involvement at all.
-
-## Cautions
-
-- **Keep the Cargo plan active until Part A is confirmed live.** DNS is still
-  managed there until the transfer completes, and the moment nameservers flip
-  the old Cargo site goes dark at that address.
-- **Test email** right after the nameserver switch by sending yourself a
-  message. The MX record is the one thing that would cause real damage if it
-  went missing.
-- The auth code is a credential. It gets consumed by the transfer and becomes
-  useless afterwards, but Cargo can regenerate it if you would rather not have
-  the emailed one sitting around.
-- If Cloudflare rejects the transfer citing a 60 day rule (the registry logged
-  a change on 21 July, probably when the code was generated), Part A still
-  works on its own. The site would be live on the domain and Part B can be
-  retried later.
-
-## Nothing to change in the code
-
-The Cloudflare build already targets a root domain with no
-`/nicholaspjm-portfolio` prefix, and `src/content/site.ts` already declares
-`https://nicholaspjm.com`. Google Analytics is independent of all this: paste
-the `G-XXXXXXXXXX` measurement ID into `gaId` in that same file whenever you
-like, before or after the domain move.
-
-## After the move
-
-Two things only become possible once the domain is live on Cloudflare, both
-listed in `SEO.md`:
-
-- **Google Search Console** — add the property and submit
-  `https://nicholaspjm.com/sitemap.xml`. The `google-site-verification` TXT
-  already on the domain should verify it immediately.
-- **Cloudflare Web Analytics** — free and cookieless, and the reason `gaId` in
-  `src/content/site.ts` is deliberately left empty.
-
-## Reference
-
-- <https://developers.cloudflare.com/registrar/get-started/transfer-domain-to-cloudflare/>
-- <https://developers.cloudflare.com/registrar/faq/>
-- <https://developers.cloudflare.com/dns/nameservers/update-nameservers/>
-- <https://developers.cloudflare.com/registrar/troubleshooting/>
+1. **Google Search Console.** Never set up. Add `nicholaspjm.com` and submit
+   `https://nicholaspjm.com/sitemap.xml`. The verification TXT is already on
+   the domain, so it should pass immediately. Until then nothing about the
+   site's search performance can be measured.
+2. **No SPF, DKIM or DMARC.** The domain has never had them, so this is not
+   something the move broke, but the zone is on Cloudflare now and adding
+   `v=spf1 include:_spf.google.com ~all` is a two-minute job that helps mail
+   land where it should.
+3. **Cloudflare Web Analytics**, which is why `gaId` in `src/content/site.ts`
+   is deliberately empty: free, cookieless, and no consent banner.
