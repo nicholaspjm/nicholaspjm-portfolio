@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { interleave } from "@/lib/interleave";
 import { getListedProjects } from "@/lib/projects";
-import { SiteHeader } from "@/components/layout/site-header";
 import { VisualField, type VisualItem } from "@/components/ui/visual-field";
 import { Editable } from "@/components/ui/editable";
 import { pageMeta } from "@/lib/seo";
@@ -35,7 +34,6 @@ export default function VisualPage() {
 
   return (
     <div style={{ padding: "0.4em 12px 0" }}>
-      <SiteHeader />
       <h1 className="labelrow tight">
         <Editable id="label.visual" as="span" className="extra">
           visual

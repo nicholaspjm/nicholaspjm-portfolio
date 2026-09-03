@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
 import { pageMeta } from "@/lib/seo";
-import { SiteHeader } from "@/components/layout/site-header";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { Editable } from "@/components/ui/editable";
@@ -17,7 +16,6 @@ export const metadata: Metadata = pageMeta({
 export default function InfoPage() {
   return (
     <>
-      <SiteHeader />
 
       <h1 className="labelrow" style={{ marginTop: "0.6em" }}>
         <Editable id="info.label.about" as="span" className="extra">

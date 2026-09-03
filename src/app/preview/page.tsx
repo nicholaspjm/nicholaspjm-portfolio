@@ -3,7 +3,6 @@ import { site } from "@/content/site";
 import { getListedProjects, getProjectBySlug } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
 import type { Project } from "@/types/content";
-import { SiteHeader } from "@/components/layout/site-header";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { Editable } from "@/components/ui/editable";
@@ -57,8 +56,6 @@ export default function PreviewPage() {
       <h1 className="sr-only">visual test</h1>
       <ScrollLine />
       <BlurField />
-
-      <SiteHeader />
 
       <SchemePicker />
 

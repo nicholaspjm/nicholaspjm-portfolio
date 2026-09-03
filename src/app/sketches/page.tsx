@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/layout/site-header";
 import { Editable } from "@/components/ui/editable";
 import { pageMeta } from "@/lib/seo";
 
@@ -13,7 +12,6 @@ export const metadata: Metadata = pageMeta({
 export default function SketchesPage() {
   return (
     <>
-      <SiteHeader />
 
       <h1 className="labelrow">
         <Editable id="label.sketches" as="span" className="extra">

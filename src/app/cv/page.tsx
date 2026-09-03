@@ -9,7 +9,6 @@ import {
   teaching,
   education,
 } from "@/content/cv";
-import { SiteHeader } from "@/components/layout/site-header";
 import { CVSheet, type CVRow } from "@/components/ui/cv-sheet";
 import { Editable } from "@/components/ui/editable";
 
@@ -73,7 +72,6 @@ export default function CVPage() {
 
   return (
     <>
-      <SiteHeader />
 
       <h1 className="labelrow">
         <Editable id="label.cv" as="span" className="extra">

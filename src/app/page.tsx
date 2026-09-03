@@ -5,7 +5,6 @@ import { getListedProjects, getProjectBySlug } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
 import { editableText } from "@/content/editable-text";
 import type { Project } from "@/types/content";
-import { SiteHeader } from "@/components/layout/site-header";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { ImageWarmer } from "@/components/ui/image-warmer";
@@ -70,7 +69,6 @@ export default function Home() {
         Nicholas Marriott (nicholaspjm), TouchDesigner, projection and new
         media artist in Naarm / Melbourne
       </h1>
-      <SiteHeader />
 
       {/* INTRO: first person --------------------------------------------- */}
       <Editable id="intro.line1" as="p">

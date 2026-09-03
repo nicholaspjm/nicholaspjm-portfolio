@@ -3,7 +3,6 @@
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { SiteHeader } from "@/components/layout/site-header";
 import { NavButton } from "@/components/ui/nav-button";
 import { Editable } from "@/components/ui/editable";
 import { editableText } from "@/content/editable-text";
@@ -154,7 +153,6 @@ function ListBody({ projects }: { projects: WorkItem[] }) {
 export function WorkIndex({ projects }: { projects: WorkItem[] }) {
   return (
     <>
-      <SiteHeader />
 
       <h1 className="labelrow">
         <Editable id="label.indexOfWork" as="span" className="extra">
