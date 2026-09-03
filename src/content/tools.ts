@@ -13,6 +13,45 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
+    // patchplot, August 2026
+    name: "patchplot",
+    summary:
+      "A lighting plot planner for clubs and small venues, in one file. Drag fixtures onto a drafting-style plan, carry DMX patch data on every unit, draw the wire runs, and have address conflicts flagged per universe.",
+    stack: "JavaScript · Web",
+    links: [
+      { href: "https://nicholaspjm.github.io/patchplot/", label: "open" },
+      { href: "https://github.com/nicholaspjm/patchplot", label: "github" },
+    ],
+  },
+  {
+    // gobo-dmx-live-code, August 2026. Formerly lumen-dmx-live-code; the old
+    // URL only still works because GitHub redirects a renamed repo.
+    name: "gobo",
+    summary:
+      "Live-code DMX lighting in the browser. Pattern code drives Art-Net, sACN and OSC fixtures, with a fixture simulator and a 512-channel monitor beside the editor.",
+    stack: "TypeScript · Art-Net · sACN · OSC",
+    links: [
+      {
+        href: "https://nicholaspjm.github.io/gobo-dmx-live-code/",
+        label: "open",
+      },
+      {
+        href: "https://github.com/nicholaspjm/gobo-dmx-live-code",
+        label: "github",
+      },
+    ],
+  },
+  {
+    // nts-desktop, August 2026
+    name: "nts desktop",
+    summary:
+      "Unofficial desktop player for NTS Radio: live channels, Infinite Mixtapes, and archive search and playback, with a watchdog that reconnects a dropped stream.",
+    stack: "TypeScript · React · Electron",
+    links: [
+      { href: "https://github.com/nicholaspjm/nts-desktop", label: "github" },
+    ],
+  },
+  {
     // weaving-type-touchdesigner, July 2026
     name: "Woven Touch",
     summary:
@@ -26,14 +65,14 @@ export const tools: Tool[] = [
     ],
   },
   {
-    // lumen-dmx-live-code, April 2026
-    name: "lumen",
+    // orbbec-astra-touchdesigner, May 2026
+    name: "orbbec astra for touchdesigner",
     summary:
-      "Live-coding environment for DMX lighting rigs. Write patterns live and the lights follow on the next beat.",
-    stack: "TypeScript · Art-Net · DMX",
+      "OpenNI2 callbacks for streaming depth, colour, IR and pointcloud off an Orbbec Astra into TouchDesigner Script TOPs, all at once.",
+    stack: "Python · OpenNI2",
     links: [
       {
-        href: "https://github.com/nicholaspjm/lumen-dmx-live-code",
+        href: "https://github.com/nicholaspjm/orbbec-astra-touchdesigner",
         label: "github",
       },
     ],
