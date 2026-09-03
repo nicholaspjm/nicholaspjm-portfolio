@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
 import { pageMeta } from "@/lib/seo";
+import { SiteHeader } from "@/components/layout/site-header";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { Editable } from "@/components/ui/editable";
@@ -16,18 +17,7 @@ export const metadata: Metadata = pageMeta({
 export default function InfoPage() {
   return (
     <>
-      <p>
-        <NavButton href="/">index</NavButton>
-        <NavButton href="/work">work</NavButton>
-        <NavButton href="/sketches">sketches</NavButton>
-        <NavButton href="/cv">CV</NavButton>
-        <NavButton href={`mailto:${site.email}`}>{site.email}</NavButton>
-        {site.social.map((s) => (
-          <NavButton key={s.href} href={s.href}>
-            {s.label.toLowerCase()}
-          </NavButton>
-        ))}
-      </p>
+      <SiteHeader />
 
       <h1 className="labelrow" style={{ marginTop: "0.6em" }}>
         <Editable id="info.label.about" as="span" className="extra">
@@ -78,6 +68,14 @@ export default function InfoPage() {
         <span className="data" style={{ fontSize: 13 }}>
           @nicholaspjm
         </span>
+      </p>
+      {/* These were in the page's own header, which is now the shared one. */}
+      <p style={{ marginTop: "0.4em" }}>
+        {site.social.map((soc) => (
+          <NavButton key={soc.href} href={soc.href}>
+            {soc.label.toLowerCase()}
+          </NavButton>
+        ))}
       </p>
 
       <h2 className="labelrow tight" style={{ marginTop: "0.8em" }}>

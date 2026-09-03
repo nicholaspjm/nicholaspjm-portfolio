@@ -635,6 +635,19 @@ html::-webkit-scrollbar {
 }
 
 /* Top nav: a tight row of plain buttons, left-aligned. */
+/* The current page in the header: same size and rhythm as the buttons beside
+   it, but plainly not a control, since it would only link to itself. */
+.navhere {
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 2px 3px;
+  margin: 0 10px 2px 0;
+  border: 1px solid transparent;
+  color: var(--soft);
+  white-space: nowrap;
+  display: inline-block;
+}
+
 .topnav {
   display: flex;
   flex-wrap: wrap;

@@ -9,7 +9,7 @@ import {
   teaching,
   education,
 } from "@/content/cv";
-import { NavButton } from "@/components/ui/nav-button";
+import { SiteHeader } from "@/components/layout/site-header";
 import { CVSheet, type CVRow } from "@/components/ui/cv-sheet";
 import { Editable } from "@/components/ui/editable";
 
@@ -73,11 +73,7 @@ export default function CVPage() {
 
   return (
     <>
-      <p>
-        <NavButton href="/">index</NavButton>
-        <NavButton href="/work">visual work</NavButton>
-        <NavButton href={`mailto:${site.email}`}>{site.email}</NavButton>
-      </p>
+      <SiteHeader />
 
       <h1 className="labelrow">
         <Editable id="label.cv" as="span" className="extra">

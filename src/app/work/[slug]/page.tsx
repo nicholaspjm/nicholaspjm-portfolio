@@ -6,6 +6,7 @@ import {
   getProjectNeighbors,
 } from "@/lib/projects";
 import { Blocks } from "@/components/content/block-renderer";
+import { SiteHeader } from "@/components/layout/site-header";
 import { NavButton } from "@/components/ui/nav-button";
 import { ProjectGallery } from "@/components/ui/project-gallery";
 import { Editable } from "@/components/ui/editable";
@@ -59,10 +60,7 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
     <div className="bluepage">
       <ProjectSchema project={project} />
       <BreadcrumbSchema title={project.title} slug={project.slug} />
-      <p>
-        <NavButton href="/">index</NavButton>
-        <NavButton href="/work">all work</NavButton>
-      </p>
+      <SiteHeader />
 
       {/* Giant bordoclima-scale masthead */}
       <header>

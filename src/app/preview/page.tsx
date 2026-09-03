@@ -3,9 +3,9 @@ import { site } from "@/content/site";
 import { getListedProjects, getProjectBySlug } from "@/lib/projects";
 import { selectedWorks } from "@/content/selected";
 import type { Project } from "@/types/content";
+import { SiteHeader } from "@/components/layout/site-header";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
-import { InfoSheet } from "@/components/ui/info-sheet";
 import { Editable } from "@/components/ui/editable";
 import { ScrollLine } from "@/components/ui/scroll-line";
 import { BlurField } from "@/components/ui/blur-field";
@@ -58,35 +58,7 @@ export default function PreviewPage() {
       <ScrollLine />
       <BlurField />
 
-      {/* TOP NAV — as on home ------------------------------------------- */}
-      <div className="topnav">
-        <NavButton href="/work">list view</NavButton>
-        <NavButton href="/visual">visual view</NavButton>
-        <NavButton href="/cv">CV</NavButton>
-        <InfoSheet>
-          <p>
-            <Editable id="label.about" as="span" className="extra">
-              about
-            </Editable>
-          </p>
-          <Editable id="about.p1" as="p">
-            I&rsquo;m a designer and technologist based in Naarm / Melbourne, b.
-            1999 in Aotearoa New Zealand. I hold a Bachelor of Arts in Computer
-            Science from the University of Auckland, and worked as a software
-            developer before moving into visual design.
-          </Editable>
-          <Editable id="about.p2" as="p" style={{ marginTop: "0.6em" }}>
-            My practice centres on real-time systems, spanning audio-reactive
-            visuals, interactive installation, and motion for artists, brands,
-            and cultural institutions. I work primarily in TouchDesigner, GLSL,
-            Python, and depth-sensing hardware.
-          </Editable>
-          <Editable id="about.p3" as="p" style={{ marginTop: "0.6em" }}>
-            I&rsquo;m available for commissions, art direction, teaching, and
-            speaking.
-          </Editable>
-        </InfoSheet>
-      </div>
+      <SiteHeader />
 
       <SchemePicker />
 
