@@ -76,18 +76,6 @@ export default function InfoPage() {
         ))}
       </p>
 
-      <h2 className="labelrow tight" style={{ marginTop: "0.8em" }}>
-        <Editable id="info.label.colophon" as="span" className="extra">
-          colophon
-        </Editable>
-      </h2>
-      <p>
-        Built with Next.js. Set in Arial with Courier for data. The background
-        of the <Link href="/">index</Link> is a point-cloud scan; the rail at
-        right is a live map of the page&rsquo;s structure. Design favours
-        structure and legibility over ornament.
-      </p>
-
       <p className="foot" style={{ marginTop: "0.8em" }}>
         Last updated{" "}
         {new Date().toLocaleDateString("en-GB", {

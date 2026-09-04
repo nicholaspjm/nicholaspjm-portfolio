@@ -12,7 +12,7 @@ TypeScript, Tailwind v4, and React Three Fiber.
   content blocks (image / video / gallery / text / quote / embed / divider).
 - **/lab** — code experiments, each running live in the browser
   (particles, ASCII flow, grid pulse, mini-blob).
-- **/info** — bio, contact, colophon.
+- **/info** — bio and contact.
 
 ## Stack
 

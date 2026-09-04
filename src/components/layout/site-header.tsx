@@ -71,7 +71,7 @@ export function SiteHeader() {
             Folding that header into this one would have orphaned the page, so
             the route to it lives here now. */}
         <p style={{ marginTop: "0.8em" }}>
-          <Link href="/info">full info, contact and colophon</Link>
+          <Link href="/info">full info and contact</Link>
         </p>
       </InfoSheet>
     </div>

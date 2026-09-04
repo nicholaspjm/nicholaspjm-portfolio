@@ -62,7 +62,7 @@ through the middle of the subject.
 ## Headings
 
 Every page has exactly one `<h1>`. The section labels ("index of work",
-"about", "colophon") *are* those headings — promoted from `<span>`, wrapped in
+"about", "contact") *are* those headings — promoted from `<span>`, wrapped in
 `.labelrow` so they keep the paragraph rhythm they replaced, with the yellow
 `.extra` highlight still on an inline span inside so it hugs its text instead
 of stretching the full width.
