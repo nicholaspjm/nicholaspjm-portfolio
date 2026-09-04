@@ -13,17 +13,6 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
-    // patchplot, August 2026
-    name: "patchplot",
-    summary:
-      "A lighting plot planner for clubs and small venues, in one file. Drag fixtures onto a drafting-style plan, carry DMX patch data on every unit, draw the wire runs, and have address conflicts flagged per universe.",
-    stack: "JavaScript · Web",
-    links: [
-      { href: "https://nicholaspjm.github.io/patchplot/", label: "open" },
-      { href: "https://github.com/nicholaspjm/patchplot", label: "github" },
-    ],
-  },
-  {
     // gobo-dmx-live-code, August 2026. Formerly lumen-dmx-live-code; the old
     // URL only still works because GitHub redirects a renamed repo.
     name: "gobo",
@@ -60,19 +49,6 @@ export const tools: Tool[] = [
     links: [
       {
         href: "https://github.com/nicholaspjm/weaving-type-touchdesigner",
-        label: "github",
-      },
-    ],
-  },
-  {
-    // orbbec-astra-touchdesigner, May 2026
-    name: "orbbec astra for touchdesigner",
-    summary:
-      "OpenNI2 callbacks for streaming depth, colour, IR and pointcloud off an Orbbec Astra into TouchDesigner Script TOPs, all at once.",
-    stack: "Python · OpenNI2",
-    links: [
-      {
-        href: "https://github.com/nicholaspjm/orbbec-astra-touchdesigner",
         label: "github",
       },
     ],

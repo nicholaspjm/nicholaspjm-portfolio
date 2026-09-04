@@ -32,7 +32,7 @@ export function Readout() {
         <span className="rd-flag">
           <PalestineFlag />
         </span>
-        <span>website under construction</span>
+        <span>site is always in progress</span>
         {BUILD_DATE && <span>last updated {BUILD_DATE}</span>}
         <span>naarm / melbourne</span>
       </div>
