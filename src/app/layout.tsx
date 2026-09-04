@@ -20,11 +20,13 @@ import "./globals.css";
 // Apply saved dark mode before first paint to avoid a flash.
 const themeInit = `try{if(localStorage.getItem('npjm-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}`;
 
-// Site-wide defaults. Each page overrides title/description and — critically —
-// sets its own `alternates.canonical`; a canonical declared here would be
-// inherited by every route and point them all at the homepage.
+// Site-wide defaults. The title is the name on every route — pages pass their
+// own title to pageMeta, which spends it on the share cards rather than the
+// tab. Each page overrides description and — critically — sets its own
+// `alternates.canonical`; a canonical declared here would be inherited by
+// every route and point them all at the homepage.
 export const metadata: Metadata = {
-  title: { default: site.name, template: `%s · ${site.name}` },
+  title: site.name,
   description: site.tagline,
   metadataBase: new URL(site.url),
   keywords: site.keywords,

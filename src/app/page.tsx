@@ -26,12 +26,6 @@ import {
 
 export const metadata: Metadata = {
   ...pageMeta({ description: site.tagline, path: "/" }),
-  title: {
-    // "creative technologist" is what the practice is called; "TouchDesigner"
-    // is what people type. 23 of 25 works here are TouchDesigner pieces, so
-    // leading with it is the honest description as well as the findable one.
-    absolute: "Nicholas Marriott, TouchDesigner & new media artist, Melbourne",
-  },
 };
 
 export default function Home() {
