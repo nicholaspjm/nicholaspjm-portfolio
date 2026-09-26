@@ -54,9 +54,7 @@ export function pageMeta({
   const ogTitle = title ? `${title} · ${site.name}` : site.name;
 
   return {
-    // No `title` here on purpose: every route falls back to the layout's
-    // default, so the browser tab reads "Nicholas Marriott" everywhere. The
-    // descriptive form is not lost — it still titles the share cards below.
+    ...(title ? { title } : {}),
     description,
     alternates: { canonical: url },
     openGraph: {
