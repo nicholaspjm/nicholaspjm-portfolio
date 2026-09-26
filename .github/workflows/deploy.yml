@@ -1,8 +1,9 @@
 name: Deploy to GitHub Pages
 
+# Manual only. The live site is Cloudflare (Workers Builds deploys every push
+# to main); this mirror is kept runnable from the Actions tab but no longer
+# rebuilds on every push.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 # Publishes the static export to the gh-pages branch as a normal commit on

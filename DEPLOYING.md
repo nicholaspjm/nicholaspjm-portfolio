@@ -7,10 +7,15 @@ site with no extra steps.
 
 ## Currently live
 
-GitHub Pages, automatically on every push to `main`, at
-`nicholaspjm.github.io/nicholaspjm-portfolio`. The workflow
-(`.github/workflows/deploy.yml`) sets `NEXT_PUBLIC_BASE_PATH` because the site
-sits on a project subpath there. Nothing to do by hand.
+**nicholaspjm.com on Cloudflare**, automatically on every push to `main`
+(Workers Builds, connected to the GitHub repo — see Option A below). Nothing to
+do by hand.
+
+The old GitHub Pages mirror at `nicholaspjm.github.io/nicholaspjm-portfolio` no
+longer rebuilds on push. Its workflow (`.github/workflows/deploy.yml`, which
+sets `NEXT_PUBLIC_BASE_PATH` for the project subpath) is manual-only now — run
+it from the Actions tab if the mirror ever needs refreshing. Its pages carry
+`nicholaspjm.com` canonicals, so it doesn't compete in search.
 
 ## Cloudflare Pages
 
