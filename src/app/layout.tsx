@@ -68,7 +68,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
+    <html lang="en-AU" className="h-full" suppressHydrationWarning>
       <body className="min-h-full bg-paper text-ink">
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <GenerativeField />

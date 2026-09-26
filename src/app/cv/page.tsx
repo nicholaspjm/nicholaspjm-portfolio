@@ -12,12 +12,18 @@ import {
 import { CVSheet, type CVRow } from "@/components/ui/cv-sheet";
 import { Editable } from "@/components/ui/editable";
 
-export const metadata: Metadata = pageMeta({
-  title: "CV of exhibitions, festivals, commissions & teaching",
-  description:
-    "Curriculum vitae for Nicholas Marriott: installations, festival and live-visual commissions, awards, press, teaching and education.",
-  path: "/cv/",
-});
+export const metadata: Metadata = {
+  ...pageMeta({
+    title: "CV of exhibitions, festivals, commissions & teaching",
+    description:
+      "Curriculum vitae for Nicholas Marriott: installations, festival and live-visual commissions, awards, press, teaching and education.",
+    path: "/cv/",
+  }),
+  // The live page only says "Coming soon" (the sheet renders in dev only), so
+  // keep it out of the index until it does. Drop this, and add /cv/ back to
+  // sitemap.ts, when the CV goes live.
+  robots: { index: false, follow: true },
+};
 
 export default function CVPage() {
   const projects = getListedProjects();

@@ -1,4 +1,5 @@
 import type { EmbedBlock as Block } from "@/types/content";
+import { ytNoCookie } from "@/lib/yt";
 
 export function EmbedBlock({ block }: { block: Block }) {
   const ratio = block.ratio ?? "16/9";
@@ -9,7 +10,7 @@ export function EmbedBlock({ block }: { block: Block }) {
         style={{ aspectRatio: ratio }}
       >
         <iframe
-          src={block.url}
+          src={ytNoCookie(block.url)}
           className="absolute inset-0 h-full w-full"
           allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
           allowFullScreen

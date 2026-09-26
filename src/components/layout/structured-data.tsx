@@ -162,6 +162,25 @@ export function WebSiteSchema() {
   );
 }
 
+/** The about page, marked as the profile of the person entity. This is the
+ *  page type Google looks for when deciding which URL is "about" someone. */
+export function ProfilePageSchema() {
+  const url = abs("/info/");
+  return (
+    <Ld
+      data={{
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "@id": `${url}#profile`,
+        url,
+        mainEntity: { "@id": `${site.url}/#person` },
+        isPartOf: { "@id": `${site.url}/#website` },
+        inLanguage: "en-AU",
+      }}
+    />
+  );
+}
+
 /** One project, credited back to the person entity. */
 export function ProjectSchema({ project }: { project: Project }) {
   const url = abs(`/work/${project.slug}/`);

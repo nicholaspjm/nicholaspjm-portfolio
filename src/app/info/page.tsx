@@ -5,6 +5,7 @@ import { pageMeta } from "@/lib/seo";
 import { NavButton } from "@/components/ui/nav-button";
 import { NoiseRule } from "@/components/ui/noise";
 import { Editable } from "@/components/ui/editable";
+import { ProfilePageSchema } from "@/components/layout/structured-data";
 
 export const metadata: Metadata = pageMeta({
   title: "About & contact, TouchDesigner artist in Melbourne",
@@ -16,6 +17,7 @@ export const metadata: Metadata = pageMeta({
 export default function InfoPage() {
   return (
     <>
+      <ProfilePageSchema />
 
       <h1 className="labelrow" style={{ marginTop: "0.6em" }}>
         <Editable id="info.label.about" as="span" className="extra">

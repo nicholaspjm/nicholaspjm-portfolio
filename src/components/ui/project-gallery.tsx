@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { asset } from "@/lib/asset";
 import { ytEmbed } from "@/lib/yt";
+import { imageDims } from "@/content/project-images";
 import { editableText } from "@/content/editable-text";
 import { isEditorEnabled, getEditMode, subscribe } from "@/lib/edit-store";
 import type { RowImage } from "./image-row";
@@ -141,11 +142,21 @@ export function ProjectGallery({
     .map((im) => `${keyOf(im)}:${DEFAULT_SIZE}`)
     .join(",");
 
+  // The first *still* gets priority, not item 0: a work that leads with a
+  // clip or embed would otherwise lazy-load the image that is actually its
+  // largest paint.
+  const firstStill = items.findIndex(
+    (it) => !it.img.youtube && !it.img.video && it.img.src,
+  );
+
   return (
     <div className="project-gallery" ref={ref}>
       {items.map((it, i) => {
         const img = it.img;
         const alt = img.alt ?? title;
+        // Intrinsic size, so the browser reserves the right width before the
+        // file arrives (the CSS sets height with width:auto).
+        const dims = img.src ? imageDims[img.src] : undefined;
         const media = img.youtube ? (
           <iframe
             className="yt"
@@ -165,14 +176,16 @@ export function ProjectGallery({
             aria-label={alt}
           />
         ) : img.src ? (
-          // The first image is above the fold; load it eagerly with priority
+          // The first still is above the fold; load it eagerly with priority
           // so it paints fast, and lazy-load the rest.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={asset(img.src)}
             alt={alt}
-            loading={i === 0 ? "eager" : "lazy"}
-            fetchPriority={i === 0 ? "high" : "auto"}
+            width={dims?.[0]}
+            height={dims?.[1]}
+            loading={i === firstStill ? "eager" : "lazy"}
+            fetchPriority={i === firstStill ? "high" : "auto"}
             decoding="async"
           />
         ) : null;
