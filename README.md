@@ -1,96 +1,84 @@
-# nicholaspjm.com — v2
+# nicholaspjm.com
 
-A portfolio site for Nicholas PJM. Built on Next.js 16 (App Router),
-TypeScript, Tailwind v4, and React Three Fiber.
+Portfolio site for Nicholas Marriott. Next.js 16 (App Router), TypeScript,
+Tailwind v4, exported as static HTML.
 
-## What's here
+## Pages
 
-- **/** — home, with a live WebGL hero (domain-warped fbm rendered as
-  topographic isobands; cursor distorts the field).
-- **/work** — index of projects, filterable by category.
-- **/work/[slug]** — project detail page; renders a sequence of typed
-  content blocks (image / video / gallery / text / quote / embed / divider).
-- **/lab** — code experiments, each running live in the browser
-  (particles, ASCII flow, grid pulse, mini-blob).
-- **/info** — bio and contact.
-
-## Stack
-
-| Layer | Choice |
+| Route | What it is |
 | --- | --- |
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript |
-| Styles | Tailwind v4 (tokens via `@theme inline`) |
-| 3D / GL | three + @react-three/fiber + drei |
-| Type | EB Garamond + JetBrains Mono |
-
-## Adding a project
-
-```bash
-npm run new-project -- <slug> "Title" 2025
-```
-
-Then drop images/videos into `public/images/projects/<slug>/` and
-`public/videos/projects/<slug>/`, fill out the content blocks in the
-generated `.ts` file, and register the import in
-`src/content/projects/_index.ts`.
-
-The content schema lives in `src/types/content.ts` and supports:
-`text`, `image`, `video`, `gallery`, `embed`, `quote`, `divider`.
-
-To add a new block type: add it to the union in `types/content.ts`, write
-a renderer in `src/components/content/<name>-block.tsx`, and add a case
-in `block-renderer.tsx`.
-
-## Adding a lab experiment
-
-1. Drop a client component in `src/components/lab/experiments/<name>.tsx`.
-2. Add a key for it in the `Experiment["component"]` union in
-   `types/content.ts`.
-3. Wire it into `src/components/lab/registry.tsx`.
-4. Create `src/content/experiments/<slug>.ts` and register it in
-   `_index.ts`.
-
-## Project structure
-
-```
-src/
-  app/                    routes (home, /work, /lab, /info)
-  components/
-    layout/               header, footer, paper grain
-    ui/                   hyperlink, tag, marquee
-    content/              block renderers
-    hero/                 home WebGL hero + shaders
-    lab/                  experiment frame + experiments
-  content/
-    projects/             one .ts per project
-    experiments/          one .ts per experiment
-    site.ts               site name, nav, social, contact
-  lib/                    pure functions for reading content
-  types/                  content schema
-public/
-  images/placeholder/     placeholder SVG plates
-  images/projects/<slug>/ per-project images
-  videos/projects/<slug>/ per-project videos
-scripts/
-  new-project.mjs         scaffold a new project file + folders
-```
+| `/` | index — intro, selected works, sections, tools |
+| `/work` | every project as a list, filterable by category |
+| `/work/<slug>` | one project: media, credits, description |
+| `/visual` | every image and clip on one page |
+| `/cv` | performances, awards, press, teaching, education |
+| `/info` | about and contact |
+| `/sketches` | personal explorations |
+| `/preview` | unlisted test page, noindex, linked from nowhere |
 
 ## Local dev
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # static build with prerendered project pages
-npm run start    # serve the build
 ```
 
-## Design notes
+```bash
+npm run dev
+```
 
-- Warm paper ground (`--color-paper`), deep ink text, classic underlined
-  hyperlink blue (`--color-link: #1c39ff`).
-- Serif body (EB Garamond) for editorial feel, mono caption (JetBrains
-  Mono) for technical metadata.
-- Hairlines in `--color-rule` define grid edges; no shadows anywhere.
-- Hero shader: domain-warped fbm sampled into 14 isobands, blended with a
-  cursor halo. See `src/components/hero/shaders/hero.glsl.ts`.
+`predev` and `prebuild` run `scan-images` and `make-og-images` first, so the
+media manifests and share cards are current before the server or build starts.
+
+```bash
+npm run build
+```
+
+Static export; output lands in `out/`.
+
+## Content
+
+Projects are one `.ts` file each in `src/content/projects/`, registered in
+`_index.ts`. Media is picked up from the folders automatically — drop files in
+`public/images/projects/<slug>/` and `public/videos/projects/<slug>/` and
+`npm run scan-images` writes them into the manifests, along with video
+dimensions and poster frames.
+
+| Path | Holds |
+| --- | --- |
+| `src/content/projects/` | one file per project |
+| `src/content/site.ts` | name, nav, social, contact, keywords |
+| `src/content/tools.ts` | the tools list on the index |
+| `content/cv.csv` | CV source — edit the spreadsheet, then `scan-images` |
+| `src/content/editable-text.json` | copy and layout saved from the studio |
+| `src/types/content.ts` | the content schema |
+
+`npm run studio` serves an editor for the copy and image rows; what it saves
+goes to `editable-text.json`.
+
+## Deploy
+
+Every push to `main` publishes twice: GitHub Pages (via Actions, served under
+`/nicholaspjm-portfolio`) and Cloudflare (Git-connected, serving the apex
+domain). Cloudflare's build lags the Pages mirror by a few minutes, so check
+the mirror first when verifying a change.
+
+## Scripts
+
+| Script | Does |
+| --- | --- |
+| `scan-images` | media manifests, video dimensions, posters, CV from CSV |
+| `og-images` | per-project share cards |
+| `og-default` | the fallback share card |
+| `convert-videos` | transcode source video to web `.mp4` |
+| `new-project` | scaffold a project file and its media folders |
+| `studio` | local copy/layout editor |
+
+`scan-images`, `og-images` and `convert-videos` need `ffmpeg`/`ffprobe` and
+`sharp`. Video dimensions are seeded from the committed manifest when ffprobe
+is missing, so CI does not wipe them.
+
+## Notes
+
+- Body type is Arial, with a mono stack for technical data. No webfonts.
+- The index backdrop is a physarum simulation on canvas, run in a worker.
+- Source video originals are gitignored; only the web `.mp4`s are committed.

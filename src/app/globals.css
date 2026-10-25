@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Palette — stock mindyseu white. Work detail pages override via .bluepage.
+   Palette — plain white ground. Work detail pages override via .bluepage.
    ------------------------------------------------------------------------ */
 :root {
   /* Base = "paper": white ground, near-black text, old-browser blue for
@@ -309,14 +309,23 @@ a.ptitle:hover, .ptitle:hover {
 
 .foot { font-size: 12px; }
 
-/* Native default buttons — undo Tailwind preflight, like mindyseu's rows */
-/* Raw square buttons. `all: revert` alone hands back the platform's native
+/* Raw square controls. `all: revert` alone hands back the platform's native
    control, which on macOS and iOS is a rounded, shaded pill — modern-looking
    and at odds with the early-web plainness of everything else, and different
-   again on Windows. Drawing the button explicitly keeps it a flat 1px box
-   everywhere. */
+   again on Windows. Drawing it explicitly keeps it a flat 1px box everywhere.
+   Scoped to real buttons: it undoes Tailwind's preflight, and an anchor has
+   nothing to undo. */
 button {
   all: revert;
+}
+
+/* One box, two elements. `button` still dresses the real controls (the about
+   sheet's close, the edit bar, the row arrangers); `.navbtn` puts the same box
+   on an anchor, so anything that navigates can be cmd-clicked, copied and
+   crawled while looking no different. Keep them in one rule — drawn twice,
+   they drift. */
+button,
+.navbtn {
   appearance: none;
   -webkit-appearance: none;
   font-family: var(--font-body);
@@ -343,13 +352,20 @@ button {
      next line instead of splitting itself. */
   white-space: nowrap;
 }
-button:hover {
+button:hover,
+.navbtn:hover {
   color: var(--ink);
   background: none;
 }
-button:active {
+button:active,
+.navbtn:active {
   color: var(--ink);
   background: color-mix(in srgb, var(--hl-a-bg) 14%, var(--bg));
+}
+/* An anchor is also matched by `a:visited` above, which would otherwise repaint
+   a visited nav item; the button rule never had a visited state to match. */
+.navbtn:visited {
+  color: var(--link);
 }
 
 /* Angle-bracket action — screenwalks ⟨about⟩ convention */
@@ -364,7 +380,7 @@ button:active {
 ::selection { background: var(--hl-a-bg); color: var(--hl-a-fg); }
 
 /* ---------------------------------------------------------------------------
-   IMAGES — mindyseu image-row
+   IMAGES — the image row
    ------------------------------------------------------------------------ */
 .image-row {
   display: flex;
@@ -2117,11 +2133,10 @@ html[data-btn="shadow"] button:active {
 html[data-btn="shadow"] button.on { box-shadow: 2px 2px 0 0 var(--link); }
 
 /* ---- /preview: typefaces ----------------------------------------------- */
-/* mindyseu.com runs one condensed grotesque for everything — Arial Narrow at
-   16/20 — so "narrow" is the closest match and "unified" goes the whole way,
-   dropping the separate technical face as that site does. The rest are here
-   for contrast. All system stacks: no webfont means no flash of unstyled
-   text and nothing extra to download. */
+/* "narrow" runs one condensed grotesque for everything — Arial Narrow at
+   16/20 — and "unified" goes the whole way, dropping the separate technical
+   face. The rest are here for contrast. All system stacks: no webfont means
+   no flash of unstyled text and nothing extra to download. */
 html[data-font="narrow"] {
   --font-body: "Arial Narrow", "Helvetica Neue Condensed", "Liberation Sans Narrow", Arial, sans-serif;
   --lh-body: 1.25;
@@ -2232,7 +2247,7 @@ html[data-dataface="narrow"] {
 html[data-dataface="georgia"] {
   --font-data: Georgia, "Times New Roman", serif;
 }
-/* No second face at all: the mindyseu approach, one family for everything. */
+/* No second face at all: one family for everything. */
 html[data-dataface="unified"] {
   --font-data: var(--font-body);
 }
